@@ -1,13 +1,14 @@
 // ==UserScript==
-// @name         IdlePixel UI Tweaks - GodofNades Fork
-// @namespace    com.anwinity.idlepixel
-// @version      2.8.2.1
-// @description  Adds some options to change details about the IdlePixel user interface.
+// @name         IdlePixel UI Tweaks - Overhaul
+// @namespace    godofnades.idlepixel
+// @version      0.1
+// @description  Overhaul of the original Anwinity version of UI Tweaks. Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
 // @match        *://idle-pixel.com/login/play/
 // @grant        none
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
+// @require      https://
 // ==/UserScript==
 
 (function() {
@@ -1062,39 +1063,6 @@
                     }
                 });
             }
-        }
-
-        calcFishEnergy() {
-            const fishRawEnergy = Object.keys(FISH_ENERGY_MAP);
-            const fishHeat = Object.keys(FISH_HEAT_MAP);
-            const fishCookedEnergy = Object.keys(FISH_ENERGY_MAP);
-            let totalRawEnergy = 0;
-            let totalHeat = 0;
-            let totalCookedEnergy = 0;
-            let oilGainTimer;
-            const collectorModeFish = this.getConfig("minusOneHeatInFishingTab");
-
-            fishRawEnergy.forEach(fish => {
-                let currentRawFish = IdlePixelPlus.getVarOrDefault("raw_" + fish, 0, "int");
-                let currentCookedFish = IdlePixelPlus.getVarOrDefault("cooked_" + fish, 0, "int");
-
-                if (currentRawFish > 0 && collectorModeFish) {
-                    currentRawFish--;
-                }
-                if (currentCookedFish > 0 && collectorModeFish) {
-                    currentCookedFish--;
-                }
-                const currentRawEnergy = currentRawFish * FISH_ENERGY_MAP[fish];
-                const currentHeat = currentRawFish * FISH_HEAT_MAP[fish];
-                const currentCookedEnergy = currentCookedFish * FISH_ENERGY_MAP[fish];
-                totalRawEnergy += currentRawEnergy;
-                totalHeat += currentHeat;
-                totalCookedEnergy += currentCookedEnergy;
-            });
-
-            document.getElementById("raw-fish-energy-number").textContent = totalRawEnergy.toLocaleString();
-            document.getElementById("fish-heat-required-number").textContent = totalHeat.toLocaleString();
-            document.getElementById("cooked-fish-energy-number").textContent = totalCookedEnergy.toLocaleString();
         }
 
         miningMachTimer() {
@@ -2695,83 +2663,6 @@
             insertAfter(createCombatStatEntry("combat-info-fight_point-left", "https://d1xsc8x7nc5q8t.cloudfront.net/images/fight_points.png", "fight_points_white-left", "FP", currentFP), idleHeroArrowsArea);
             insertAfter(createCombatStatEntry("combat-info-rare_pot-left", "https://d1xsc8x7nc5q8t.cloudfront.net/images/rare_monster_potion.png", "rare_potion_white-left", "Rare Pot", rarePotInfo), idleHeroArrowsArea);
             insertAfter(createCombatStatEntry("combat-info-loot_pot-left", "https://d1xsc8x7nc5q8t.cloudfront.net/images/combat_loot_potion.png", "combat_loot_potion_white-left", "Loot Pot", combatLootPotInfo), idleHeroArrowsArea);
-
-            // Fishing Energy/Heat Info
-            const panelFishing = document.querySelector("#panel-fishing");
-            const progressBar = panelFishing.querySelector(".progress-bar");
-
-            const hrElement = document.createElement("hr");
-            progressBar.insertAdjacentElement('afterend', hrElement);
-
-            const containerDiv = document.createElement("div");
-            containerDiv.style.display = "flex";
-            containerDiv.style.flexDirection = "column";
-
-            const h5Element = document.createElement("h5");
-            h5Element.textContent = "Fish Energy";
-
-            const buttonElement = document.createElement("button");
-            buttonElement.textContent = "Show";
-            buttonElement.id = "fish_energy-visibility-button";
-            buttonElement.addEventListener("click", show_hide);
-            h5Element.appendChild(buttonElement);
-
-            const innerDiv = document.createElement("div");
-            innerDiv.id = "fishing-calculator-div";
-
-            const rawFishEnergySpan = document.createElement("span");
-            rawFishEnergySpan.textContent = "Total Raw Fish Energy: ";
-
-            const rawFishEnergyNumberSpan = document.createElement("span");
-            rawFishEnergyNumberSpan.textContent = "0";
-            rawFishEnergyNumberSpan.id = "raw-fish-energy-number";
-            rawFishEnergySpan.appendChild(rawFishEnergyNumberSpan);
-
-            const br1Element = document.createElement("br");
-
-            const heatToCookAllSpan = document.createElement("span");
-            heatToCookAllSpan.textContent = "Heat To Cook All: ";
-
-            const fishHeatRequiredNumberSpan = document.createElement("span");
-            fishHeatRequiredNumberSpan.textContent = "0";
-            fishHeatRequiredNumberSpan.id = "fish-heat-required-number";
-            heatToCookAllSpan.appendChild(fishHeatRequiredNumberSpan);
-
-            const br2Element = document.createElement("br");
-
-            const totalCookedFishEnergySpan = document.createElement("span");
-            totalCookedFishEnergySpan.textContent = "Total Cooked Fish Energy: ";
-
-            const cookedFishEnergyNumberSpan = document.createElement("span");
-            cookedFishEnergyNumberSpan.textContent = "0";
-            cookedFishEnergyNumberSpan.id = "cooked-fish-energy-number";
-            totalCookedFishEnergySpan.appendChild(cookedFishEnergyNumberSpan);
-
-            innerDiv.appendChild(rawFishEnergySpan);
-            innerDiv.appendChild(br1Element);
-            innerDiv.appendChild(heatToCookAllSpan);
-            innerDiv.appendChild(br2Element);
-            innerDiv.appendChild(totalCookedFishEnergySpan);
-
-            containerDiv.appendChild(h5Element);
-            containerDiv.appendChild(innerDiv);
-
-            hrElement.insertAdjacentElement('afterend', containerDiv);
-
-            function show_hide() {
-                const button = document.querySelector("#fish_energy-visibility-button");
-                const div = document.querySelector("#fishing-calculator-div");
-
-                if (button.textContent === "Hide") {
-                    div.style.display = "none";
-                    button.textContent = "Show";
-                } else {
-                    div.style.display = "block";
-                    button.textContent = "Hide";
-                }
-            }
-            this.calcFishEnergy();
-            document.querySelector("#fishing-calculator-div").style.display = "none";
 
             this.oilTimerNotification();
             setTimeout(function() {
