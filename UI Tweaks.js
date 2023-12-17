@@ -1423,14 +1423,7 @@
                 }
 
                 const heatInFishingTab = this.getConfig("heatInFishingTab");
-                const heatFishingTab = document.getElementById("heat-fishing-tab");
-                if (heatInFishingTab) {
-                    heatFishingTab.style.display = "block";
-                    heatFishingTab.setAttribute("data-item", "heat");
-                } else {
-                    heatFishingTab.style.display = "none";
-                    heatFishingTab.removeAttribute("data-item");
-                }
+                toggleFishingTab(hitInFishingTab);
 
                 const merchantReady = this.getConfig("merchantReady");
                 const merchAvail = IdlePixelPlus.getVarOrDefault("merchant");
@@ -2420,25 +2413,7 @@
             document.querySelector("#notification-rocket-label").insertAdjacentHTML('afterend', '<span id="notification-rocket-timer" class="font-small color-white"></span>');
             document.querySelector("#notification-mega_rocket-label").insertAdjacentHTML('afterend', '<span id="notification-mega_rocket-timer" class="font-small color-white"></span>');
 
-            const fishingNetItembox = document.querySelector('itembox[data-item="fishing_net"]');
-            if (fishingNetItembox) {
-                const heatFishingTab = document.createElement('itembox');
-                heatFishingTab.id = 'heat-fishing-tab';
-                heatFishingTab.dataset.item = 'heat';
-                heatFishingTab.classList.add('shadow', 'hover');
-                heatFishingTab.setAttribute('data-bs-toggle', 'tooltip');
-
-                heatFishingTab.innerHTML = `
-        <div class="center mt-1">
-            <img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/heat.png" width="50px" height="50px">
-        </div>
-        <div class="center mt-2">
-            <item-display data-format="number" data-key="heat"></item-display>
-        </div>
-    `;
-
-                fishingNetItembox.before(heatFishingTab);
-            }
+            heatBoxFishingPanel();
 
             // clear chat button
             var chatAutoScrollButton = document.getElementById("chat-auto-scroll-button");
@@ -2680,7 +2655,7 @@
             }
 
             if (Globals.currentPanel === "panel-fishing") {
-                this.calcFishEnergy();
+                calcFishEnergy();
             }
         }
 
@@ -3081,7 +3056,7 @@
 
                     if(key.includes("raw_") || key.includes("cooked_")) {
                         if(Globals.currentPanel == "panel-fishing") {
-                            this.calcFishEnergy();
+                            calcFishEnergy();
                         }
                     }
 
