@@ -241,6 +241,4 @@
             calcFishEnergy();
             document.querySelector("#fishing-calculator-div").style.display = "none";
     }
-
-    initFishEnergy();
 });

@@ -8,7 +8,7 @@
 // @match        *://idle-pixel.com/login/play/
 // @grant        none
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
-// @require      https://
+// @require      https://update.greasyfork.org/scripts/482439/IdlePixel%20UIT%20-%20Heat%20and%20Energy%20-%20Fishing.user.js
 // ==/UserScript==
 
 (function() {
@@ -63,124 +63,6 @@
         "fighting_dust_potion": 100000,
         "tree_dust_potion": 100000,
         "infinite_oil_potion": 0
-    }
-
-    const FISH_ENERGY_MAP = {
-        // Normal Raw Fish
-        "shrimp": 25,
-        "anchovy": 100,
-        "sardine": 200,
-        "crab": 500,
-        "piranha": 1000,
-        "salmon": 100,
-        "trout": 300,
-        "pike": 1000,
-        "eel": 3000,
-        "rainbow_fish": 30000,
-        "tuna": 500,
-        "swordfish": 3000,
-        "manta_ray": 9000,
-        "shark": 20000,
-        "whale": 40000,
-
-        // Shiny Raw Fish
-        "shrimp_shiny": 125,
-        "anchovy_shiny": 500,
-        "sardine_shiny": 1000,
-        "crab_shiny": 2500,
-        "piranha_shiny": 5000,
-        "salmon_shiny": 500,
-        "trout_shiny": 1500,
-        "pike_shiny": 5000,
-        "eel_shiny": 15000,
-        "rainbow_fish_shiny": 150000,
-        "tuna_shiny": 2500,
-        "swordfish_shiny": 15000,
-        "manta_ray_shiny": 45000,
-        "shark_shiny": 100000,
-        "whale_shiny": 200000,
-
-        // Mega Shiny Raw Fish
-        "shrimp_mega_shiny": 625,
-        "anchovy_mega_shiny": 2500,
-        "sardine_mega_shiny": 5000,
-        "crab_mega_shiny": 12500,
-        "piranha_mega_shiny": 25000,
-        "salmon_mega_shiny": 2500,
-        "trout_mega_shiny": 7500,
-        "pike_mega_shiny": 25000,
-        "eel_mega_shiny": 75000,
-        "rainbow_fish_mega_shiny": 750000,
-        "tuna_mega_shiny": 12500,
-        "swordfish_mega_shiny": 75000,
-        "manta_ray_mega_shiny": 225000,
-        "shark_mega_shiny": 500000,
-        "whale_mega_shiny": 1000000,
-
-        // Misc Fish
-        "small_stardust_fish": 1000,
-        "medium_stardust_fish": 2500,
-        "large_stardust_fish": 5000,
-        "angler_fish": 100000
-    }
-
-    const FISH_HEAT_MAP = {
-        // Normal Raw Fish
-        "shrimp": 10,
-        "anchovy": 20,
-        "sardine": 40,
-        "crab": 75,
-        "piranha": 120,
-        "salmon": 20,
-        "trout": 40,
-        "pike": 110,
-        "eel": 280,
-        "rainbow_fish": 840,
-        "tuna": 75,
-        "swordfish": 220,
-        "manta_ray": 1200,
-        "shark": 3000,
-        "whale": 5000,
-
-        //Shiny Raw Fish
-        "shrimp_shiny": 10,
-        "anchovy_shiny": 20,
-        "sardine_shiny": 40,
-        "crab_shiny": 75,
-        "piranha_shiny": 120,
-        "salmon_shiny": 20,
-        "trout_shiny": 40,
-        "pike_shiny": 110,
-        "eel_shiny": 280,
-        "rainbow_fish_shiny": 840,
-        "tuna_shiny": 75,
-        "swordfish_shiny": 220,
-        "manta_ray_shiny": 1200,
-        "shark_shiny": 3000,
-        "whale_shiny": 5000,
-
-        //Mega Shiny Raw Fish
-        "shrimp_mega_shiny": 10,
-        "anchovy_mega_shiny": 20,
-        "sardine_mega_shiny": 40,
-        "crab_mega_shiny": 75,
-        "piranha_mega_shiny": 120,
-        "salmon_mega_shiny": 20,
-        "trout_mega_shiny": 40,
-        "pike_mega_shiny": 110,
-        "eel_mega_shiny": 280,
-        "rainbow_fish_mega_shiny": 840,
-        "tuna_mega_shiny": 75,
-        "swordfish_mega_shiny": 220,
-        "manta_ray_mega_shiny": 1200,
-        "shark_mega_shiny": 3000,
-        "whale_mega_shiny": 5000,
-
-        // Misc Fish
-        "small_stardust_fish": 300,
-        "medium_stardust_fish": 600,
-        "large_stardust_fish": 2000,
-        "angler_fish": 10000
     }
 
     let onLoginLoaded = false;
