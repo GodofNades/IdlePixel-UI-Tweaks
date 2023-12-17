@@ -370,13 +370,13 @@
                     },
                     {
                         id: "moveSDWatch",
-                        label: "Move Stardust Watch notifications to left side pannel",
+                        label: "Move Stardust Watch notifications to left side panel",
                         type: "boolean",
                         default: true
                     },
                     {
                         id: "showHeat",
-                        label: "Show heat on left side pannel",
+                        label: "Show heat on left side panel",
                         type: "boolean",
                         default: true
                     },
@@ -732,7 +732,8 @@
                     }
                 ]
             });
-        }
+        },
+    
 
         condensedUI() {
             let leftbar = document.getElementById('menu-bar-buttons')
@@ -808,7 +809,7 @@
                 document.getElementById("market-sidecar").parentNode.parentNode.style = "padding-left: 20px";
             }, 1000);
             condensedLoaded = true;
-        }
+        },
 
         defaultUI() {
             var styleElement = document.getElementById('condensed-ui-tweaks');
@@ -816,7 +817,7 @@
             if (styleElement) {
                 styleElement.parentNode.removeChild(styleElement);
             }
-        }
+        },
 
         updateCrippledToeTimer() {
             var now = new Date(); // Create a new date object with the current date and time
@@ -845,7 +846,7 @@
             if (criptoeMarketCell) {
                 criptoeMarketCell.innerHTML = `CRIPTOE MARKET <span style="color:cyan;">(${hours + ':' + minutes + ':' + seconds})<span>`
             }
-        }
+        },
 
         hideOrbsAndRing() {
             if (Globals.currentPanel === 'panel-invention') {
@@ -896,7 +897,7 @@
                     }
                 }
             }
-        }
+        },
 
 
         addTableCraftLabels() {
@@ -926,7 +927,7 @@
                     output.textContent = output.textContent + " (" + output.getAttribute("data-materials-item").replaceAll("_", " ") + ")";
                 });
             });
-        }
+        },
 
         updateTableCraftLabels() {
             const brewingTable = document.querySelector("#brewing-table");
@@ -945,7 +946,7 @@
                     }
                 });
             }
-        }
+        },
 
         miningMachTimer() {
             const drillNotifications = this.getConfig("hideDrillNotifications");
@@ -984,7 +985,7 @@
                     document.getElementById("notification-massive_excavator").style.display = "inline-block";
                 }
             }
-        }
+        },
 
         oilTimerNotification() {
             const notifDiv = document.createElement('div');
@@ -1012,7 +1013,7 @@
                 notificationFurnaceAvail.parentNode.insertBefore(notifDiv, notificationFurnaceAvail);
                 notifDiv.style.display = 'none';
             }
-        }
+        },
 
         oilGain() {
             const notificationFurnaceAvail = document.getElementById('notification-furnace_avail');
@@ -1044,7 +1045,7 @@
                     notificationOilGain.style.display = 'none';
                 }
             }
-        }
+        },
 
         loot_pot_avail() {
             const notifDiv = document.createElement('div');
@@ -1065,7 +1066,7 @@
 
             notifDiv.append(notifIcon, notifDivLabel)
             document.querySelector('#notifications-area').append(notifDiv)
-        }
+        },
 
         extendedLevelsUpdate() {
             let overallLevel = 0;
@@ -1126,7 +1127,7 @@
 
             // Hide original level elements
             this.hideOriginalLevels();
-        }
+        },
 
         calculateExtendedLevel(xp) {
             let extendedLevel = 0;
@@ -1137,14 +1138,14 @@
                 return 1;
             }
             return extendedLevel - 1;
-        }
+        },
 
         updateExtendedLevel(skill, extendedLevel) {
             const skillElement = document.querySelector(`#overallLevelExtended-${skill}`);
             const colorStyle = extendedLevel >= 100 ? "color:cyan" : "";
             skillElement.textContent = `(LEVEL ${Math.max(extendedLevel, 1)})`;
             skillElement.setAttribute("style", colorStyle);
-        }
+        },
 
         updateOverallLevel(overallLevel) {
             const totalElement = document.querySelector("#overallLevelExtended-total");
@@ -1160,7 +1161,7 @@
                 totalElement.textContent = "";
                 totalElement.style.display = "none";
             }
-        }
+        },
 
         hideOriginalLevels() {
             const skills = [
@@ -1174,7 +1175,7 @@
                     skillElement.style.display = "none";
                 }
             });
-        }
+        },
 
         fightPointsFull() {
             const max = IdlePixelPlus.getVarOrDefault("max_fight_points", 0, "int");
@@ -1200,7 +1201,7 @@
                     fightPointsFullTimerCombat.textContent = remaining_time;
                 }
             }
-        }
+        },
 
         //////////////////////////////// updateColors Start ////////////////////////////////
         updateColors(filter) {
@@ -1249,7 +1250,7 @@
                     element.parentElement.style.color = serverMessageTextOverrideColor;
                 }
             }
-        }
+        },
 
         //////////////////////////////// updateColors end ////////////////////////////////
 
@@ -1606,7 +1607,7 @@
                     this.defaultUI();
                 }
             }
-        }
+        },
         //////////////////////////////// onConfigsChanged End ////////////////////////////////
 
 
@@ -2571,7 +2572,7 @@
             } else {
                 this.defaultUI();
             }
-        }
+        },
         //////////////////////////////// onLogin End ////////////////////////////////
 
 
@@ -2582,7 +2583,7 @@
             while (chatArea.firstChild) {
                 chatArea.removeChild(chatArea.firstChild);
             }
-        }
+        },
 
         limitChat() {
             const chatArea = document.getElementById('chat-area');
@@ -2620,7 +2621,7 @@
                     }
                 }
             }
-        }
+        },
 
 
         onPanelChanged(panelBefore, panelAfter) {
@@ -2657,7 +2658,7 @@
             if (Globals.currentPanel === "panel-fishing") {
                 calcFishEnergy();
             }
-        }
+        },
 
 
         //////////////////////////////// onVariableSet Start ////////////////////////////////
@@ -3178,7 +3179,7 @@
                 }
 
             }
-        }
+        },
         //////////////////////////////// onVariableSet end ////////////////////////////////
 
         rocketInfoUpdate(variable) {
@@ -3195,17 +3196,17 @@
                 var rocketDistSunSymbol = document.getElementById("menu-bar-rocket_sun").querySelector(".rocket-dist_sun-symbol");
                 rocketDistSunSymbol.textContent = goodSun >= distanceSun ? "🟢" : "🔴";
             }
-        }
+        },
 
         onChat(data) {
             this.updateColors(CHAT_UPDATE_FILTER);
             this.limitChat();
-        }
+        },
 
         onCombatEnd() {
             this.updateColors(PANEL_UPDATE_FILTER);
         }
-    }
+    },
 
 
     const elementsWithWidth = document.querySelectorAll('[width]');
