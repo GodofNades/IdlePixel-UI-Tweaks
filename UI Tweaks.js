@@ -213,7 +213,7 @@
 
     let condensedLoaded = false;
 
-    class UITweaksPlugin extends IdlePixelPlusPlugin {
+    class UITweaksPlugin extends IdlePixelPlusPlugin,  {
         constructor() {
             super("ui-tweaks", {
                 about: {
@@ -2413,7 +2413,7 @@
             document.querySelector("#notification-rocket-label").insertAdjacentHTML('afterend', '<span id="notification-rocket-timer" class="font-small color-white"></span>');
             document.querySelector("#notification-mega_rocket-label").insertAdjacentHTML('afterend', '<span id="notification-mega_rocket-timer" class="font-small color-white"></span>');
 
-            heatBoxFishingPanel();
+            window.heatBoxFishingPanel();
 
             // clear chat button
             var chatAutoScrollButton = document.getElementById("chat-auto-scroll-button");

@@ -280,4 +280,5 @@
       fishingNetItembox.before(heatFishingTab);
     }
   }
+  internal.init.call(window.IdlePixelPlus);
 });
