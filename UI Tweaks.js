@@ -2413,7 +2413,7 @@
             document.querySelector("#notification-rocket-label").insertAdjacentHTML('afterend', '<span id="notification-rocket-timer" class="font-small color-white"></span>');
             document.querySelector("#notification-mega_rocket-label").insertAdjacentHTML('afterend', '<span id="notification-mega_rocket-timer" class="font-small color-white"></span>');
 
-            heatBoxFishingPanel();
+            //heatBoxFishingPanel();
 
             // clear chat button
             var chatAutoScrollButton = document.getElementById("chat-auto-scroll-button");
