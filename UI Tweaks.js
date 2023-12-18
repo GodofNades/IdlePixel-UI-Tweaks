@@ -1,3 +1,17 @@
+// ==UserScript==
+// @name         IdlePixel UI Tweaks - Overhaul
+// @namespace    godofnades.idlepixel
+// @version      0.1
+// @description  Overhaul of the original Anwinity version of UI Tweaks. Adds some options to change details about the IdlePixel user interface.
+// @author       Original Author: Anwinity || Modded By: GodofNades
+// @license      MIT
+// @match        *://idle-pixel.com/login/play/
+// @grant        none
+// @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
+// @require      https://update.greasyfork.org/scripts/482439/IdlePixel%20UIT%20-%20Heat%20and%20Energy%20-%20Fishing.user.js
+// ==/UserScript==
+
+
 (function() {
     'use strict';
 
