@@ -813,7 +813,7 @@
     
 
         condensedUI() {
-            let leftbar = document.getElementById('menu-bar-buttons')
+            let leftBar = document.getElementById('menu-bar-buttons');
 
             let styleElement = document.getElementById('condensed-ui-tweaks');
 
@@ -835,7 +835,7 @@
                 cookingSpan.className = "font-medium color-white";
             }
 
-            leftbar.querySelectorAll('img').forEach(function(img) {
+            leftBar.querySelectorAll('img').forEach(function(img) {
                 img.className = "w20";
             });
             if(!condensedLoaded) {
@@ -974,7 +974,7 @@
                     }
                 }
             }
-        },
+        }
 
 
         addTableCraftLabels() {
@@ -2675,7 +2675,7 @@
                     }
                 }
             }
-        },
+        }
 
 
         onPanelChanged(panelBefore, panelAfter) {
@@ -2712,7 +2712,7 @@
             if (Globals.currentPanel === "panel-fishing") {
                 calcFishEnergy();
             }
-        },
+        }
 
 
         //////////////////////////////// onVariableSet Start ////////////////////////////////
