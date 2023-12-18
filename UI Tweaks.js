@@ -2251,6 +2251,8 @@
 
 		//////////////////////////////// onLogin Start ////////////////////////////////
 		onLogin() {
+            initFishEnergy(true);
+            heatBoxFishingPanel(true);
 			function addLoadingSpanAfterElement(selector, id) {
 				const element = document.querySelector(selector);
 				const loadingSpan = document.createElement("span");
@@ -3314,7 +3316,7 @@
 					'<span id="notification-mega_rocket-timer" class="font-small color-white"></span>'
 				);
 
-			fishingPanel.heatBoxFishingPanel();
+			heatBoxFishingPanel();
 
 			// clear chat button
 			var chatAutoScrollButton = document.getElementById(
@@ -4180,6 +4182,8 @@
 							);
 						}
 					}
+                    
+                    calcFishEnergy(true);
 
 					////////// SD Watch Notification
 					const sdWatchCrafted = IdlePixelPlus.getVarOrDefault(

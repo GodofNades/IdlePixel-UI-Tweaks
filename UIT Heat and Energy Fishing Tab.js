@@ -130,145 +130,145 @@
 		angler_fish: 10000,
 	};
 
-	function calcFishEnergy() {
-			const fishRawEnergy = Object.keys(FISH_ENERGY_MAP);
-			const fishHeat = Object.keys(FISH_HEAT_MAP);
-			const fishCookedEnergy = Object.keys(FISH_ENERGY_MAP);
-			let totalRawEnergy = 0;
-			let totalHeat = 0;
-			let totalCookedEnergy = 0;
-			let oilGainTimer;
-			const collectorModeFish = this.getConfig("minusOneHeatInFishingTab");
+	function calcFishEnergy(toggle) {
+		const fishRawEnergy = Object.keys(FISH_ENERGY_MAP);
+		const fishHeat = Object.keys(FISH_HEAT_MAP);
+		const fishCookedEnergy = Object.keys(FISH_ENERGY_MAP);
+		let totalRawEnergy = 0;
+		let totalHeat = 0;
+		let totalCookedEnergy = 0;
+		let oilGainTimer;
+		const collectorModeFish = toggle;
 
-			fishRawEnergy.forEach((fish) => {
-				let currentRawFish = Items.getItem("raw_" + fish);
-				let currentCookedFish = Items.getItem("cooked_" + fish);
+		fishRawEnergy.forEach((fish) => {
+			let currentRawFish = Items.getItem("raw_" + fish);
+			let currentCookedFish = Items.getItem("cooked_" + fish);
 
-				if (currentRawFish > 0 && collectorModeFish) {
-					currentRawFish--;
-				}
-				if (currentCookedFish > 0 && collectorModeFish) {
-					currentCookedFish--;
-				}
-				const currentRawEnergy = currentRawFish * FISH_ENERGY_MAP[fish];
-				const currentHeat = currentRawFish * FISH_HEAT_MAP[fish];
-				const currentCookedEnergy = currentCookedFish * FISH_ENERGY_MAP[fish];
-				totalRawEnergy += currentRawEnergy;
-				totalHeat += currentHeat;
-				totalCookedEnergy += currentCookedEnergy;
-			});
-
-			document.getElementById("raw-fish-energy-number").textContent =
-				totalRawEnergy.toLocaleString();
-			document.getElementById("fish-heat-required-number").textContent =
-				totalHeat.toLocaleString();
-			document.getElementById("cooked-fish-energy-number").textContent =
-				totalCookedEnergy.toLocaleString();
-		}
-
-		function initFishEnergy() {
-			const panelFishing = document.querySelector("#panel-fishing");
-			const progressBar = panelFishing.querySelector(".progress-bar");
-
-			const hrElement = document.createElement("hr");
-			progressBar.insertAdjacentElement("afterend", hrElement);
-
-			const containerDiv = document.createElement("div");
-			containerDiv.style.display = "flex";
-			containerDiv.style.flexDirection = "column";
-
-			const h5Element = document.createElement("h5");
-			h5Element.textContent = "Fish Energy";
-
-			const buttonElement = document.createElement("button");
-			buttonElement.textContent = "Show";
-			buttonElement.id = "fish_energy-visibility-button";
-			buttonElement.addEventListener("click", show_hide);
-			h5Element.appendChild(buttonElement);
-
-			const innerDiv = document.createElement("div");
-			innerDiv.id = "fishing-calculator-div";
-
-			const rawFishEnergySpan = document.createElement("span");
-			rawFishEnergySpan.textContent = "Total Raw Fish Energy: ";
-
-			const rawFishEnergyNumberSpan = document.createElement("span");
-			rawFishEnergyNumberSpan.textContent = "0";
-			rawFishEnergyNumberSpan.id = "raw-fish-energy-number";
-			rawFishEnergySpan.appendChild(rawFishEnergyNumberSpan);
-
-			const br1Element = document.createElement("br");
-
-			const heatToCookAllSpan = document.createElement("span");
-			heatToCookAllSpan.textContent = "Heat To Cook All: ";
-
-			const fishHeatRequiredNumberSpan = document.createElement("span");
-			fishHeatRequiredNumberSpan.textContent = "0";
-			fishHeatRequiredNumberSpan.id = "fish-heat-required-number";
-			heatToCookAllSpan.appendChild(fishHeatRequiredNumberSpan);
-
-			const br2Element = document.createElement("br");
-
-			const totalCookedFishEnergySpan = document.createElement("span");
-			totalCookedFishEnergySpan.textContent = "Total Cooked Fish Energy: ";
-
-			const cookedFishEnergyNumberSpan = document.createElement("span");
-			cookedFishEnergyNumberSpan.textContent = "0";
-			cookedFishEnergyNumberSpan.id = "cooked-fish-energy-number";
-			totalCookedFishEnergySpan.appendChild(cookedFishEnergyNumberSpan);
-
-			innerDiv.appendChild(rawFishEnergySpan);
-			innerDiv.appendChild(br1Element);
-			innerDiv.appendChild(heatToCookAllSpan);
-			innerDiv.appendChild(br2Element);
-			innerDiv.appendChild(totalCookedFishEnergySpan);
-
-			containerDiv.appendChild(h5Element);
-			containerDiv.appendChild(innerDiv);
-
-			hrElement.insertAdjacentElement("afterend", containerDiv);
-
-			function show_hide() {
-				const button = document.querySelector("#fish_energy-visibility-button");
-				const div = document.querySelector("#fishing-calculator-div");
-
-				if (button.textContent === "Hide") {
-					div.style.display = "none";
-					button.textContent = "Show";
-				} else {
-					div.style.display = "block";
-					button.textContent = "Hide";
-				}
+			if (currentRawFish > 0 && collectorModeFish) {
+				currentRawFish--;
 			}
-			this.calcFishEnergy();
-			document.querySelector("#fishing-calculator-div").style.display = "none";
-		}
+			if (currentCookedFish > 0 && collectorModeFish) {
+				currentCookedFish--;
+			}
+			const currentRawEnergy = currentRawFish * FISH_ENERGY_MAP[fish];
+			const currentHeat = currentRawFish * FISH_HEAT_MAP[fish];
+			const currentCookedEnergy = currentCookedFish * FISH_ENERGY_MAP[fish];
+			totalRawEnergy += currentRawEnergy;
+			totalHeat += currentHeat;
+			totalCookedEnergy += currentCookedEnergy;
+		});
 
-		function toggleFishingTab(toggle) {
-			const heatInFishingTab = toggle;
-			const heatFishingTab = document.getElementById("heat-fishing-tab");
-			if (heatInFishingTab) {
-				heatFishingTab.style.display = "block";
-				heatFishingTab.setAttribute("data-item", "heat");
+		document.getElementById("raw-fish-energy-number").textContent =
+			totalRawEnergy.toLocaleString();
+		document.getElementById("fish-heat-required-number").textContent =
+			totalHeat.toLocaleString();
+		document.getElementById("cooked-fish-energy-number").textContent =
+			totalCookedEnergy.toLocaleString();
+	}
+
+	function initFishEnergy(toggle) {
+		const panelFishing = document.querySelector("#panel-fishing");
+		const progressBar = panelFishing.querySelector(".progress-bar");
+
+		const hrElement = document.createElement("hr");
+		progressBar.insertAdjacentElement("afterend", hrElement);
+
+		const containerDiv = document.createElement("div");
+		containerDiv.style.display = "flex";
+		containerDiv.style.flexDirection = "column";
+
+		const h5Element = document.createElement("h5");
+		h5Element.textContent = "Fish Energy";
+
+		const buttonElement = document.createElement("button");
+		buttonElement.textContent = "Show";
+		buttonElement.id = "fish_energy-visibility-button";
+		buttonElement.addEventListener("click", show_hide);
+		h5Element.appendChild(buttonElement);
+
+		const innerDiv = document.createElement("div");
+		innerDiv.id = "fishing-calculator-div";
+
+		const rawFishEnergySpan = document.createElement("span");
+		rawFishEnergySpan.textContent = "Total Raw Fish Energy: ";
+
+		const rawFishEnergyNumberSpan = document.createElement("span");
+		rawFishEnergyNumberSpan.textContent = "0";
+		rawFishEnergyNumberSpan.id = "raw-fish-energy-number";
+		rawFishEnergySpan.appendChild(rawFishEnergyNumberSpan);
+
+		const br1Element = document.createElement("br");
+
+		const heatToCookAllSpan = document.createElement("span");
+		heatToCookAllSpan.textContent = "Heat To Cook All: ";
+
+		const fishHeatRequiredNumberSpan = document.createElement("span");
+		fishHeatRequiredNumberSpan.textContent = "0";
+		fishHeatRequiredNumberSpan.id = "fish-heat-required-number";
+		heatToCookAllSpan.appendChild(fishHeatRequiredNumberSpan);
+
+		const br2Element = document.createElement("br");
+
+		const totalCookedFishEnergySpan = document.createElement("span");
+		totalCookedFishEnergySpan.textContent = "Total Cooked Fish Energy: ";
+
+		const cookedFishEnergyNumberSpan = document.createElement("span");
+		cookedFishEnergyNumberSpan.textContent = "0";
+		cookedFishEnergyNumberSpan.id = "cooked-fish-energy-number";
+		totalCookedFishEnergySpan.appendChild(cookedFishEnergyNumberSpan);
+
+		innerDiv.appendChild(rawFishEnergySpan);
+		innerDiv.appendChild(br1Element);
+		innerDiv.appendChild(heatToCookAllSpan);
+		innerDiv.appendChild(br2Element);
+		innerDiv.appendChild(totalCookedFishEnergySpan);
+
+		containerDiv.appendChild(h5Element);
+		containerDiv.appendChild(innerDiv);
+
+		hrElement.insertAdjacentElement("afterend", containerDiv);
+
+		function show_hide() {
+			const button = document.querySelector("#fish_energy-visibility-button");
+			const div = document.querySelector("#fishing-calculator-div");
+
+			if (button.textContent === "Hide") {
+				div.style.display = "none";
+				button.textContent = "Show";
 			} else {
-				heatFishingTab.style.display = "none";
-				heatFishingTab.removeAttribute("data-item");
+				div.style.display = "block";
+				button.textContent = "Hide";
 			}
 		}
+		calcFishEnergy(toggle);
+		document.querySelector("#fishing-calculator-div").style.display = "none";
+	}
 
-		function heatBoxFishingPanel() {
-			console.log("heatBox is firing");
-			const fishingNetItembox = document.querySelector(
-				'itembox[data-item="fishing_net"]'
-			);
-			if (fishingNetItembox) {
-				const heatFishingTab = document.createElement("itembox");
-				heatFishingTab.id = "heat-fishing-tab";
-				heatFishingTab.dataset.item = "heat";
-				heatFishingTab.classList.add("shadow", "hover");
-				heatFishingTab.setAttribute("data-bs-toggle", "tooltip");
+	function toggleFishingTab(toggle) {
+		const heatInFishingTab = toggle;
+		const heatFishingTab = document.getElementById("heat-fishing-tab");
+		if (heatInFishingTab) {
+			heatFishingTab.style.display = "block";
+			heatFishingTab.setAttribute("data-item", "heat");
+		} else {
+			heatFishingTab.style.display = "none";
+			heatFishingTab.removeAttribute("data-item");
+		}
+	}
 
-				heatFishingTab.innerHTML = `
+	function heatBoxFishingPanel() {
+		console.log("heatBox is firing");
+		const fishingNetItembox = document.querySelector(
+			'itembox[data-item="fishing_net"]'
+		);
+		if (fishingNetItembox) {
+			const heatFishingTab = document.createElement("itembox");
+			heatFishingTab.id = "heat-fishing-tab";
+			heatFishingTab.dataset.item = "heat";
+			heatFishingTab.classList.add("shadow", "hover");
+			heatFishingTab.setAttribute("data-bs-toggle", "tooltip");
+
+			heatFishingTab.innerHTML = `
           <div class="center mt-1">
             <img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/heat.png" width="50px" height="50px">
           </div>
@@ -277,8 +277,12 @@
           </div>
         `;
 
-				fishingNetItembox.before(heatFishingTab);
-			}
+			fishingNetItembox.before(heatFishingTab);
 		}
 	}
-)();
+
+	window.calcFishEnergy = calcFishEnergy;
+	window.initFishEnergy = initFishEnergy;
+	window.toggleFishingTab = toggleFishingTab;
+	window.heatBoxFishingPanel = heatBoxFishingPanel;
+})();
