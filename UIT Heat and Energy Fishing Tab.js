@@ -133,14 +133,7 @@
 
 	class fishingPanel {
 		constructor() {
-			super("fishingPanel", {
-				about: {
-					name: GM_info.script.name + " (ver: " + GM_info.script.version + ")",
-					version: GM_info.script.version,
-					author: GM_info.script.author,
-					description: GM_info.script.description,
-				},
-			});
+      console.log("Attempted to load fishingPanel at least...")
 		}
 
 		calcFishEnergy() {
