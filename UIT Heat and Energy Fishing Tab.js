@@ -12,6 +12,8 @@
 (function () {
 	"use strict";
 
+  console.log("FishingPanel should be loaded")
+
 	const FISH_ENERGY_MAP = {
 		// Normal Raw Fish
 		shrimp: 25,
