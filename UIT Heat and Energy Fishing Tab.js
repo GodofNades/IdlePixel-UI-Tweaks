@@ -130,12 +130,7 @@
 		angler_fish: 10000,
 	};
 
-	class fishingPanel {
-		constructor() {
-      // Nothing to load on the constructor
-		}
-
-		calcFishEnergy() {
+	function calcFishEnergy() {
 			const fishRawEnergy = Object.keys(FISH_ENERGY_MAP);
 			const fishHeat = Object.keys(FISH_HEAT_MAP);
 			const fishCookedEnergy = Object.keys(FISH_ENERGY_MAP);
@@ -171,7 +166,7 @@
 				totalCookedEnergy.toLocaleString();
 		}
 
-		initFishEnergy() {
+		function initFishEnergy() {
 			const panelFishing = document.querySelector("#panel-fishing");
 			const progressBar = panelFishing.querySelector(".progress-bar");
 
@@ -249,7 +244,7 @@
 			document.querySelector("#fishing-calculator-div").style.display = "none";
 		}
 
-		toggleFishingTab(toggle) {
+		function toggleFishingTab(toggle) {
 			const heatInFishingTab = toggle;
 			const heatFishingTab = document.getElementById("heat-fishing-tab");
 			if (heatInFishingTab) {
@@ -261,7 +256,7 @@
 			}
 		}
 
-		heatBoxFishingPanel() {
+		function heatBoxFishingPanel() {
 			console.log("heatBox is firing");
 			const fishingNetItembox = document.querySelector(
 				'itembox[data-item="fishing_net"]'
@@ -286,10 +281,4 @@
 			}
 		}
 	}
-
-  window.fishingPanel = fishingPanel;
-  console.log('fishing_panel_class assigned to window', window.fishing_panel_class);
-  const classLoadedEvent = new Event('FishingPanelClassLoaded');
-  window.dispatchEvent(classLoadedEvent);
-  console.log(classLoadedEvent)
-})();
+)();
