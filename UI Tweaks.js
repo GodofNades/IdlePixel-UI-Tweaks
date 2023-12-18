@@ -221,37 +221,31 @@
                     version: GM_info.script.version,
                     author: GM_info.script.author,
                     description: GM_info.script.description
-                },
+                }
                 config: [
                     {
                         label: "------------------------------------------------<br/>Chat/Images<br/>------------------------------------------------",
                         type:"label"
-                    },
+                    }
                     {
                         id: "font",
                         label: "Primary Font",
                         type: "select",
                         options: FONTS,
                         default: FONT_DEFAULT
-                    },
+                    }
                     {
                         id: "sideChat",
                         label: "Side Chat",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "condensedUI",
                         label: "Enable Condensed UI and Left Bar Tweaks",
                         type: "boolean",
                         default: true
-                    },
-                    /*{
-                        id: "pinChat",
-                        label: "Pin Chat on Side (Only works if Side Chat is active. Thanks BanBan)",
-                        type: "boolean",
-                        default: false
-                    },*/
+                    }
                     {
                         id: "chatLimit",
                         label: "Chat Message Limit (&leq; 0 means no limit)",
@@ -259,471 +253,471 @@
                         min: -1,
                         max: 5000,
                         default: 0
-                    },
+                    }
                     {
                         id: "imageTitles",
                         label: "Image Mouseover",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "tableLabels",
                         label: "Turn on item component labels for crafting/brewing/invention<br/>May require restart to disable",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "lowerToast",
                         label: "Lower Toast (top-right popup)",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         label: "------------------------------------------------<br/>Combat<br/>------------------------------------------------",
                         type:"label"
-                    },
+                    }
                     {
                         id: "fightPointsStats",
                         label: "Fight Points in Left Menu",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id:"combatInfoSideSelect",
                         label: "Choose which side you want to see the<br/>Fight Points / Rare Pot Duration / Loot Pot info on.<br/>Left (Player info) || Right (Enemy Info)",
                         type: "select",
                         default: "left",
                         options: [
-                            {value:"left", label:"Left - Player Side"},
+                            {value:"left", label:"Left - Player Side"}
                             {value:"right", label:"Right - Enemy Side"}
                         ]
-                    },
+                    }
                     {
                         label: "------------------------------------------------<br/>Condensed Information<br/>------------------------------------------------",
                         type:"label"
-                    },
+                    }
                     {
                         id: "condenseWoodcuttingPatches",
                         label: "Condensed Woodcutting Patches",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "condenseFarmingPatches",
                         label: "Condensed Farming Patches",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "condenseGatheringBoxes",
                         label: "Condensed Gathering Boxes",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         label: "------------------------------------------------<br/>Fishing<br/>------------------------------------------------",
                         type:"label"
-                    },
+                    }
                     {
                         id: "heatInFishingTab",
                         label: "Heat In Fishing Tab",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "minusOneHeatInFishingTab",
                         label: "Heat In Fishing Tab (Minus 1 for collectors)",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "hideAquarium",
                         label: "Hide the notification for Aquarium needing to be fed",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "hideBoat",
                         label: "Hide the notification for Boats (Timer and Collect)",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         label: "------------------------------------------------<br/>Invention<br/>------------------------------------------------",
                         type:"label"
-                    },
+                    }
                     {
                         id: "hideOrbRing",
                         label: "Hide crafted glass orbs and master ring in invention",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         label: "------------------------------------------------<br/>Misc<br/>------------------------------------------------",
                         type:"label"
-                    },
+                    }
                     {
                         id: "robotReady",
                         label: "Show Robot Ready",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "moveSDWatch",
                         label: "Move Stardust Watch notifications to left side panel",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "showHeat",
                         label: "Show heat on left side panel",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "showPurpleKeyNotification",
                         label: "Show quick button notification for purple key",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "hideCrystalBall",
                         label: "Hide the notification for crystal ball",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "merchantReady",
                         label: "Show Merchant Ready notification",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "mixerTimer",
                         label: "Show Brewing Mixer timer and charges available",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         label: "------------------------------------------------<br/>Oil<br/>------------------------------------------------",
                         type:"label"
-                    },
+                    }
                     {
                         id: "oilSummaryMining",
                         label: "Oil Summary, Mining Panel",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "oilSummaryCrafting",
                         label: "Oil Summary, Crafting Panel",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "oilFullNotification",
                         label: "Oil Full",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "oilGainNotification",
                         label: "Oil Gain Timer",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         label: "------------------------------------------------<br/>Rocket<br/>------------------------------------------------",
                         type:"label"
-                    },
+                    }
                     {
                         id: "rocketETATimer",
                         label: "Rocket Notification ETA",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "leftSideRocketInfoSection",
                         label: "Enable moving of rocket information to left side (hides notifications)",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "leftSideRocketInfo",
                         label: "Enable Rocket Distance/Travel Time on left side (hides rocket notification)",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "leftSideRocketFuel",
                         label: "Enable Rocket Fuel Info on left side.",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "leftSideRocketPot",
                         label: "Enable Rocket Pot Info on left side. (hides rocket pot notification)",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "hideRocketKM",
                         label: "Rocket Notification Hide KM",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "goodMoon",
                         label: "Good moon distance<br/>(Range: 250,000 - 450,000)<br/>Type entire number without ','",
                         type: "int",
                         default: 300000
-                    },
+                    }
                     {
                         id: "goodSun",
                         label: "Good sun distance<br/>(Range: 100,000,000 - 200,000,000)<br/>Type entire number without ','",
                         type: "int",
                         default: 130000000
-                    },
+                    }
                     {
                         label: "------------------------------------------------<br/>Smelting/Mining<br/>------------------------------------------------",
                         type:"label"
-                    },
+                    }
                     {
                         id: "miningMachineArrows",
                         label: "Mining Machine Arrows",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "smeltingNotificationTimer",
                         label: "Smelting Notification Timer",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "furnaceEmptyNotification",
                         label: "Furnace Empty Notification",
                         type: "boolean",
                         default: true
-                    },
+                    }
                     {
                         id: "hideDrillNotifications",
                         label: "Hide Active Mining Machine Notifications on top bar",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         label: "------------------------------------------------<br/>BG Color Overrides<br/>------------------------------------------------",
                         type:"label"
-                    },
+                    }
                     {
                         id: "disableBGColorOverrides",
                         label: "Disable background color overrides (Check = disabled)<br/>Disable the BG Color Overrides if you are wanting to use<br/>the built in settings for the game for your colors<br/>REFRESH REQUIRED WHEN DISABLING THE BG COLORS<br/>",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "color-enabled-body",
                         label: "Main Background: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "color-body",
                         label: "Main Background: Color",
                         type: "color",
                         default: BG_COLORS["body"]
-                    },
+                    }
                     {
                         id: "color-enabled-panels",
                         label: "Panel Background: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "color-panels",
                         label: "Panel Background: Color",
                         type: "color",
                         default: BG_COLORS["#panels"]
-                    },
+                    }
                     {
                         id: "color-enabled-top-bar",
                         label: "Top Background: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "color-top-bar",
                         label: "Top Background: Color",
                         type: "color",
                         default: BG_COLORS[".top-bar"]
-                    },
+                    }
                     {
                         id: "color-enabled-menu-bar",
                         label: "Menu Background: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "color-menu-bar",
                         label: "Menu Background: Color",
                         type: "color",
                         default: BG_COLORS["#menu-bar"]
-                    },
+                    }
                     {
                         id: "color-enabled-chat-area",
                         label: "Inner Chat BG: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "color-chat-area",
                         label: "Inner Chat BG: Color",
                         type: "color",
                         default: BG_COLORS["#chat-area"]
-                    },
+                    }
                     {
                         id: "color-enabled-game-chat",
                         label: "Outer Chat BG: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "color-game-chat",
                         label: "Outer Chat BG: Color",
                         type: "color",
                         default: BG_COLORS["#game-chat"]
-                    },
+                    }
                     {
                         id: "color-enabled-chat-area-server_message",
                         label: "Server Message Tag: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "color-chat-area-server_message",
                         label: "Server Message Tag: Color",
                         type: "color",
                         default: BG_COLORS["#chat-area .server_message"]
-                    },
+                    }
                     {
                         label: "Text Color Overrides",
                         type: "label"
-                    },
+                    }
                     {
                         id: "font-color-enabled-chat-area",
                         label: "Chat Text: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "font-color-chat-area",
                         label: "Chat Text: Color",
                         type: "color",
                         default: FONT_COLORS["#chat-area"]
-                    },
+                    }
                     {
                         id: "font-color-enabled-chat-area-color-green",
                         label: "Chat Timestamp: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "font-color-chat-area-color-green",
                         label: "Chat Timestamp: Color",
                         type: "color",
                         default: FONT_COLORS["#chat-area .color-green"]
-                    },
+                    }
                     {
                         id: "font-color-enabled-chat-area-chat-username",
                         label: "Chat Username: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "font-color-chat-area-chat-username",
                         label: "Chat Username: Color",
                         type: "color",
                         default: FONT_COLORS["#chat-area .chat-username"]
-                    },
+                    }
                     {
                         id: "font-color-enabled-chat-area-color-grey",
                         label: "Chat Level: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "font-color-chat-area-color-grey",
                         label: "Chat Level: Color",
                         type: "color",
                         default: FONT_COLORS["#chat-area .color-grey"]
-                    },
+                    }
                     {
                         id: "font-color-enabled-chat-area-server_message",
                         label: "Server Message Tag: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "font-color-chat-area-server_message",
                         label: "Server Message Tag: Color",
                         type: "color",
                         default: FONT_COLORS["#chat-area .server_message"]
-                    },
+                    }
                     {
                         id: "serverMessageTextOverrideEnabled",
                         label: "Server Message Text: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "serverMessageTextOverrideColor",
                         label: "Server Message Text: Color",
                         type: "color",
                         default: "blue"
-                    },
+                    }
                     {
                         id: "chatBorderOverrideColorEnabled",
                         label: "Chat Border Color: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "chatBorderOverrideColor",
                         label: "Chat Border Color: Color",
                         type: "color",
                         default: "blue"
-                    },
+                    }
                     {
                         id: "font-color-enabled-panels",
                         label: "Panels 1: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "font-color-panels",
                         label: "Panels 1: Color",
                         type: "color",
                         default: FONT_COLORS["#chat-area"]
-                    },
+                    }
                     {
                         id: "font-color-enabled-panels-color-grey",
                         label: "Panels 2: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "font-color-panels-color-grey",
                         label: "Panels 2: Color",
                         type: "color",
                         default: FONT_COLORS["#chat-area .color-grey"]
-                    },
+                    }
                     {
                         id: "font-color-enabled-panels-font-large",
                         label: "Skill Level Color: Enabled",
                         type: "boolean",
                         default: false
-                    },
+                    }
                     {
                         id: "font-color-panels-font-large",
                         label: "Skill Level: Color",
@@ -732,7 +726,7 @@
                     }
                 ]
             });
-        },
+        }
     
 
         condensedUI() {
@@ -1277,17 +1271,6 @@
                     document.getElementById("content").classList.remove("side-chat");
                 }
 
-                /*const pinChat = this.getConfig("pinChat");
-                if (sideChat && pinChat) {
-                    // Pin when both side chat and pin chat options are enabled
-                    document.getElementById("game-chat").style.position = "sticky";
-                    document.getElementById("game-chat").style.top = 0;
-                } else {
-                    // No existing position or top styles for game-chat element so safe to remove them if we've already added them
-                    document.getElementById("game-chat").style.position = null;
-                    document.getElementById("game-chat").style.top = null;
-                }*/
-
                 if (this.getConfig("fightPointsStats")) {
                     document.getElementById("menu-bar-fight-points").style.display = "inline-block";
                 }
@@ -1607,7 +1590,7 @@
                     this.defaultUI();
                 }
             }
-        },
+        }
         //////////////////////////////// onConfigsChanged End ////////////////////////////////
 
 
@@ -2196,19 +2179,6 @@
 
             document.getElementById('menu-bar-crystals').insertAdjacentElement("beforebegin", sdWatchElement);
 
-
-            // Left Menu Heat
-            /*const menuBarHeat = document.createElement('span');
-            menuBarHeat.id = 'menu-bar-heat';
-            menuBarHeat.innerHTML = `<img id="sd-heat-img" class="img-20" src="${IMAGE_URL_BASE}/heat.png"><span class="sd-heat-level">0</span>`;
-            menuBarHeat.addEventListener('click', function () {
-                websocket.send(Modals.clicks_oven());
-            });
-
-            // Left Menu Energy
-            menuBarFightPoints.parentNode.insertBefore(menuBarHeat, menuBarFightPoints);
-            menuBarFightPoints.insertAdjacentHTML('beforebegin', '<br/>');
-*/
             const energyItemDisplay = document.querySelector('#menu-bar-hero item-display[data-key="energy"]');
 
             const menuBarFightPointsCombat = document.createElement('span');
@@ -2414,7 +2384,8 @@
             document.querySelector("#notification-rocket-label").insertAdjacentHTML('afterend', '<span id="notification-rocket-timer" class="font-small color-white"></span>');
             document.querySelector("#notification-mega_rocket-label").insertAdjacentHTML('afterend', '<span id="notification-mega_rocket-timer" class="font-small color-white"></span>');
 
-            //heatBoxFishingPanel();
+            const heatBoxFishingPanel = () => {heatBoxFishingPanel();};
+            heatBoxFishingPanel();
 
             // clear chat button
             var chatAutoScrollButton = document.getElementById("chat-auto-scroll-button");
@@ -2572,7 +2543,7 @@
             } else {
                 this.defaultUI();
             }
-        },
+        }
         //////////////////////////////// onLogin End ////////////////////////////////
 
 
@@ -3179,7 +3150,7 @@
                 }
 
             }
-        },
+        }
         //////////////////////////////// onVariableSet end ////////////////////////////////
 
         rocketInfoUpdate(variable) {
@@ -3196,17 +3167,17 @@
                 var rocketDistSunSymbol = document.getElementById("menu-bar-rocket_sun").querySelector(".rocket-dist_sun-symbol");
                 rocketDistSunSymbol.textContent = goodSun >= distanceSun ? "🟢" : "🔴";
             }
-        },
+        }
 
         onChat(data) {
             this.updateColors(CHAT_UPDATE_FILTER);
             this.limitChat();
-        },
+        }
 
         onCombatEnd() {
             this.updateColors(PANEL_UPDATE_FILTER);
         }
-    },
+    }
 
 
     const elementsWithWidth = document.querySelectorAll('[width]');
