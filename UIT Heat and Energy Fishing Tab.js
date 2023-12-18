@@ -286,4 +286,5 @@
 			}
 		}
 	}
+  window.fishing_panel_class = fishing_panel_class;
 });
