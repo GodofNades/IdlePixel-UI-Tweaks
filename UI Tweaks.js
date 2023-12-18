@@ -8,7 +8,7 @@
 // @match        *://idle-pixel.com/login/play/
 // @grant        none
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
-// @require      https://greasyfork.org/scripts/482439/IdlePixel%20UIT%20-%20Heat%20and%20Energy%20-%20Fishing.user.js?anticache=20220905
+// @require      https://update.greasyfork.org/scripts/482439/IdlePixel%20UIT%20-%20Heat%20and%20Energy%20-%20Fishing.user.js?anticache=20220905
 // ==/UserScript==
 
 // Testing updates now....
