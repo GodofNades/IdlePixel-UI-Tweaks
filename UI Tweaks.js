@@ -15,15 +15,16 @@
 
 (function () {
 	"use strict";
+    console.log(`UIT Loaded ${new Date()}`);
 
-	setTimeout(function () {
-		if (typeof window.fishing_panel_class === "function") {
-			const FishingPanelClass = new window.fishing_panel_class();
-			// Rest of your code that uses FishingPanelClass
-		} else {
-			console.error("fishing_panel_class is not defined yet.");
-		}
-	}, 1000);
+    window.addEventListener('FishingPanelClassLoaded', onFishingPanelClassLoaded);
+    function onFishingPanelClassLoaded() {
+        // Now it's safe to use fishing_panel_class
+        const fishingPanelClassInstance = new window.fishing_panel_class();
+        console.log(`FishingPanel Loaded ${new Date()}`);
+        window.removeEventListener('FishingPanelClassLoaded', onFishingPanelClassLoaded);
+        // ... rest of your code that uses fishingPanelClassInstance
+    }
 
 	const LEVELS = (function () {
 		let result = [];

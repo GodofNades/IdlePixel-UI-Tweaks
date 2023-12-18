@@ -289,4 +289,6 @@
 
   internal.init.call(window.fishing_panel_class);
   console.log('fishing_panel_class assigned to window', window.fishing_panel_class);
+  const classLoadedEvent = new Event('FishingPanelClassLoaded');
+  window.dispatchEvent(classLoadedEvent);
 });
