@@ -130,7 +130,7 @@
 		angler_fish: 10000,
 	};
 
-	class fishing_panel_class {
+	class fishingPanel {
 		constructor() {
       // Nothing to load on the constructor
 		}
@@ -287,7 +287,7 @@
 		}
 	}
 
-  internal.init.call(window.fishing_panel_class);
+  window.fishingPanel = fishingPanel;
   console.log('fishing_panel_class assigned to window', window.fishing_panel_class);
   const classLoadedEvent = new Event('FishingPanelClassLoaded');
   window.dispatchEvent(classLoadedEvent);
