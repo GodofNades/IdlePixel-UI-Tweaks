@@ -16,6 +16,13 @@
 (function () {
 	"use strict";
     console.log(`UIT Loaded ${new Date()}`);
+    console.log('unsafeWindow:', unsafeWindow);
+    if (window.self !== window.top) {
+        console.log('This script is running in an iframe!');
+    } else {
+        console.log('This script is running in the top-level window!');
+    }
+
 
     window.addEventListener('FishingPanelClassLoaded', onFishingPanelClassLoaded);
     function onFishingPanelClassLoaded() {
