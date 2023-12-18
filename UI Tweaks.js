@@ -195,6 +195,8 @@
     let purpleKeyTimer;
     let del = false;
 
+    const heatingBoxFishingPanel = () => {heatBoxFishingPanel()};
+
     function onPurpleKey(monster, rarity, timer) {
         if (purpleKeyGo) {
             const timeLeft = format_time(timer);
@@ -2531,7 +2533,7 @@
             document.querySelector("#notification-rocket-label").insertAdjacentHTML('afterend', '<span id="notification-rocket-timer" class="font-small color-white"></span>');
             document.querySelector("#notification-mega_rocket-label").insertAdjacentHTML('afterend', '<span id="notification-mega_rocket-timer" class="font-small color-white"></span>');
 
-            const heatingBoxFishingPanel = () => {heatBoxFishingPanel()};
+            
             heatingBoxFishingPanel();
 
             // clear chat button
