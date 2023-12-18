@@ -16,7 +16,7 @@
 (function() {
     'use strict';
 
-    const fishingPanelClass = new fishingPanel();
+    const fishingPanelClass = new fishing_panel_class();
 
     const LEVELS = function(){
         let result = [];

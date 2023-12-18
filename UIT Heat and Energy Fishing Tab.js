@@ -130,7 +130,7 @@
 		angler_fish: 10000,
 	};
 
-	class fishingPanel {
+	class fishing_panel_class {
 		constructor() {
       console.log("Attempted to load fishingPanel at least...")
 		}
