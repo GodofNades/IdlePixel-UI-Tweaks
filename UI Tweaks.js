@@ -16,7 +16,7 @@
 (function () {
 	"use strict";
     console.log(`UIT Loaded ${new Date()}`);
-    console.log('unsafeWindow:', unsafeWindow)
+    console.log('Script 1 window:', window);
     if (window.self !== window.top) {
         console.log('This script is running in an iframe!');
     } else {
