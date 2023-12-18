@@ -16,7 +16,7 @@
 (function() {
     'use strict';
 
-    const fishingPanel = new fishingPanel();
+    const fishingPanelClass = new fishingPanel();
 
     const LEVELS = function(){
         let result = [];
@@ -2534,7 +2534,7 @@
             document.querySelector("#notification-mega_rocket-label").insertAdjacentHTML('afterend', '<span id="notification-mega_rocket-timer" class="font-small color-white"></span>');
 
             
-            fishingPanel.heatBoxFishingPanel();
+            fishingPanelClass.heatBoxFishingPanel();
 
             // clear chat button
             var chatAutoScrollButton = document.getElementById("chat-auto-scroll-button");
