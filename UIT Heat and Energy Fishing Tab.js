@@ -12,8 +12,6 @@
 (function () {
 	"use strict";
 
-  console.log("FishingPanel should be loaded")
-
 	const FISH_ENERGY_MAP = {
 		// Normal Raw Fish
 		shrimp: 25,
@@ -134,7 +132,7 @@
 
 	class fishing_panel_class {
 		constructor() {
-      console.log("Attempted to load fishingPanel at least...")
+      // Nothing to load on the constructor
 		}
 
 		calcFishEnergy() {
@@ -294,4 +292,4 @@
   const classLoadedEvent = new Event('FishingPanelClassLoaded');
   window.dispatchEvent(classLoadedEvent);
   console.log(classLoadedEvent)
-});
+})();

@@ -15,23 +15,6 @@
 
 (function () {
 	"use strict";
-    console.log(`UIT Loaded ${new Date()}`);
-    console.log('Script 1 window:', window);
-    if (window.self !== window.top) {
-        console.log('This script is running in an iframe!');
-    } else {
-        console.log('This script is running in the top-level window!');
-    }
-
-
-    window.addEventListener('FishingPanelClassLoaded', onFishingPanelClassLoaded);
-    function onFishingPanelClassLoaded() {
-        // Now it's safe to use fishing_panel_class
-        const fishingPanelClassInstance = new window.fishing_panel_class();
-        console.log(`FishingPanel Loaded ${new Date()}`);
-        window.removeEventListener('FishingPanelClassLoaded', onFishingPanelClassLoaded);
-        // ... rest of your code that uses fishingPanelClassInstance
-    }
 
 	const LEVELS = (function () {
 		let result = [];
@@ -3330,7 +3313,7 @@
 					'<span id="notification-mega_rocket-timer" class="font-small color-white"></span>'
 				);
 
-			//fishingPanelClass.heatBoxFishingPanel();
+			fishingPanel.heatBoxFishingPanel();
 
 			// clear chat button
 			var chatAutoScrollButton = document.getElementById(
