@@ -7,7 +7,6 @@
 // @license      MIT
 // @match        *://idle-pixel.com/login/play/
 // @grant        none
-// @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
 // ==/UserScript==
 
 (function () {
