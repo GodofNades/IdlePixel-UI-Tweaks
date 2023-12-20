@@ -3316,8 +3316,6 @@
 					'<span id="notification-mega_rocket-timer" class="font-small color-white"></span>'
 				);
 
-			heatBoxFishingPanel();
-
 			// clear chat button
 			var chatAutoScrollButton = document.getElementById(
 				"chat-auto-scroll-button"
