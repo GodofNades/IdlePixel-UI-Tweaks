@@ -10,19 +10,19 @@
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
 // ==/UserScript==
 
-(function() {
-    'use strict';
+(function () {
+	"use strict";
 
-    class lootLogTweaks extends IdlePixelPlusPlugin {
-        constructor() {
-            super("lootlogtweaks", {
-                about: {
-                    name: GM_info.script.name + " (ver: " + GM_info.script.version + ")",
-                    version: GM_info.script.version,
-                    author: GM_info.script.author,
-                    description: GM_info.script.description
-                },
-                /*config: [
+	class lootLogTweaks extends IdlePixelPlusPlugin {
+		constructor() {
+			super("lootlogtweaks", {
+				about: {
+					name: GM_info.script.name + " (ver: " + GM_info.script.version + ")",
+					version: GM_info.script.version,
+					author: GM_info.script.author,
+					description: GM_info.script.description,
+				},
+				/*config: [
                     {
                         label: "------------------------------",
                         type: "label"
@@ -43,11 +43,11 @@
                         default: FONT_DEFAULT
                     }
                 ]*/
-            });
-        }
+			});
+		}
 
-        initStyles() {
-            const css = `
+		initStyles() {
+			const css = `
               #modal-style-ll .drop-log-dt {
                 color: cyan;
               }
@@ -105,13 +105,13 @@
                 flex-direction: column;
               }
             `;
-            const styleSheet = document.createElement("style");
-            styleSheet.innerHTML = css;
-            document.head.appendChild(styleSheet);
-        }
+			const styleSheet = document.createElement("style");
+			styleSheet.innerHTML = css;
+			document.head.appendChild(styleSheet);
+		}
 
-        createPanel() {
-            let llModalHTML = `
+		createPanel() {
+			let llModalHTML = `
               <div id="modal-style-ll"">
                 <div id="modal-style-ll-container">
                   <div id="ll-modal-base_window" style="">
@@ -131,93 +131,99 @@
               </div>
             `;
 
-            const contentDiv = document.getElementById('content');
-            const modalContainer = document.createElement('div');
-            modalContainer.innerHTML = llModalHTML;
-            contentDiv.appendChild(modalContainer);
+			const contentDiv = document.getElementById("content");
+			const modalContainer = document.createElement("div");
+			modalContainer.innerHTML = llModalHTML;
+			contentDiv.appendChild(modalContainer);
 
-            const onlineCount = document.querySelector(".top-bar .gold:not(#top-bar-admin-link)");
-            const linkElement = document.createElement('a');
-            linkElement.href = '#';
-            linkElement.className = 'hover float-end link-no-decoration';
-            linkElement.title = 'Loot Log';
-            linkElement.textContent = 'Loot Log' + '\u00A0\u00A0\u00A0';
+			const onlineCount = document.querySelector(
+				".top-bar .gold:not(#top-bar-admin-link)"
+			);
+			const linkElement = document.createElement("a");
+			linkElement.href = "#";
+			linkElement.className = "hover float-end link-no-decoration";
+			linkElement.title = "Loot Log";
+			linkElement.textContent = "Loot Log" + "\u00A0\u00A0\u00A0";
 
-            onlineCount.insertAdjacentElement('beforebegin', linkElement);
+			onlineCount.insertAdjacentElement("beforebegin", linkElement);
 
-            const modalStyleLL = document.getElementById('modal-style-ll');
-            const closeButton = document.getElementById('close-button-ll');
+			const modalStyleLL = document.getElementById("modal-style-ll");
+			const closeButton = document.getElementById("close-button-ll");
 
-            linkElement.addEventListener('click', function (event) {
-                event.preventDefault();
-                modalStyleLL.style.display = 'block';
-            });
+			linkElement.addEventListener("click", function (event) {
+				event.preventDefault();
+				modalStyleLL.style.display = "block";
+			});
 
-            closeButton.addEventListener('click', function () {
-                modalStyleLL.style.display = 'none';
-            });
+			closeButton.addEventListener("click", function () {
+				modalStyleLL.style.display = "none";
+			});
 
-            document.addEventListener('keydown', function (event) {
-                var chatInput = document.getElementById('chat-area-input');
-                var chat_focused = (document.activeElement === chatInput);
-                if(!chat_focused) {
-                    if (event.keyCode === 9) {
-                        if (modalStyleLL.style.display === 'block') {
-                            modalStyleLL.style.display = 'none';
-                        } else {
-                            modalStyleLL.style.display = 'block';
-                        }
-                    }
-                }
-            });
+			document.addEventListener("keydown", function (event) {
+				var chatInput = document.getElementById("chat-area-input");
+				var chat_focused = document.activeElement === chatInput;
+				if (!chat_focused) {
+					if (event.keyCode === 9) {
+						if (modalStyleLL.style.display === "block") {
+							modalStyleLL.style.display = "none";
+						} else {
+							modalStyleLL.style.display = "block";
+						}
+					}
+				}
+			});
 
+			modalStyleLL.addEventListener("click", function (event) {
+				const isClickInside = document
+					.getElementById("al-modal-base_window")
+					.contains(event.target);
 
-            modalStyleLL.addEventListener('click', function(event) {
-                const isClickInside = document.getElementById('al-modal-base_window').contains(event.target);
+				if (!isClickInside) {
+					modalStyleLL.style.display = "none";
+				}
+			});
 
-                if (!isClickInside) {
-                    modalStyleLL.style.display = 'none';
-                }
-            });
+			document
+				.getElementById("ll-modal-base_window")
+				.addEventListener("click", function (event) {
+					event.stopPropagation();
+				});
+		}
 
-            document.getElementById('ll-modal-base_window').addEventListener('click', function(event) {
-                event.stopPropagation();
-            });
-        }
+		refreshLootLog() {
+			try {
+				var logObj = new LogManager();
+				logObj.refresh_panel();
+			} catch (error) {
+				console.log(error);
+			}
+		}
 
-        refreshLootLog() {
-            try {
-                var logObj = new LogManager();
-                logObj.refresh_panel();
-            } catch (error) {
-                console.log(error);
-            }
-        }
+		copyContent() {
+			const original = document.getElementById("panel-history-content");
+			const mirror = document.getElementById("ll-panel-div");
+			mirror.innerHTML = original.innerHTML;
+		}
 
-        copyContent() {
-            const original = document.getElementById('panel-history-content');
-            const mirror = document.getElementById('ll-panel-div');
-            mirror.innerHTML = original.innerHTML;
-        }
+		onLogin() {
+			this.initStyles();
+			this.createPanel();
+			this.refreshLootLog();
+			this.copyContent();
+			const observer = new MutationObserver(this.copyContent);
+			const config = { childList: true, subtree: true };
 
-        onLogin() {
-            this.initStyles();
-            this.createPanel();
-            this.refreshLootLog();
-            this.copyContent();
-            const observer = new MutationObserver(this.copyContent);
-            const config = { childList: true, subtree: true };
+			observer.observe(
+				document.getElementById("panel-history-content"),
+				config
+			);
+		}
 
-            observer.observe(document.getElementById('panel-history-content'), config);
-        };
-    }
+		onVariableSet(key, oldValue, newValue) {
+			refreshLootLog();
+		}
+	}
 
-    onVariableSet(key, oldValue, newValue) {
-        refreshLootLog();
-    }
-
-
-
-    const plugin = new lootLogTweaks();
-    IdlePixelPlus.registerPlugin(plugin);
+	const plugin = new lootLogTweaks();
+	IdlePixelPlus.registerPlugin(plugin);
 })();
