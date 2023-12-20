@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Loot Log Tweaks
 // @namespace    godofnades.idlepixel
-// @version      0.1.3
+// @version      0.1.4
 // @description  Moving the Loot Log into a container like IdlePixel Fixed had with 'Tab' as the button to open.
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
@@ -216,7 +216,7 @@
 		onLogin() {
 			this.initStyles();
 			this.createPanel();
-			this.refreshLootLog();
+            this.refreshTimer();
 			this.copyContent();
 			const observer = new MutationObserver(this.copyContent);
 			const config = { childList: true, subtree: true };
