@@ -25,28 +25,7 @@
                     author: GM_info.script.author,
                     description: GM_info.script.description
                 },
-                /*config: [
-                    {
-                        label: "------------------------------",
-                        type: "label"
-                    },
-                    {
-                        label: "General Stuff",
-                        type: "label"
-                    },
-                    {
-                        label: "------------------------------",
-                        type: "label"
-                    },
-                    {
-                        id: "font",
-                        label: "Primary Font",
-                        type: "select",
-                        options: FONTS,
-                        default: FONT_DEFAULT
-                    }
-                ]*/
-            });
+                
         }
 
 /*         <div class="dropdown float-end">
