@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Loot Log Tweaks
 // @namespace    godofnades.idlepixel
-// @version      0.1
+// @version      0.1.1
 // @description  Moving the Loot Log into a container like IdlePixel Fixed had with 'Tab' as the button to open.
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
@@ -185,6 +185,15 @@
             });
         }
 
+        refreshLootLog() {
+            try {
+                var logObj = new LogManager();
+                logObj.refresh_panel();
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
         copyContent() {
             const original = document.getElementById('panel-history-content');
             const mirror = document.getElementById('ll-panel-div');
@@ -194,12 +203,7 @@
         onLogin() {
             this.initStyles();
             this.createPanel();
-            try {
-                var logObj = new LogManager();
-                logObj.refresh_panel();
-            } catch (error) {
-                console.log(error);
-            }
+            this.refreshLootLog();
             this.copyContent();
             const observer = new MutationObserver(this.copyContent);
             const config = { childList: true, subtree: true };
@@ -207,6 +211,12 @@
             observer.observe(document.getElementById('panel-history-content'), config);
         };
     }
+
+    onVariableSet(key, oldValue, newValue) {
+        refreshLootLog();
+    }
+
+
 
     const plugin = new lootLogTweaks();
     IdlePixelPlus.registerPlugin(plugin);
