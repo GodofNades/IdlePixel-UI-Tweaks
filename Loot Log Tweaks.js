@@ -220,7 +220,7 @@
 		}
 
 		onVariableSet(key, oldValue, newValue) {
-			refreshLootLog();
+			this.refreshLootLog();
 		}
 	}
 
