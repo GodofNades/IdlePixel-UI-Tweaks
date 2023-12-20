@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Loot Log Tweaks
 // @namespace    godofnades.idlepixel
-// @version      0.1.2
+// @version      0.1.3
 // @description  Moving the Loot Log into a container like IdlePixel Fixed had with 'Tab' as the button to open.
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
@@ -12,6 +12,8 @@
 
 (function () {
 	"use strict";
+
+    let lootLogRefreshTimer;
 
 	class lootLogTweaks extends IdlePixelPlusPlugin {
 		constructor() {
@@ -205,6 +207,12 @@
 			mirror.innerHTML = original.innerHTML;
 		}
 
+        refreshTimer() {
+            this.lootLogRefreshTimer = setInterval(() => {
+                this.refreshLootLog();
+            }, 5000);
+        }
+
 		onLogin() {
 			this.initStyles();
 			this.createPanel();
@@ -217,12 +225,6 @@
 				document.getElementById("panel-history-content"),
 				config
 			);
-		}
-
-		onVariableSet(key, oldValue, newValue) {
-			if (key === "playtime") {
-				this.refreshLootLog();
-			}
 		}
 	}
 
