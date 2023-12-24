@@ -19,7 +19,7 @@
 		constructor() {
 			super("lootlogtweaks", {
 				about: {
-					name: `IdlePixel Loot Log Tweaks (Version 0.1.6)`,
+					name: `IdlePixel Loot Log Tweaks (Version 0.1.7)`,
 					version: `0.1.6`,
 					author: `GodofNades`,
 					description: `Moving the Loot Log into a container like IdlePixel Fixed had with 'Tab' as the button to open.`,
