@@ -19,7 +19,7 @@
 		constructor() {
 			super("lootlogtweaks", {
 				about: {
-					name: GM_info.script.name + " (ver: " + GM_info.script.version + ")",
+					name: "Testing Changing The Name To See if This Works",
 					version: GM_info.script.version,
 					author: GM_info.script.author,
 					description: GM_info.script.description,
