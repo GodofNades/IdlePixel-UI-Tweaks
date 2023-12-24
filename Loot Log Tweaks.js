@@ -19,10 +19,10 @@
 		constructor() {
 			super("lootlogtweaks", {
 				about: {
-					name: "Testing Changing The Name To See if This Works",
-					version: GM_info.script.version,
-					author: GM_info.script.author,
-					description: GM_info.script.description,
+					name: `IdlePixel Loot Log Tweaks (Version 0.1.6)`,
+					version: `0.1.6`,
+					author: `GodofNades`,
+					description: `Moving the Loot Log into a container like IdlePixel Fixed had with 'Tab' as the button to open.`,
 				},
 				/*config: [
                     {
