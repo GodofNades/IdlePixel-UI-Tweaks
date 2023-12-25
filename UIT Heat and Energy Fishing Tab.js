@@ -257,7 +257,6 @@
 	}
 
 	function heatBoxFishingPanel() {
-		console.log("heatBox is firing");
 		const fishingNetItembox = document.querySelector(
 			'itembox[data-item="fishing_net"]'
 		);
