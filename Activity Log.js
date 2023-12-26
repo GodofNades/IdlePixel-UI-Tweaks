@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Activity Log Tweaks
 // @namespace    godofnades.idlepixel
-// @version      0.7.8
+// @version      0.7.9
 // @description  Adds a new activity log to the top next to player count and introduces a new Activity Log modal.
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
@@ -785,7 +785,7 @@
                 this.buildActivityLog(timestamp, category, message, color)
             }
             //TSUNAMI_ANIMATE
-            if (data = 'TSUNAMI_ANIMATE') {
+            if (data == 'TSUNAMI_ANIMATE') {
                 // SCROLL_TOAST=images/badge_10_percent_fp.png~yellow~FP REFUNDED
                 // SCROLL_TOAST=images/badge_10_percent_energy.png~red~ENERGY REFUNDED
                 let message = 'Tsunami Triggered in Beach';
