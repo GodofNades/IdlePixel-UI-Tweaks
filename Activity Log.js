@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Activity Log Tweaks
 // @namespace    godofnades.idlepixel
-// @version      0.7.14
+// @version      0.7.15
 // @description  Adds a new activity log to the top next to player count and introduces a new Activity Log modal.
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
@@ -20,8 +20,8 @@
 		constructor() {
 			super("actlogtweaks", {
 				about: {
-					name: `IdlePixel Activity Log Tweaks (ver: 0.7.14)`,
-					version: `0.7.14`,
+					name: `IdlePixel Activity Log Tweaks (ver: 0.7.15)`,
+					version: `0.7.15`,
 					author: `GodofNades`,
 					description: `Adds a new activity log to the top next to player count and introduces a new Activity Log modal.`,
 				},
