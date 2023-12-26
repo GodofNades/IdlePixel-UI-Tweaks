@@ -21,7 +21,7 @@
             super("actlogtweaks", {
                 about: {
                     name: `IdlePixel Activity Log Tweaks (ver: 0.7.9)`,
-                    version: `0.7.8`,
+                    version: `0.7.9`,
                     author: `GodofNades`,
                     description: `Adds a new activity log to the top next to player count and introduces a new Activity Log modal.`
                 },
