@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Activity Log Tweaks
 // @namespace    godofnades.idlepixel
-// @version      0.7.9
+// @version      0.7.10
 // @description  Adds a new activity log to the top next to player count and introduces a new Activity Log modal.
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
@@ -20,8 +20,8 @@
         constructor() {
             super("actlogtweaks", {
                 about: {
-                    name: `IdlePixel Activity Log Tweaks (ver: 0.7.9)`,
-                    version: `0.7.9`,
+                    name: `IdlePixel Activity Log Tweaks (ver: 0.7.10)`,
+                    version: `0.7.10`,
                     author: `GodofNades`,
                     description: `Adds a new activity log to the top next to player count and introduces a new Activity Log modal.`
                 },
@@ -577,14 +577,14 @@
         determineCategory(message) {
             const categoryPatterns  = {
                 'Achievement': /^You completed the achievement/,
-                'Brewing': /^You brew/,
+                'Brewing': /^(You brew|Not Consumed!)/,
                 'Combat': /^(You (defeated a|died to a)|Tsunami Triggered in Beach|FP REFUNDED|ENERGY REFUNDED)/,
                 'Cooking': /^You (burnt|successfully cooked)/,
                 'Crafting': /^You craft/,
                 'Criptoe' : /^Research Points gained:/,
                 'Economy': /^You sell/,
-                'Farming': /^(You|Your) (harvest|tool finds a seed)/,
-                'Fishing': /^(You|You just) caught a/,
+                'Farming': /^(You|Your) (harvest|tool finds a seed|Instantly grows!)/,
+                'Fishing': /^(You just caught a|You caught a|Found 1 Super Bait using Rotten Potion)/,
                 'Gathering': /^You found a unique gathering item/,
                 'Gems': /^You find a/,
                 'Geodes': /^You found a [a-z_]+ geode/,
@@ -778,6 +778,9 @@
                 // SCROLL_TOAST=images/badge_10_percent_energy.png~red~ENERGY REFUNDED
                 let messageSplit = data.split('~');
                 let message = messageSplit[2];
+                if(message == "1") {
+                    message = "Found 1 Super Bait using Rotten Potion";
+                }
                 let color ="white";
                 const timestamp = this.formatDate();
                 let category = this.determineCategory(message);
