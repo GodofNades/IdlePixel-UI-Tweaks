@@ -869,7 +869,9 @@
 				const timestamp = this.formatDate();
 				let category = this.determineCategory(message);
 
-				this.buildActivityLog(timestamp, category, message, color);
+                if (message != "UNSET CHAT TAG" && message == "UNSET SIGIL") {
+                    this.buildActivityLog(timestamp, category, message, color);
+                }
 			}
 			//TSUNAMI_ANIMATE
 			if (data == "TSUNAMI_ANIMATE") {
