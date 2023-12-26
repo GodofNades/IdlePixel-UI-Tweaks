@@ -583,7 +583,7 @@
                 'Crafting': /^You craft/,
                 'Criptoe' : /^Research Points gained:/,
                 'Economy': /^You sell/,
-                'Farming': /^(You|Your) (harvest|tool finds a seed)|Instantly grows)/,
+                'Farming': /^((You|Your) (harvest|tool finds a seed)|Instantly grows)/,
                 'Fishing': /^(You just caught a|You caught a|Found 1 Super Bait using Rotten Potion)/,
                 'Gathering': /^You found a unique gathering item/,
                 'Gems': /^You find a/,
