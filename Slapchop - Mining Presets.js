@@ -81,12 +81,12 @@
 	}
 
 	function miningPresetLoad(presetNumber) {
-        // Clear current machines
-        miningEquipment.forEach(function (machine) {
+		// Clear current machines
+		miningEquipment.forEach(function (machine) {
 			let machineCount = `${machine}_on`;
 			let ippMachineOnCount = getVar(machineCount, 0, "int");
 			let ippMachineCrafted = IdlePixelPlus.getVarOrDefault(machine, 0, "int");
-            console.log("onload Preset clear running");
+			console.log("onload Preset clear running");
 			let i = ippMachineOnCount;
 			while (i > 0) {
 				i--;
@@ -114,8 +114,10 @@
 				`${machine}: Preset Count: ${ippMachinePresetCount} || On Count: ${ippMachineOnCount}`
 			);
 
-			while (ippMachineOnCount < ippMachinePresetCount) {
-				ippMachineOnCount++;
+			let i = 0;
+
+			while (i < ippMachinePresetCount) {
+				i++;
 				websocket.send(`MACHINERY=${machine}~increase`);
 			}
 		});
