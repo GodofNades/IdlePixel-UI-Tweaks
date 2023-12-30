@@ -81,6 +81,7 @@
 	}
 
 	function miningPresetLoad(presetNumber) {
+        noMachines();
 		// Load presets from localStorage
 		let username = getVar("username", "", "string");
 		let allPresets =
