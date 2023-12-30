@@ -81,19 +81,17 @@
 	}
 
 	function miningPresetLoad(presetNumber) {
-		// Clear current machines
 		miningEquipment.forEach(function (machine) {
 			let machineCount = `${machine}_on`;
 			let ippMachineOnCount = getVar(machineCount, 0, "int");
 			let ippMachineCrafted = IdlePixelPlus.getVarOrDefault(machine, 0, "int");
-			console.log("onload Preset clear running");
 			let i = ippMachineOnCount;
 			while (i > 0) {
 				i--;
 				websocket.send(`MACHINERY=${machine}~decrease`);
 			}
 		});
-		// Load presets from localStorage
+
 		let username = getVar("username", "", "string");
 		let allPresets =
 			JSON.parse(localStorage.getItem(`${username}.miningPresets`)) || {};
@@ -101,7 +99,6 @@
 		let presetData = allPresets[presetName];
 
 		if (!presetData) {
-			console.log(`Preset ${presetNumber} not found`);
 			return;
 		}
 
@@ -109,10 +106,6 @@
 			let machineCount = `${machine}_on`;
 			let ippMachineOnCount = getVar(machineCount, 0, "int");
 			let ippMachinePresetCount = presetData[machine] || 0;
-
-			console.log(
-				`${machine}: Preset Count: ${ippMachinePresetCount} || On Count: ${ippMachineOnCount}`
-			);
 
 			let i = 0;
 
