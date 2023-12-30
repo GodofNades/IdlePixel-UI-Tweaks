@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.5
+// @version      2.8.6
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -13,133 +13,16 @@
 (function() {
     'use strict';
 
-    const LEVELS = function(){
-        let result = [];
-        result[1] = 0;
-        for(let lv = 2; lv <= 100; lv++) {
-            result[lv] = Math.ceil(Math.pow(lv, 3+(lv/200)));
-        }
-        return result;
-    }();
 
-    const POTION_XP_MAP = {
-        "stardust_potion": 75,
-        "energy_potion": 50,
-        "anti_disease_potion": 250,
-        "tree_speed_potion": 525,
-        "smelting_upgrade_potion": 550,
-        "great_stardust_potion": 1925,
-        "farming_speed_potion": 500,
-        "rare_monster_potion": 2125,
-        "super_stardust_potion": 4400,
-        "gathering_unique_potion": 3000,
-        "heat_potion": 2500,
-        "bait_potion": 1000,
-        "bone_potion": 1550,
-        "furnace_speed_potion": 6000,
-        "promethium_potion": 2000,
-        "oil_potion": 5000,
-        "super_rare_monster_potion": 6000,
-        "ultra_stardust_potion": 12900,
-        "magic_shiny_crystal_ball_potion": 7000,
-        "birdhouse_potion": 800,
-        "rocket_potion": 1500,
-        "titanium_potion": 5000,
-        "blue_orb_potion": 50000,
-        "geode_potion": 9500,
-        "magic_crystal_ball_potion": 12000,
-        "stone_converter_potion": 4000,
-        "rain_potion": 2500,
-        "combat_loot_potion": 9500,
-        "rotten_potion": 1250,
-        "merchant_speed_potion": 50000,
-        "green_orb_potion": 200000,
-        "guardian_key_potion": 42500,
-        "ancient_potion": 40000,
-        "red_orb_potion": 500000,
-        "cooks_dust_potion": 100000,
-        "farm_dust_potion": 100000,
-        "fighting_dust_potion": 100000,
-        "tree_dust_potion": 100000,
-        "infinite_oil_potion": 0
-    }
 
     let onLoginLoaded = false;
 
-    let purpleKeyGo;
-    const receivedFilter = ['OPEN_DIALOGUE=MESSAGE'];
-    const currentTime = new Date();
-    let startTime;
-    let timeDiff;
-    let purpleKeyTimer;
+
     let del = false;
 
-    function onPurpleKey(monster, rarity, timer) {
-        if (purpleKeyGo) {
-            const timeLeft = format_time(timer);
-            const imageSrc = monster;
-            const monsterName = imageSrc
-            .replace(/_/g, " ")
-            .replace(/\b\w/g, letter => letter.toUpperCase());
+    
 
-            const purpleKeyNotification = document.querySelector('#notification-purple_key');
-            const imageElement = document.querySelector('#notification-purple_key-image');
-            const imageTextElement = document.querySelector('#notification-purple_key-image-text');
-            const rarityElement = document.querySelector('#notification-purple_key-rarity');
-            const timeElement = document.querySelector('#notification-purple_key-time');
-
-            imageElement.setAttribute("src", `https://d1xsc8x7nc5q8t.cloudfront.net/images/${imageSrc}_icon.png`);
-            imageTextElement.innerText = `${monsterName} `;
-            rarityElement.innerText = ` ${rarity}`;
-            timeElement.innerText = ` ⏲️${timeLeft}`;
-
-            if (rarity === "Very Rare") {
-                purpleKeyNotification.style.backgroundColor = "DarkRed";
-                [imageTextElement, rarityElement, timeElement].forEach(element => element.style.color = "white");
-            } else {
-                let textColor = "black";
-                if (rarity === "Rare") {
-                    purpleKeyNotification.style.backgroundColor = "orange";
-                } else if (rarity === "Uncommon") {
-                    purpleKeyNotification.style.backgroundColor = "gold";
-                } else if (rarity === "Common") {
-                    purpleKeyNotification.style.backgroundColor = "DarkGreen";
-                    textColor = "white";
-                }
-                [imageTextElement, rarityElement, timeElement].forEach(element => element.style.color = textColor);
-            }
-            return;
-        }
-
-    }
-
-    function xpToLevel(xp) {
-        if(xp <= 0) {
-            return 1;
-        }
-        if(xp >= LEVELS[100]) {
-            return 100;
-        }
-        let lower = 1;
-        let upper = 100;
-        while(lower <= upper) {
-            let mid = Math.floor((lower + upper) / 2);
-            let midXP = LEVELS[mid];
-            let midPlus1XP = LEVELS[mid+1];
-            if(xp < midXP) {
-                upper = mid;
-                continue;
-            }
-            if(xp > midPlus1XP) {
-                lower=mid+1;
-                continue;
-            }
-            if(mid<100 && xp == LEVELS[mid+1]) {
-                return mid+1;
-            }
-            return mid;
-        }
-    }
+    
 
 
     // will be overwritten if data available in IdlePixelPlus.info
@@ -247,6 +130,12 @@
                         type: "boolean",
                         default: true
                     },
+                    /*{
+                        id: "pinChat",
+                        label: "Pin Chat on Side (Only works if Side Chat is active. Thanks BanBan)",
+                        type: "boolean",
+                        default: false
+                    },*/
                     {
                         id: "chatLimit",
                         label: "Chat Message Limit (&leq; 0 means no limit)",
@@ -729,261 +618,7 @@
             });
         }
 
-        condensedUI() {
-            let leftbar = document.getElementById('menu-bar-buttons')
-
-            let styleElement = document.getElementById('condensed-ui-tweaks');
-
-            if (styleElement) {
-                styleElement.parentNode.removeChild(styleElement);
-            }
-            document.getElementById('menu-bar-buttons')
-                .querySelectorAll('.font-small')
-                .forEach(function(smallFont) {
-                let classInfo = smallFont.className.replaceAll('font-small', 'font-medium');
-                smallFont.className = classInfo;
-            });
-
-            var spans = document.querySelectorAll('#menu-bar-cooking-table-btn-wrapper span');
-
-            var cookingSpan = Array.from(spans).find(span => span.textContent === "COOKING");
-
-            if (cookingSpan) {
-                cookingSpan.className = "font-medium color-white";
-            }
-
-            leftbar.querySelectorAll('img').forEach(function(img) {
-                img.className = "w20";
-            });
-
-            const style = document.createElement('style');
-            style.id = 'condensed-ui-tweaks';
-            style.textContent = `
-            <style id="condensed-ui-tweaks">
-            .game-menu-bar-left-table-btn tr
-            {
-              background-color: transparent !important;
-              border:0 !important;
-              font-size:medium;
-            }
-            .hover-menu-bar-item:hover {
-              background: #256061 !important;
-              border:0 !important;
-              filter:unset;
-              font-size:medium;
-            }
-            .thin-progress-bar {
-              background:#437b7c !important;
-              border:0 !important;
-              height:unset;
-            }
-            .thin-progress-bar-inner {
-              background:#88e8ea !important;
-            }
-            .game-menu-bar-left-table-btn td{
-              padding-left:20px !important;
-              padding:unset;
-              margin:0px;
-              font-size:medium;
-            }
-            .game-menu-bar-left-table-btn {
-              background-color: transparent !important;
-            }
-            .left-menu-item {
-              margin-bottom:unset;
-              font-size:medium;
-            }
-            .left-menu-item > img {
-              margin-left: 20px;
-              margin-right: 20px;
-            }
-            </style>
-            `;
-
-            document.head.appendChild(style);
-            setTimeout(function() {
-                document.getElementById("market-sidecar").parentNode.parentNode.style.paddingLeft = "20px";
-                document.getElementById("market-sidecar").parentNode.parentNode.style.padding = "";
-            }, 1000);
-            document.getElementById("left-menu-bar-labels").style.paddingBottom = "10px !important";
-        }
-
-        defaultUI() {
-            var styleElement = document.getElementById('condensed-ui-tweaks');
-
-            if (styleElement) {
-                styleElement.parentNode.removeChild(styleElement);
-            }
-        }
-
-        updateCrippledToeTimer() {
-            var now = new Date(); // Create a new date object with the current date and time
-            var hours = now.getUTCHours(); // Get the hours value in UTC
-            var minutes = now.getUTCMinutes(); // Get the minutes value in UTC
-            var seconds = now.getUTCSeconds(); // Get the seconds value in UTC
-
-            // Pad the hours, minutes, and seconds with leading zeros if they are less than 10
-            hours = hours.toString().padStart(2, '0');
-            minutes = minutes.toString().padStart(2, '0');
-            seconds = seconds.toString().padStart(2, '0');
-
-            // Concatenate the hours, minutes, and seconds with colons
-
-            const menuBarCrippledtoeRow = document.querySelector('#left-panel-criptoe_market-btn table tbody tr');
-
-            // Find the cell that contains the text "CRIPTOE MARKET"
-            const cells = menuBarCrippledtoeRow.getElementsByTagName('td');
-            let criptoeMarketCell = null;
-            for (let cell of cells) {
-                if (cell.textContent.includes('CRIPTOE MARKET')) {
-                    criptoeMarketCell = cell;
-                    break;
-                }
-            }
-            if (criptoeMarketCell) {
-                criptoeMarketCell.innerHTML = `CRIPTOE MARKET <span style="color:cyan;">(${hours + ':' + minutes + ':' + seconds})<span>`
-            }
-        }
-
-        hideOrbsAndRing() {
-            if (Globals.currentPanel === 'panel-invention') {
-                const masterRing = IdlePixelPlus.getVarOrDefault("master_ring_assembled", 0, "int");
-                const fishingOrb = IdlePixelPlus.getVarOrDefault("mega_shiny_glass_ball_fish_assembled", 0, "int");
-                const leafOrb = IdlePixelPlus.getVarOrDefault("mega_shiny_glass_ball_leaf_assembled", 0, "int");
-                const logsOrb = IdlePixelPlus.getVarOrDefault("mega_shiny_glass_ball_logs_assembled", 0, "int");
-                const monstersOrb = IdlePixelPlus.getVarOrDefault("mega_shiny_glass_ball_monsters_assembled", 0, "int");
-                const volcanoTab = IdlePixelPlus.getVarOrDefault("volcano_tablette_charged", 0, "int");
-                const ancientTab = IdlePixelPlus.getVarOrDefault("ancient_tablette_charged", 0, "int");
-
-                const selectors = {
-                    masterRing: "#invention-table > tbody [data-invention-item=master_ring]",
-                    fishOrb: "#invention-table > tbody [data-invention-item=mega_shiny_glass_ball_fish]",
-                    leafOrb: "#invention-table > tbody [data-invention-item=mega_shiny_glass_ball_leaf]",
-                    logsOrb: "#invention-table > tbody [data-invention-item=mega_shiny_glass_ball_logs]",
-                    monstersOrb: "#invention-table > tbody [data-invention-item=mega_shiny_glass_ball_monsters]",
-                };
-
-                const uiTweaksConfig = IdlePixelPlus.plugins['ui-tweaks'].getConfig("hideOrbRing");
-
-                for (const orb in selectors) {
-                    if (selectors.hasOwnProperty(orb)) {
-                        const element = document.querySelector(selectors[orb]);
-                        if (uiTweaksConfig) {
-                            if (orb === 'masterRing' && masterRing === 1) {
-                                element.style.display = 'none';
-                            } else if (orb === 'fishingOrb' && fishingOrb === 1) {
-                                element.style.display = 'none';
-                            } else if (orb === 'leafOrb' && leafOrb === 1) {
-                                element.style.display = 'none';
-                            } else if (orb === 'logsOrb' && logsOrb === 1) {
-                                element.style.display = 'none';
-                            } else if (orb === 'monstersOrb' && monstersOrb === 1) {
-                                element.style.display = 'none';
-                            } else {
-                                element.style.display = '';
-                            }
-                        } else {
-                            if ((orb !== 'masterRing' && volcanoTab === 1)) {
-                                element.style.display = '';
-                            } else if (orb === 'masterRing' && ancientTab === 1) {
-                                element.style.display = '';
-                            } else {
-                                element.style.display = 'none';
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-
-        addTableCraftLabels() {
-            // Invention Table
-            const inventionTableRows = document.querySelectorAll('#invention-table tbody tr[data-tablette-required]');
-            inventionTableRows.forEach(row => {
-                const outputs = row.querySelectorAll('td:nth-child(4) item-invention-table');
-                outputs.forEach(output => {
-                    output.textContent = Number(output.textContent).toLocaleString() + " (" + output.getAttribute("data-materials-item").replaceAll("_", " ") + ")";
-                });
-            });
-
-            // Crafting Table
-            const craftingTableRows = document.querySelectorAll('#crafting-table tbody tr[data-crafting-item]');
-            craftingTableRows.forEach(row => {
-                const outputs = row.querySelectorAll('td:nth-child(3) item-crafting-table');
-                outputs.forEach(output => {
-                    output.textContent = Number(output.textContent).toLocaleString() + " (" + output.getAttribute("data-materials-item").replaceAll("_", " ") + ")";
-                });
-            });
-
-            // Brewing Table
-            const brewingTableRows = document.querySelectorAll('#brewing-table tbody tr[data-brewing-item]');
-            brewingTableRows.forEach(row => {
-                const outputs = row.querySelectorAll('td:nth-child(3) item-brewing-table');
-                outputs.forEach(output => {
-                    output.textContent = output.textContent + " (" + output.getAttribute("data-materials-item").replaceAll("_", " ") + ")";
-                });
-            });
-        }
-
-        updateTableCraftLabels() {
-            const brewingTable = document.querySelector("#brewing-table");
-            if (brewingTable) {
-                const rows = brewingTable.querySelectorAll("tbody tr[data-brewing-item]");
-                rows.forEach(row => {
-                    const brewingXP = row.querySelector("td:nth-child(6)");
-                    if (brewingXP) {
-                        const potionName = brewingXP.id.replace("_xp", "");
-                        const potionXP = POTION_XP_MAP[potionName].toLocaleString() + " xp";
-                        const potionOrig = document.createElement("span");
-                        potionOrig.classList.add("font-small", "color-grey");
-                        potionOrig.textContent = potionXP;
-                        brewingXP.innerHTML = "";
-                        brewingXP.appendChild(potionOrig);
-                    }
-                });
-            }
-        }
-
-        miningMachTimer() {
-            const drillNotifications = this.getConfig("hideDrillNotifications");
-
-            if (drillNotifications) {
-                document.getElementById("notification-drill").style.display = "none";
-                document.getElementById("notification-crusher").style.display = "none";
-                document.getElementById("notification-giant_drill").style.display = "none";
-                document.getElementById("notification-excavator").style.display = "none";
-                document.getElementById("notification-giant_excavator").style.display = "none";
-                document.getElementById("notification-massive_excavator").style.display = "none";
-            } else {
-                const drill = IdlePixelPlus.getVarOrDefault("drill_on", 0, "int");
-                const crusher = IdlePixelPlus.getVarOrDefault("crusher_on", 0, "int");
-                const giant_drill = IdlePixelPlus.getVarOrDefault("giant_drill_on", 0, "int");
-                const excavator = IdlePixelPlus.getVarOrDefault("excavator_on", 0, "int");
-                const giant_excavator = IdlePixelPlus.getVarOrDefault("giant_excavator_on", 0, "int");
-                const massive_excavator = IdlePixelPlus.getVarOrDefault("massive_excavator_on", 0, "int");
-
-                if (drill > 0) {
-                    document.getElementById("notification-drill").style.display = "inline-block";
-                }
-                if (crusher > 0) {
-                    document.getElementById("notification-crusher").style.display = "inline-block";
-                }
-                if (giant_drill > 0) {
-                    document.getElementById("notification-giant_drill").style.display = "inline-block";
-                }
-                if (excavator > 0) {
-                    document.getElementById("notification-excavator").style.display = "inline-block";
-                }
-                if (giant_excavator > 0) {
-                    document.getElementById("notification-giant_excavator").style.display = "inline-block";
-                }
-                if (massive_excavator > 0) {
-                    document.getElementById("notification-massive_excavator").style.display = "inline-block";
-                }
-            }
-        }
-
+        
         oilTimerNotification() {
             const notifDiv = document.createElement('div');
             notifDiv.id = 'notification-oil_gain';
@@ -1065,115 +700,6 @@
             document.querySelector('#notifications-area').append(notifDiv)
         }
 
-        extendedLevelsUpdate() {
-            let overallLevel = 0;
-
-            const xpMining = IdlePixelPlus.getVarOrDefault("mining_xp", 0, "int");
-            const extendedLevelMining = this.calculateExtendedLevel(xpMining);
-
-            const xpCrafting = IdlePixelPlus.getVarOrDefault("crafting_xp", 0, "int");
-            const extendedLevelCrafting = this.calculateExtendedLevel(xpCrafting);
-
-            const xpGathering = IdlePixelPlus.getVarOrDefault("gathering_xp", 0, "int");
-            const extendedLevelGathering = this.calculateExtendedLevel(xpGathering);
-
-            const xpFarming = IdlePixelPlus.getVarOrDefault("farming_xp", 0, "int");
-            const extendedLevelFarming = this.calculateExtendedLevel(xpFarming);
-
-            const xpBrewing = IdlePixelPlus.getVarOrDefault("brewing_xp", 0, "int");
-            const extendedLevelBrewing = this.calculateExtendedLevel(xpBrewing);
-
-            const xpWoodcutting = IdlePixelPlus.getVarOrDefault("woodcutting_xp", 0, "int");
-            const extendedLevelWoodcutting = this.calculateExtendedLevel(xpWoodcutting);
-
-            const xpCooking = IdlePixelPlus.getVarOrDefault("cooking_xp", 0, "int");
-            const extendedLevelCooking = this.calculateExtendedLevel(xpCooking);
-
-            const xpFishing = IdlePixelPlus.getVarOrDefault("fishing_xp", 0, "int");
-            const extendedLevelFishing = this.calculateExtendedLevel(xpFishing);
-
-            const xpInvention = IdlePixelPlus.getVarOrDefault("invention_xp", 0, "int");
-            const extendedLevelInvention = this.calculateExtendedLevel(xpInvention);
-
-            const xpMelee = IdlePixelPlus.getVarOrDefault("melee_xp", 0, "int");
-            const extendedLevelMelee = this.calculateExtendedLevel(xpMelee);
-
-            const xpArchery = IdlePixelPlus.getVarOrDefault("archery_xp", 0, "int");
-            const extendedLevelArchery = this.calculateExtendedLevel(xpArchery);
-
-            const xpMagic = IdlePixelPlus.getVarOrDefault("magic_xp", 0, "int");
-            const extendedLevelMagic = this.calculateExtendedLevel(xpMagic);
-
-            overallLevel = extendedLevelMining + extendedLevelCrafting + extendedLevelGathering + extendedLevelFarming + extendedLevelBrewing + extendedLevelWoodcutting + extendedLevelCooking + extendedLevelFishing + extendedLevelInvention + extendedLevelMelee + extendedLevelArchery + extendedLevelMagic;
-
-            // Build new levels in place.
-            this.updateExtendedLevel("mining", extendedLevelMining);
-            this.updateExtendedLevel("crafting", extendedLevelCrafting);
-            this.updateExtendedLevel("gathering", extendedLevelGathering);
-            this.updateExtendedLevel("farming", extendedLevelFarming);
-            this.updateExtendedLevel("brewing", extendedLevelBrewing);
-            this.updateExtendedLevel("woodcutting", extendedLevelWoodcutting);
-            this.updateExtendedLevel("cooking", extendedLevelCooking);
-            this.updateExtendedLevel("fishing", extendedLevelFishing);
-            this.updateExtendedLevel("invention", extendedLevelInvention);
-            this.updateExtendedLevel("melee", extendedLevelMelee);
-            this.updateExtendedLevel("archery", extendedLevelArchery);
-            this.updateExtendedLevel("magic", extendedLevelMagic);
-
-            this.updateOverallLevel(overallLevel);
-
-            // Hide original level elements
-            this.hideOriginalLevels();
-        }
-
-        calculateExtendedLevel(xp) {
-            let extendedLevel = 0;
-            while (Math.pow(extendedLevel, (3 + (extendedLevel / 200))) < xp) {
-                extendedLevel++;
-            }
-            if(extendedLevel == 0) {
-                return 1;
-            }
-            return extendedLevel - 1;
-        }
-
-        updateExtendedLevel(skill, extendedLevel) {
-            const skillElement = document.querySelector(`#overallLevelExtended-${skill}`);
-            const colorStyle = extendedLevel >= 100 ? "color:cyan" : "";
-            skillElement.textContent = `(LEVEL ${Math.max(extendedLevel, 1)})`;
-            skillElement.setAttribute("style", colorStyle);
-        }
-
-        updateOverallLevel(overallLevel) {
-            const totalElement = document.querySelector("#overallLevelExtended-total");
-            if (overallLevel >= 100) {
-                totalElement.textContent = ` (${overallLevel})`;
-                totalElement.style.color = "cyan";
-                /*if(document.querySelector("#top-bar > a:nth-child(4) > item-display")) {
-                    document.querySelector("#top-bar > a:nth-child(4) > item-display").style.display = "none";
-                } else {
-                    document.querySelector("#top-bar > a:nth-child(5) > item-display").style.display = "none";
-                }*/
-            } else {
-                totalElement.textContent = "";
-                totalElement.style.display = "none";
-            }
-        }
-
-        hideOriginalLevels() {
-            const skills = [
-                "mining", "crafting", "gathering", "farming", "brewing", "woodcutting", "cooking",
-                "fishing", "invention", "melee", "archery", "magic"
-            ];
-
-            skills.forEach(skill => {
-                const skillElement = document.querySelector(`#menu-bar-${skill}-level`);
-                if (skillElement) {
-                    skillElement.style.display = "none";
-                }
-            });
-        }
-
         fightPointsFull() {
             const max = IdlePixelPlus.getVarOrDefault("max_fight_points", 0, "int");
             const current = IdlePixelPlus.getVarOrDefault("fight_points", 0, "int");
@@ -1250,6 +776,8 @@
                     element.parentElement.style.color = serverMessageTextOverrideColor;
                 }
             }
+            const bodyClassUpdate = document.getElementById('body').className.replaceAll('background-primary-gradient ', '');
+            document.getElementById('body').className = bodyClassUpdate;
         }
 
         //////////////////////////////// updateColors end ////////////////////////////////
@@ -1405,6 +933,24 @@
                     document.getElementById("notification-furnace-timer").style.display = "none";
                 }
 
+                const rocketETATimer = this.getConfig("rocketETATimer");
+                if (rocketETATimer) {
+                    document.getElementById("notification-rocket-timer").style.display = "inline-block";
+                    document.getElementById("notification-mega_rocket-timer").style.display = "inline-block";
+                } else {
+                    document.getElementById("notification-rocket-timer").style.display = "none";
+                    document.getElementById("notification-mega_rocket-timer").style.display = "none";
+                }
+
+                const hideRocketKM = this.getConfig("hideRocketKM");
+                if (hideRocketKM) {
+                    document.getElementById("notification-rocket-label").style.display = "none";
+                    document.getElementById("notification-mega_rocket-label").style.display = "none";
+                } else {
+                    document.getElementById("notification-rocket-label").style.display = "inline-block";
+                    document.getElementById("notification-mega_rocket-label").style.display = "inline-block";
+                }
+
                 const heatInFishingTab = this.getConfig("heatInFishingTab");
                 const heatFishingTab = document.getElementById("heat-fishing-tab");
                 if (heatInFishingTab) {
@@ -1529,7 +1075,52 @@
                 }
 
                 //////
-                
+                const rocket_usable = IdlePixelPlus.getVarOrDefault("rocket_usable", 0, "int");
+                const rocket_travel_check = IdlePixelPlus.getVarOrDefault("rocket_distance_required", 0, "int");
+                const rocket_pot_timer_check = IdlePixelPlus.getVarOrDefault("rocket_potion_timer", 0, "int");
+                const rocket_check = IdlePixelPlus.getVarOrDefault("mega_rocket", 0, "int");
+
+                if (this.getConfig("leftSideRocketInfoSection") && rocket_usable > 0) {
+                    document.getElementById("current-rocket-info").style.display = "block";
+
+                    if (this.getConfig("leftSideRocketInfo")) {
+                        document.getElementById("rocket-travel-info").style.display = "block";
+                        document.getElementById("notification-mega_rocket").style.display = "none";
+                        document.getElementById("notification-rocket").style.display = "none";
+                    } else if (rocket_travel_check > 0 && rocket_check == 1) {
+                        document.getElementById("notification-mega_rocket").style.display = "block";
+                        document.getElementById("rocket-travel-info").style.display = "none";
+                    } else if (rocket_travel_check > 0 && rocket_check == 0) {
+                        document.getElementById("notification-rocket").style.display = "block";
+                        document.getElementById("rocket-travel-info").style.display = "none";
+                    } else {
+                        document.getElementById("rocket-travel-info").style.display = "none";
+                    }
+
+                    if (this.getConfig("leftSideRocketFuel")) {
+                        document.getElementById("current-rocket-fuel-info").style.display = "block";
+                    } else {
+                        document.getElementById("current-rocket-fuel-info").style.display = "none";
+                    }
+
+                    if (this.getConfig("leftSideRocketPot")) {
+                        document.getElementById("current-rocket-pot-info").style.display = "block";
+                        document.getElementById("notification-potion-rocket_potion_timer").style.display = "none";
+                    } else if (rocket_pot_timer_check > 0) {
+                        document.getElementById("notification-potion-rocket_potion_timer").style.display = "block";
+                        document.getElementById("current-rocket-pot-info").style.display = "none";
+                    } else {
+                        document.getElementById("current-rocket-pot-info").style.display = "none";
+                    }
+                } else {
+                    document.getElementById("current-rocket-info").style.display = "none";
+                }
+
+                if (rocket_travel_check === 0) {
+                    document.getElementById("current-rocket-travel-distances").textContent = "Rocket is IDLE";
+                    document.querySelector("img#rocket-type-img-mega").style.transform = "rotate(315deg)";
+                    document.querySelector("img#rocket-type-img-mega").style.display = "inline-block";
+                }
 
                 setTimeout(function () {
                     if(document.getElementById('notification-furnace_avail')) {
@@ -1573,7 +1164,7 @@
             const wallet_1_payout = Math.floor(wallet_1 * (wallet_1_perct / 100 + 1));
 
             const wallet_2_text = document.getElementById("wallet_2_payout");
-            const wallet_2_perct = document.getElementById("criptoe-wallet-1-percentage").innerText.replace(' %', '');
+            const wallet_2_perct = document.getElementById("criptoe-wallet-2-percentage").innerText.replace(' %', '');
             const wallet_2 = IdlePixelPlus.getVarOrDefault("wallet1_invested", 0, "int");
             const wallet_2_payout = Math.floor(wallet_2 * (wallet_2_perct / 100 + 1));
 
@@ -1646,11 +1237,15 @@
                     CToe.called = false;
                     CToe.fetch_chart_data();
                     switch_panels('panel-criptoe-market');
-                    IdlePixelPlus.plugins['ui-tweaks'].addCriptoeValues();
+                    setTimeout(function() {
+                        IdlePixelPlus.plugins['ui-tweaks'].addCriptoeValues();
+                    }, 1000);
                 } else {
                     CToe.called = false;
                     CToe.fetch_chart_data();
-                    IdlePixelPlus.plugins['ui-tweaks'].addCriptoeValues();
+                    setTimeout(function() {
+                        IdlePixelPlus.plugins['ui-tweaks'].addCriptoeValues();
+                    }, 1000);
                 }
             }
 
@@ -2136,6 +1731,107 @@
 
             const menuBarCrystals = document.getElementById('menu-bar-crystals');
 
+            // "Moon & Sun Distance Info
+            const rocketInfoSideCar = document.createElement('div');
+            rocketInfoSideCar.id = 'rocket-info-side_car';
+            rocketInfoSideCar.style.paddingLeft = "20px";
+            rocketInfoSideCar.style.paddingTop = "10px";
+            rocketInfoSideCar.style.paddingBottom = "10px";
+            rocketInfoSideCar.innerHTML = `
+  <span id="rocket-info-label">MOON & SUN DISTANCE</span>
+  <br/>
+  <style type="text/css">
+    .span2 {
+      display: inline-block;
+      text-align: right;
+      width: 100px;
+    }
+  </style>
+  <span onClick="websocket.send(Modals.clicks_rocket())" id="menu-bar-rocket_moon">
+    <img id="moon-img" class="img-20" src="https://idle-pixel.wiki/images/4/47/Moon.png">
+    <span class="span2 rocket-dist_moon">0</span>
+    <span style='margin-left:0.75em;' class="rocket-dist_moon-symbol">🔴</span>
+    <img id="moon-rocket-img" class="img-20" src="${IMAGE_URL_BASE}/rocket.png">
+    <img id="moon-mega-rocket-img" class="img-20" src="${IMAGE_URL_BASE}/mega_rocket.gif">
+    <span class="moon-landed">LANDED</span>
+    <br/>
+  </span>
+  <span onClick="websocket.send(Modals.clicks_rocket())" id="menu-bar-rocket_sun">
+    <img id "sun-img" class="img-20" src="https://idle-pixel.wiki/images/6/61/Sun.png">
+    <span class="span2 rocket-dist_sun">0</span>
+    <span style='margin-left:0.75em;' class="rocket-dist_sun-symbol">🔴</span>
+    <img id="sun-rocket-img" class="img-20" src="${IMAGE_URL_BASE}/mega_rocket.gif">
+    <span class="sun-landed">LANDED</span>
+    <br/>
+  </span>
+</div>
+`;
+
+            document.getElementById("game-menu-bar-skills").insertAdjacentElement("beforebegin", rocketInfoSideCar);
+
+
+            // "Current Rocket Info" side car
+            const rocketInfoSideCarElement = document.getElementById('rocket-info-side_car');
+
+            // Append HTML after #rocket-info-side_car
+            const currentRocketInfo = document.createElement('div');
+            currentRocketInfo.id = 'current-rocket-info'
+            currentRocketInfo.style.borderTop = "1px solid rgba(66, 66, 66, 1)";
+            currentRocketInfo.style.borderBottom = "1px solid rgba(66, 66, 66, 1)";
+            currentRocketInfo.style.paddingTop = "10px";
+            currentRocketInfo.style.paddingBottom = "10px";
+            currentRocketInfo.innerHTML = `
+            <div style="padding-left: 20px;">
+  <span id="current-rocket-info-label" style:>CURRENT ROCKET INFO</span>
+  <br/>
+  <div id="rocket-travel-info">
+    <img id="rocket-current-travel-location-moon" class="img-20" src="https://idle-pixel.wiki/images/4/47/Moon.png">
+    <img id="rocket-current-travel-location-sun" class="img-20" src="https://idle-pixel.wiki/images/6/61/Sun.png">
+    <span id="current-rocket-travel-distances" style="padding-left: 20px;">Loading...</span>
+    <br/>
+    <img id="rocket-type-img-mega" class="img-20" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/mega_rocket.gif">
+    <img id="rocket-type-img-reg" class="img-20" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/rocket.gif">
+    <span id="current-rocket-travel-times" style="padding-left: 20px;">00:00:00</span>
+    <br/>
+  </div>
+  <div onClick="switch_panels('panel-crafting')" id="current-rocket-fuel-info">
+    <img id="rocket-rocket_fuel-img" class="img-20" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/rocket_fuel.png">
+    <span style="padding-left: 20px;">Rocket Fuel - </span>
+    <span id="rocket-fuel-count">0</span>
+    <br/>
+  </div>
+  <div onClick="switch_panels('panel-brewing')" id="current-rocket-pot-info">
+    <img id="rocket-rocket_potion-img" class="img-20" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/rocket_potion.png">
+    <span style="padding-left: 20px;">Rocket Potion </span>
+    (<span id="rocket-pot-count">0</span>)
+    <span> - </span>
+    <span id=rocket-pot-timer>0:00:00</span>
+  </div>
+</div>
+</div>
+`;
+            rocketInfoSideCarElement.parentNode.insertBefore(currentRocketInfo, rocketInfoSideCarElement.nextSibling);
+
+            const elementsToHide = [
+                'moon-mega-rocket-img',
+                'sun-rocket-img',
+                'moon-rocket-img',
+                'menu-bar-rocket_moon .moon-landed',
+                'menu-bar-rocket_sun .sun-landed'
+            ];
+
+            elementsToHide.forEach((elementId) => {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.style.display = 'none';
+                }
+            });
+
+            const currentRocketInfoElement = document.getElementById('current-rocket-info');
+            if (currentRocketInfoElement) {
+                currentRocketInfoElement.style.display = 'none';
+            }
+
             // SD Watch Left Side
 
             const sdWatchElement = document.createElement('span');
@@ -2149,10 +1845,10 @@
             const sdWatchElement2 = document.createElement('td');
             sdWatchElement2.innerHTML = `
             <div class="top-bar-2-item">
-  <span onClick="websocket.send(Modals.clicks_stardust_watch())" id="menu-bar-sd_watch">
+  <span onClick="websocket.send(Modals.clicks_stardust_watch())" id="menu-bar-sd_watch_2">
     <img id="sd-watch-img" class="img-20" src="${IMAGE_URL_BASE}/stardust_watch.png">
     <span class="sd-watch-text">Watch Charges</span>
-    (<span class="sd-watch-charges">0</span>)
+    (<span class="sd-watch-charges_2">0</span>)
   </span>
   </div>
 `;
@@ -2375,6 +2071,27 @@
             }
 
             document.querySelector("#notification-furnace-label").insertAdjacentHTML('afterend', '<span id="notification-furnace-timer" class="font-small color-white"></span>');
+            document.querySelector("#notification-rocket-label").insertAdjacentHTML('afterend', '<span id="notification-rocket-timer" class="font-small color-white"></span>');
+            document.querySelector("#notification-mega_rocket-label").insertAdjacentHTML('afterend', '<span id="notification-mega_rocket-timer" class="font-small color-white"></span>');
+
+            const fishingNetItembox = document.querySelector('itembox[data-item="fishing_net"]');
+            if (fishingNetItembox) {
+                const heatFishingTab = document.createElement('itembox');
+                heatFishingTab.id = 'heat-fishing-tab';
+                heatFishingTab.dataset.item = 'heat';
+                heatFishingTab.classList.add('shadow', 'hover');
+                heatFishingTab.setAttribute('data-bs-toggle', 'tooltip');
+
+                heatFishingTab.innerHTML = `
+        <div class="center mt-1">
+            <img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/heat.png" width="50px" height="50px">
+        </div>
+        <div class="center mt-2">
+            <item-display data-format="number" data-key="heat"></item-display>
+        </div>
+    `;
+
+                fishingNetItembox.before(heatFishingTab);
             }
 
             // clear chat button
@@ -2482,6 +2199,83 @@
             insertAfter(createCombatStatEntry("combat-info-fight_point-left", "https://d1xsc8x7nc5q8t.cloudfront.net/images/fight_points.png", "fight_points_white-left", "FP", currentFP), idleHeroArrowsArea);
             insertAfter(createCombatStatEntry("combat-info-rare_pot-left", "https://d1xsc8x7nc5q8t.cloudfront.net/images/rare_monster_potion.png", "rare_potion_white-left", "Rare Pot", rarePotInfo), idleHeroArrowsArea);
             insertAfter(createCombatStatEntry("combat-info-loot_pot-left", "https://d1xsc8x7nc5q8t.cloudfront.net/images/combat_loot_potion.png", "combat_loot_potion_white-left", "Loot Pot", combatLootPotInfo), idleHeroArrowsArea);
+
+            // Fishing Energy/Heat Info
+            const panelFishing = document.querySelector("#panel-fishing");
+            const progressBar = panelFishing.querySelector(".progress-bar");
+
+            const hrElement = document.createElement("hr");
+            progressBar.insertAdjacentElement('afterend', hrElement);
+
+            const containerDiv = document.createElement("div");
+            containerDiv.style.display = "flex";
+            containerDiv.style.flexDirection = "column";
+
+            const h5Element = document.createElement("h5");
+            h5Element.textContent = "Fish Energy";
+
+            const buttonElement = document.createElement("button");
+            buttonElement.textContent = "Show";
+            buttonElement.id = "fish_energy-visibility-button";
+            buttonElement.addEventListener("click", show_hide);
+            h5Element.appendChild(buttonElement);
+
+            const innerDiv = document.createElement("div");
+            innerDiv.id = "fishing-calculator-div";
+
+            const rawFishEnergySpan = document.createElement("span");
+            rawFishEnergySpan.textContent = "Total Raw Fish Energy: ";
+
+            const rawFishEnergyNumberSpan = document.createElement("span");
+            rawFishEnergyNumberSpan.textContent = "0";
+            rawFishEnergyNumberSpan.id = "raw-fish-energy-number";
+            rawFishEnergySpan.appendChild(rawFishEnergyNumberSpan);
+
+            const br1Element = document.createElement("br");
+
+            const heatToCookAllSpan = document.createElement("span");
+            heatToCookAllSpan.textContent = "Heat To Cook All: ";
+
+            const fishHeatRequiredNumberSpan = document.createElement("span");
+            fishHeatRequiredNumberSpan.textContent = "0";
+            fishHeatRequiredNumberSpan.id = "fish-heat-required-number";
+            heatToCookAllSpan.appendChild(fishHeatRequiredNumberSpan);
+
+            const br2Element = document.createElement("br");
+
+            const totalCookedFishEnergySpan = document.createElement("span");
+            totalCookedFishEnergySpan.textContent = "Total Cooked Fish Energy: ";
+
+            const cookedFishEnergyNumberSpan = document.createElement("span");
+            cookedFishEnergyNumberSpan.textContent = "0";
+            cookedFishEnergyNumberSpan.id = "cooked-fish-energy-number";
+            totalCookedFishEnergySpan.appendChild(cookedFishEnergyNumberSpan);
+
+            innerDiv.appendChild(rawFishEnergySpan);
+            innerDiv.appendChild(br1Element);
+            innerDiv.appendChild(heatToCookAllSpan);
+            innerDiv.appendChild(br2Element);
+            innerDiv.appendChild(totalCookedFishEnergySpan);
+
+            containerDiv.appendChild(h5Element);
+            containerDiv.appendChild(innerDiv);
+
+            hrElement.insertAdjacentElement('afterend', containerDiv);
+
+            function show_hide() {
+                const button = document.querySelector("#fish_energy-visibility-button");
+                const div = document.querySelector("#fishing-calculator-div");
+
+                if (button.textContent === "Hide") {
+                    div.style.display = "none";
+                    button.textContent = "Show";
+                } else {
+                    div.style.display = "block";
+                    button.textContent = "Hide";
+                }
+            }
+            this.calcFishEnergy();
+            document.querySelector("#fishing-calculator-div").style.display = "none";
 
             this.oilTimerNotification();
             setTimeout(function() {
@@ -2687,12 +2481,317 @@
                         el.textContent = (" - " + format_time(totalTime));
                     }
 
+                    ////////////////////////////////////// Rocket Info Start
+
+                    if(["rocket_km", "rocket_status"].includes(key) || key.includes("rocket_potion_timer") || key.includes("rocket_fuel") || key.includes("rocket_potion")) {
+                        const status = IdlePixelPlus.getVarOrDefault("rocket_status", "none", "string");
+                        const km = IdlePixelPlus.getVarOrDefault("rocket_km", 0, "int");
+                        var rocket_quest = IdlePixelPlus.getVarOrDefault("junk_planet_quest", 0, "int");
+                        var rQComp;
+                        if(rocket_quest == -1) {
+                            rQComp = 2
+                        }
+                        else {
+                            rQComp = 1
+                        }
+                        const total = IdlePixelPlus.getVarOrDefault("rocket_distance_required", 0, "int");
+                        const rocket_pot = IdlePixelPlus.getVarOrDefault("rocket_potion_timer", 0, "int");
+                        const rocket_type = IdlePixelPlus.getVarOrDefault("mega_rocket", 0, "int");
+                        const rocket_fuel = IdlePixelPlus.getVarOrDefault("rocket_fuel", 0, "int");
+                        const rocket_pot_count = IdlePixelPlus.getVarOrDefault("rocket_potion", 0, "int");
+                        const rocket_pot_timer = format_time(rocket_pot);
+                        const rocket_speed_moon = rocket_pot * 12 * rQComp;
+                        const rocket_speed_sun = rocket_pot * 2400 * rQComp;
+                        let pot_diff = "";
+                        let pot_diff_mega = "";
+                        let label = "";
+                        let label_side = "";
+                        let label_side_car_dist = "";
+                        let label_side_car_eta = "";
+                        if(status=="to_moon" || status=="from_moon") {
+                            const remaining = status=="to_moon" ? (total-km) / rQComp : km / rQComp;
+                            pot_diff = Math.round(remaining / 1.5) - (rocket_pot * 8);
+                            let eta = "";
+                            if (rocket_pot > 0) {
+                                if (rocket_speed_moon <= remaining * rQComp) {
+                                    eta = rocket_pot + pot_diff;
+                                }
+                                else {
+                                    eta = Math.round(remaining / 12);
+                                }
+                            }
+                            else {
+                                eta = Math.round(remaining / 1.5);
+                            }
+                            label = format_time(eta);
+                            label_side = format_time(eta);
+                            if(this.getConfig("rocketETATimer") && !this.getConfig("hideRocketKM")) {
+                                label = " - " + label;
+                                label_side_car_dist = km.toLocaleString() + "/" + total.toLocaleString();
+                                label_side_car_eta = label_side;
+                            }
+                        }
+                        else if(status=="to_sun" || status=="from_sun") {
+                            const remaining = status=="to_sun" ? (total-km) / rQComp: km / rQComp;
+                            pot_diff_mega = Math.round(remaining / 300) - (rocket_pot * 8);
+                            let eta = "";
+                            if (rocket_pot > 0) {
+                                if (rocket_speed_sun <= (remaining * rQComp)) {
+                                    eta = rocket_pot + pot_diff_mega;
+                                }
+                                else {
+                                    eta = Math.round(remaining / 2400);
+                                }
+                            }
+                            else {
+                                eta = Math.round(remaining / 300);
+                            }
+                            label = format_time(eta);
+                            label_side = format_time(eta);
+                            if(this.getConfig("rocketETATimer") && !this.getConfig("hideRocketKM")) {
+                                label = " - " + label;
+                                if(km == total) {
+                                    label_side_car_dist = "LANDED";
+                                } else if(total == 0) {
+                                    label_side_car_dist = "ROCKET IS CURRENTLY IDLE";
+                                } else {
+                                    label_side_car_dist = km.toLocaleString() + "/" + total.toLocaleString();
+                                    label_side_car_eta = label_side;
+                                }
+                            }
+                        }
+
+                        //rocket-type
+                        if(rocket_type == "1") {
+                            document.querySelector("#notification-mega_rocket-timer").textContent = label;
+                        }
+                        else {
+                            document.querySelector("#notification-rocket-timer").textContent = label;
+                        }
+
+                        document.querySelector("#current-rocket-travel-distances").textContent = label_side_car_dist;
+                        document.querySelector("#current-rocket-travel-times").textContent = label_side_car_eta;
+                        document.querySelector("#rocket-fuel-count").textContent = rocket_fuel;
+                        document.querySelector("#rocket-pot-count").textContent = rocket_pot_count;
+                        document.querySelector("#rocket-pot-timer").textContent = rocket_pot_timer;
+                    }
+                    ////////////////////////////////////// Rocket Info End
+
+                    ////////////////////////////////////// Rocket Status Start
+
+                    const megaRocketType = IdlePixelPlus.getVarOrDefault("mega_rocket", 0, "int");
+                    const rocketStatus = IdlePixelPlus.getVarOrDefault("rocket_status", "");
+                    const rocketImage = document.querySelector("img#notification-rocket-image");
+                    const moonRocketImage = document.querySelector("img#moon-rocket-img");
+                    const sunRocketImage = document.querySelector("img#sun-rocket-img");
+                    const menuBarRocketMoon = document.querySelector("#menu-bar-rocket_moon");
+                    const menuBarRocketSun = document.querySelector("#menu-bar-rocket_sun");
+                    const rocketTypeImgReg = document.querySelector("img#rocket-type-img-reg");
+                    const rocketTypeImgMega = document.querySelector("img#rocket-type-img-mega");
+                    const rocketCurrentTravelLocationMoon = document.querySelector("img#rocket-current-travel-location-moon");
+                    const rocketCurrentTravelLocationSun = document.querySelector("img#rocket-current-travel-location-sun");
+                    const rocketTravelDistances = document.querySelector("#current-rocket-travel-distances");
+
+                    //if (key === "rocket_status") {
+                    if (megaRocketType !== 1) {
+                        if (rocketStatus === "from_moon") {
+                            setTransform(rocketImage, "rotate(180deg)");
+                            setTransform(moonRocketImage, "rotate(180deg)");
+                            showElement(moonRocketImage);
+                            hideElement(document.querySelector("#moon-mega-rocket-img"));
+                            hideElement(sunRocketImage);
+                            hideElement(menuBarRocketMoon.querySelector(".moon-landed"));
+                            hideElement(menuBarRocketSun.querySelector(".sun-landed"));
+                            setTransform(rocketTypeImgReg, "rotate(180deg)");
+                            showInlineBlockElement(rocketTypeImgReg);
+                            hideElement(rocketTypeImgMega);
+                            showElement(rocketCurrentTravelLocationMoon);
+                            hideElement(rocketCurrentTravelLocationSun);
+                        } else if (rocketStatus.includes("at_moon")) {
+                            hideElement(document.querySelector("#moon-mega-rocket-img"));
+                            hideElement(sunRocketImage);
+                            hideElement(moonRocketImage);
+                            showElement(menuBarRocketMoon.querySelector(".moon-landed"));
+                            hideElement(menuBarRocketSun.querySelector(".sun-landed"));
+                            showInlineBlockElement(rocketTypeImgReg);
+                            showElement(rocketCurrentTravelLocationMoon);
+                            hideElement(rocketCurrentTravelLocationSun);
+                        } else if (rocketStatus.includes("to_moon")) {
+                            clearTransform(rocketImage);
+                            clearTransform(moonRocketImage);
+                            hideElement(document.querySelector("#moon-mega-rocket-img"));
+                            hideElement(sunRocketImage);
+                            showElement(moonRocketImage);
+                            hideElement(menuBarRocketMoon.querySelector(".moon-landed"));
+                            hideElement(menuBarRocketSun.querySelector(".sun-landed"));
+                            clearTransform(rocketTypeImgReg);
+                            showInlineBlockElement(rocketTypeImgReg);
+                            hideElement(rocketTypeImgMega);
+                            showElement(rocketCurrentTravelLocationMoon);
+                            hideElement(rocketCurrentTravelLocationSun);
+                        } else {
+                            hideElement(document.querySelector("#moon-mega-rocket-img"));
+                            hideElement(sunRocketImage);
+                            hideElement(moonRocketImage);
+                            hideElement(menuBarRocketMoon.querySelector(".moon-landed"));
+                            hideElement(menuBarRocketSun.querySelector(".sun-landed"));
+                            hideElement(rocketTypeImgReg);
+                            hideElement(rocketTypeImgMega);
+                            hideElement(rocketCurrentTravelLocationMoon);
+                            hideElement(rocketCurrentTravelLocationSun);
+                            rocketTravelDistances.textContent = "ROCKET IS CURRENTLY IDLE";
+                        }
+                    } else {
+                        if (rocketStatus === "from_sun" || rocketStatus === "from_moon") {
+                            setTransform(document.querySelector("#notification-mega_rocket-image"), "rotate(180deg)");
+                            if (rocketStatus === "from_sun") {
+                                setTransform(sunRocketImage, "rotate(180deg)");
+                                showElement(sunRocketImage);
+                                hideElement(document.querySelector("#moon-mega-rocket-img"));
+                                hideElement(moonRocketImage);
+                                hideElement(menuBarRocketMoon.querySelector(".moon-landed"));
+                                hideElement(menuBarRocketSun.querySelector(".sun-landed"));
+                                setTransform(rocketTypeImgMega, "rotate(180deg)");
+                                hideElement(rocketTypeImgReg);
+                                showInlineBlockElement(rocketTypeImgMega);
+                                hideElement(rocketCurrentTravelLocationMoon);
+                                showElement(rocketCurrentTravelLocationSun);
+                            } else {
+                                setTransform(document.querySelector("#moon-mega-rocket-img"), "rotate(180deg)");
+                                showElement(document.querySelector("#moon-mega-rocket-img"));
+                                hideElement(sunRocketImage);
+                                hideElement(moonRocketImage);
+                                hideElement(menuBarRocketMoon.querySelector(".moon-landed"));
+                                hideElement(menuBarRocketSun.querySelector(".sun-landed"));
+                                setTransform(rocketTypeImgMega, "rotate(180deg)");
+                                hideElement(rocketTypeImgReg);
+                                showInlineBlockElement(rocketTypeImgMega);
+                                showElement(rocketCurrentTravelLocationMoon);
+                                hideElement(rocketCurrentTravelLocationSun);
+                            }
+                        } else {
+                            clearTransform(document.querySelector("#notification-mega_rocket-image"));
+                            clearTransform(rocketTypeImgMega);
+                            if (rocketStatus === "to_sun") {
+                                clearTransform(sunRocketImage);
+                                showElement(sunRocketImage);
+                                hideElement(document.querySelector("#moon-mega-rocket-img"));
+                                hideElement(moonRocketImage);
+                                hideElement(menuBarRocketMoon.querySelector(".moon-landed"));
+                                hideElement(menuBarRocketSun.querySelector(".sun-landed"));
+                                hideElement(rocketTypeImgReg);
+                                showInlineBlockElement(rocketTypeImgMega);
+                                hideElement(rocketCurrentTravelLocationMoon);
+                                showElement(rocketCurrentTravelLocationSun);
+                            } else if (rocketStatus === "to_moon") {
+                                clearTransform(document.querySelector("#moon-mega-rocket-img"));
+                                showElement(document.querySelector("#moon-mega-rocket-img"));
+                                hideElement(sunRocketImage);
+                                hideElement(moonRocketImage);
+                                hideElement(menuBarRocketMoon.querySelector(".moon-landed"));
+                                hideElement(menuBarRocketSun.querySelector(".sun-landed"));
+                                hideElement(rocketTypeImgReg);
+                                showInlineBlockElement(rocketTypeImgMega);
+                                showElement(rocketCurrentTravelLocationMoon);
+                                hideElement(rocketCurrentTravelLocationSun);
+                            } else if (rocketStatus === "none") {
+                                hideElement(document.querySelector("#moon-mega-rocket-img"));
+                                hideElement(sunRocketImage);
+                                hideElement(moonRocketImage);
+                                hideElement(menuBarRocketMoon.querySelector(".moon-landed"));
+                                hideElement(menuBarRocketSun.querySelector(".sun-landed"));
+                                hideElement(rocketTypeImgReg);
+                                hideElement(rocketTypeImgMega);
+                                hideElement(rocketCurrentTravelLocationMoon);
+                                hideElement(rocketCurrentTravelLocationSun);
+                                rocketTravelDistances.textContent = "ROCKET IS CURRENTLY IDLE";
+                            } else if (valueAfter.includes("at_moon")) {
+                                hideElement(document.querySelector("#moon-mega-rocket-img"));
+                                hideElement(sunRocketImage);
+                                hideElement(moonRocketImage);
+                                showElement(menuBarRocketMoon.querySelector(".moon-landed"));
+                                hideElement(menuBarRocketSun.querySelector(".sun-landed"));
+                                hideElement(rocketTypeImgReg);
+                                showInlineBlockElement(rocketTypeImgMega);
+                                showElement(rocketCurrentTravelLocationMoon);
+                                hideElement(rocketCurrentTravelLocationSun);
+                            } else {
+                                hideElement(document.querySelector("#moon-mega-rocket-img"));
+                                hideElement(sunRocketImage);
+                                hideElement(moonRocketImage);
+                                hideElement(menuBarRocketMoon.querySelector(".moon-landed"));
+                                showElement(menuBarRocketSun.querySelector(".sun-landed"));
+                                hideElement(rocketTypeImgReg);
+                                showInlineBlockElement(rocketTypeImgMega);
+                                hideElement(rocketCurrentTravelLocationMoon);
+                                showElement(rocketCurrentTravelLocationSun);
+                            }
+                        }
+                    }
+                    //}
+
+                    const rocket_usable = IdlePixelPlus.getVarOrDefault("rocket_usable", 0, "int");
+                    const rocket_travel_check = IdlePixelPlus.getVarOrDefault("rocket_distance_required", 0, "int");
+                    const rocket_pot_timer_check = IdlePixelPlus.getVarOrDefault("rocket_potion_timer", 0, "int");
+                    const rocket_check = IdlePixelPlus.getVarOrDefault("mega_rocket", 0, "int");
+                    if (this.getConfig("leftSideRocketInfoSection") && rocket_usable > 0) {
+                        showBlockElement(document.getElementById("current-rocket-info"));
+
+                        if (this.getConfig("leftSideRocketInfo")) {
+                            showBlockElement(document.getElementById("rocket-travel-info"));
+                            hideElement(document.getElementById("notification-mega_rocket"));
+                            hideElement(document.getElementById("notification-rocket"));
+                        } else if (rocket_travel_check > 0 && rocket_check == 1) {
+                            showBlockElement(document.getElementById("notification-mega_rocket"));
+                            hideElement(document.getElementById("rocket-travel-info"));
+                        } else if (rocket_travel_check > 0 && rocket_check == 0) {
+                            showInlineBlockElement(document.getElementById("notification-rocket"));
+                            hideElement(document.getElementById("rocket-travel-info"));
+                        } else {
+                            hideElement(document.getElementById("rocket-travel-info"));
+                        }
+
+                        if (this.getConfig("leftSideRocketFuel")) {
+                            showBlockElement(document.getElementById("current-rocket-fuel-info"));
+                        } else {
+                            hideElement(document.getElementById("current-rocket-fuel-info"));
+                        }
+
+                        if (this.getConfig("leftSideRocketPot")) {
+                            showBlockElement(document.getElementById("current-rocket-pot-info"));
+                            hideElement(document.getElementById("notification-potion-rocket_potion_timer"));
+                        } else if (rocket_pot_timer_check > 0) {
+                            showInlineBlockElement(document.getElementById("notification-potion-rocket_potion_timer"));
+                            hideElement(document.getElementById("current-rocket-pot-info"));
+                        } else {
+                            hideElement(document.getElementById("current-rocket-pot-info"));
+                        }
+                    } else {
+                        hideElement(document.getElementById("current-rocket-info"));
+                    }
+
+                    if (rocket_travel_check == 0) {
+                        document.getElementById("current-rocket-travel-distances").textContent = "Rocket is IDLE";
+                        setTransform(document.querySelector("img#rocket-type-img-mega"), "rotate(315deg)");
+                        showBlockElement(document.querySelector("img#rocket-type-img-mega"));
+                    }
+
+                    if (key == "combat_loot_potion_active") {
+                        const loot_pot = IdlePixelPlus.getVarOrDefault("combat_loot_potion_active", 0, "int");
+                        if (loot_pot == 0) {
+                            hideElement(document.getElementById("notification-loot_pot_avail"));
+                        } else {
+                            showInlineBlockElement(document.getElementById("notification-loot_pot_avail"));
+                        }
+                    }
+
                     ////////// SD Watch Notification
                     const sdWatchCrafted = IdlePixelPlus.getVarOrDefault("stardust_watch_crafted", 0, "int");
                     const sdWatchCharges = IdlePixelPlus.getVarOrDefault("stardust_watch_charges", 0, "int");
                     if (this.getConfig("moveSDWatch") && sdWatchCrafted === 1) {
                         hideElement(document.getElementById("notification-stardust_watch"));
                         document.querySelector("#menu-bar-sd_watch .sd-watch-charges").textContent = sdWatchCharges;
+                        document.querySelector("#menu-bar-sd_watch_2 .sd-watch-charges_2").textContent = sdWatchCharges;
                     } else if (!this.getConfig("moveSDWatch") && sdWatchCharges > 0) {
                         showElement(document.getElementById("notification-stardust_watch"));
                     } else {
@@ -2725,6 +2824,10 @@
 
                     if(key.endsWith("_xp")) {
                         this.extendedLevelsUpdate();
+                    }
+
+                    if(key == 'moon_distance' || key == 'sun_distance') {
+                        this.rocketInfoUpdate(key);
                     }
 
                     const hideBoatNotifications = this.getConfig("hideBoat");
@@ -2866,6 +2969,7 @@
 
         onCombatEnd() {
             this.updateColors(PANEL_UPDATE_FILTER);
+            this.updateColors();
         }
     }
 
