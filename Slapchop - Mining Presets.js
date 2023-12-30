@@ -39,11 +39,11 @@
                     </div>
                     <div>
                         <button onclick="window.miningPresetSave(3)">Save 3</button>
-                        <button onclick="window.miningPresetLoad(3)*/">Load 3</button>
+                        <button onclick="window.miningPresetLoad(3)">Load 3</button>
                     </div>
                     <div>
                         <button onclick="window.miningPresetSave(4)">Save 4</button>
-                        <button onclick="window.miningPresetLoad(4)*/">Load 4</button>
+                        <button onclick="window.miningPresetLoad(4)">Load 4</button>
                     </div>
                     <div>
                         <button onclick="window.allMachines()">All</button>
