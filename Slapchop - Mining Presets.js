@@ -61,6 +61,7 @@
 	function miningPresetSave(presetNumber) {
 		let presetData = {};
 		let presetName = `Preset ${presetNumber}`;
+		let username = getVar("username", "", "string");
 
 		miningEquipment.forEach(function (machine) {
 			let machineCount = `${machine}_on`;
@@ -68,16 +69,22 @@
 			presetData[machine] = ippMachineOnCount;
 		});
 
-		let allPresets = JSON.parse(localStorage.getItem("miningPresets")) || {};
+		let allPresets =
+			JSON.parse(localStorage.getItem(`${username}.miningPresets`)) || {};
 
 		allPresets[presetName] = presetData;
 
-		localStorage.setItem("miningPresets", JSON.stringify(allPresets));
+		localStorage.setItem(
+			`${username}.miningPresets`,
+			JSON.stringify(allPresets)
+		);
 	}
 
 	function miningPresetLoad(presetNumber) {
 		// Load presets from localStorage
-		let allPresets = JSON.parse(localStorage.getItem("miningPresets")) || {};
+		let username = getVar("username", "", "string");
+		let allPresets =
+			JSON.parse(localStorage.getItem(`${username}.miningPresets`)) || {};
 		let presetName = `Preset ${presetNumber}`;
 		let presetData = allPresets[presetName];
 
