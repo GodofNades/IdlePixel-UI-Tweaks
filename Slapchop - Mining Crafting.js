@@ -356,4 +356,7 @@
 	window.updateQuickSmelt = updateQuickSmelt;
 	window.quickMining = quickMining;
 	window.quickMineral = quickMineral;
+    window.SMELTABLES = SMELTABLES;
+    window.MINING = MINING;
+    window.MINERAL = MINERAL;
 })();
