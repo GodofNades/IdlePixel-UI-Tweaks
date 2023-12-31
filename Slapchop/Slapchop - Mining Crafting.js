@@ -12,6 +12,8 @@
 (function () {
 	"use strict";
 
+	//Code base being funky
+
 	var singleOverride;
 
 	const IMAGE_URL_BASE = document
