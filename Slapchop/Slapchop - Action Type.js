@@ -12,7 +12,6 @@
 (function () {
 	"use strict";
 
-    
     function isPrimaryActionSlapchop(event) {
         const prop = IdlePixelPlus.plugins.slapchop.getConfig("primaryActionKey") || "none";
         if(prop=="none") {

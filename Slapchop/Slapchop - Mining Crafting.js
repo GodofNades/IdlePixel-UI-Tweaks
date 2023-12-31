@@ -12,6 +12,8 @@
 (function () {
 	"use strict";
 
+	var singleOverride;
+
 	const IMAGE_URL_BASE = document
 		.querySelector("itembox[data-item=copper] img")
 		.src.replace(/\/[^/]+.png$/, "");
