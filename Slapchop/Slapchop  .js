@@ -15,6 +15,10 @@
 // @require      https://greasyfork.org/scripts/483549-idlepixel-slapchop-farming-code/code/IdlePixel%20SlapChop%20-%20Farming%20Code.js?anticache=20220905
 // @require      https://greasyfork.org/scripts/483553-idlepixel-slapchop-brewing/code/IdlePixel%20SlapChop%20-%20Brewing.js?anticache=20220905
 // @require      https://greasyfork.org/scripts/483555-idlepixel-slapchop-woodcutting-code/code/IdlePixel%20SlapChop%20-%20Woodcutting%20Code.js?anticache=20220905
+// @require      https://greasyfork.org/scripts/483568-idlepixel-slapchop-cooking-code/code/IdlePixel%20SlapChop%20-%20Cooking%20Code.js?anticache=20220905
+// @require      https://greasyfork.org/scripts/483569-idlepixel-slapchop-fishing-code/code/IdlePixel%20SlapChop%20-%20Fishing%20Code.js?anticache=20220905
+// @require      https://greasyfork.org/scripts/483570-idlepixel-slapchop-invention-code/code/IdlePixel%20SlapChop%20-%20Invention%20Code.js?anticache=20220905
+// @require      https://greasyfork.org/scripts/483571-idlepixel-slapchop-combat-code/code/IdlePixel%20SlapChop%20-%20Combat%20Code.js?anticache=20220905
 // ==/UserScript==
 
 (function () {
@@ -27,9 +31,9 @@
 		.attr("src")
 		.replace(/\/[^/]+.png$/, "");
 
-	
+
 	let loaded = false;
-	
+
 	let onLoginLoaded = false;
 
 	class SlapChopPlugin extends IdlePixelPlusPlugin {
@@ -512,6 +516,7 @@
 		}
 
 		onLogin() {
+            window.slapchopUser = IdlePixelPlus.getVarOrDefault("username", "", "string");
 			singleOverride =
 				IdlePixelPlus.plugins.slapchop.getConfig("autoSingleEnabled");
 			window.initSlapchopStyles();
