@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel SlapChop - Mining/Crafting Tabs
 // @namespace    godofnades.idlepixel
-// @version      0.1
+// @version      0.2
 // @description  Split off of IdlePixel Slapchop for all Mining and Crafting Code.
 // @author       GodofNades
 // @license      MIT
