@@ -134,7 +134,7 @@
 						}" class="slapchop-quickfight-zone m-1 ${
 				zone.blood ? "blood" : ""
 			}">
-              <button type="button" onclick="IdlePixelPlus.plugins.slapchop.quickFight('${
+              <button type="button" onclick="window.quickFight('${
 								zone.id
 							}')">${zone.id
 				.replace(/_/g, " ")
