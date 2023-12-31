@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel SlapChop - Mining/Crafting Tabs
 // @namespace    godofnades.idlepixel
-// @version      0.2
+// @version      0.2.1
 // @description  Split off of IdlePixel Slapchop for all Mining and Crafting Code.
 // @author       GodofNades
 // @license      MIT
@@ -353,7 +353,7 @@
 	window.quickSmelt = quickSmelt;
 	window.maxCraftable = maxCraftable;
 	window.updateMaxCraftable = updateMaxCraftable;
+	window.updateQuickSmelt = updateQuickSmelt;
 	window.quickMining = quickMining;
-	window.initQuickSmelt = initQuickSmelt;
 	window.quickMineral = quickMineral;
 })();
