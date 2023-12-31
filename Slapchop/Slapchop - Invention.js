@@ -96,7 +96,9 @@
 		});
 	}
 
-	window.initQuickFoundry = initQuickFoundry;
-	window.initQuickBurn = initQuickBurn;
-	window.LOGS = LOGS;
+	window.initQuickGrind = initQuickGrind;
+	window.initQuickCleanse = initQuickCleanse;
+	window.quickGrind = quickGrind;
+	window.quickCleanse = quickCleanse;
+	window.GRINDABLE = GRINDABLE;
 })();
