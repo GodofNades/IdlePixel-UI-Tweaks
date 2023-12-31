@@ -18,9 +18,19 @@
     .querySelector("itembox[data-item=copper] img")
     .src.replace(/\/[^/]+.png$/, "");
 
+	const BONEMEALABLE = [
+		"bones",
+		"big_bones",
+		"ice_bones",
+		"ashes",
+		"blood_bones",
+	];
+
+	const PLANTABLES = $('itembox[data-item$="_seeds"]')
+		.toArray()
+		.map((el) => el.getAttribute("data-item"));
 	
     function quickBone(item, alt) {
-        /* lol */
         if (IdlePixelPlus.getVarOrDefault("bonemeal_bin", 0, "int") != 0) {
             let n = IdlePixelPlus.getVarOrDefault(item, 0, "int");
             singleOverride =
@@ -35,7 +45,7 @@
     }
 
     function initQuickBones() {
-        BONEMEALABLE.forEach((item) => {
+        window.BONEMEALABLE.forEach((item) => {
             $(`itembox[data-item="${item}"]`).on("contextmenu", (event) => {
                 if (
                     IdlePixelPlus.plugins.slapchop.getConfig(
@@ -65,7 +75,6 @@
         `);
     }
 
-    
 	function quickHarvest() {
 		for (let i = 1; i <= 5; i++) {
 			let status = IdlePixelPlus.getVarOrDefault("farm_stage_" + i, 0, "int");
@@ -98,7 +107,7 @@
     }
 
     function initQuickPlant() {
-        PLANTABLES.forEach((item) => {
+        window.PLANTABLES.forEach((item) => {
             $(`itembox[data-item="${item}"]`).on("contextmenu", (event) => {
                 if (
                     IdlePixelPlus.plugins.slapchop.getConfig(
@@ -126,7 +135,12 @@
         });
     }
 
-	window.initQuickGather = initQuickGather;
-	window.quickGather = quickGather;
-    window.LOOT_BAGS = LOOT_BAGS;
+	window.initQuickBones = initQuickBones;
+    window.initQuickHarvest = initQuickHarvest;
+    window.initQuickPlant = initQuickPlant;
+	window.quickBone = quickBone;
+	window.quickHarvest = quickHarvest;
+	window.quickPlant = quickPlant;
+    window.BONEMEALABLE = BONEMEALABLE;
+    window.PLANTABLES = PLANTABLES;
 })();
