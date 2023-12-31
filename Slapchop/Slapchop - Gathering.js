@@ -12,6 +12,12 @@
 (function () {
 	"use strict";
 
+    var singleOverride;
+
+	const IMAGE_URL_BASE = document
+    .querySelector("itembox[data-item=copper] img")
+    .src.replace(/\/[^/]+.png$/, "");
+
 	const LOOT_BAGS = $(`itembox[data-item^="gathering_loot_bag_"]`)
 		.toArray()
 		.map((el) => el.getAttribute("data-item"));
@@ -31,7 +37,7 @@
 	}
 
 	function initQuickGather() {
-		LOOT_BAGS.forEach((item) => {
+		window.LOOT_BAGS.forEach((item) => {
 			$(`itembox[data-item="${item}"]`).on("contextmenu", (event) => {
 				if (
 					IdlePixelPlus.plugins.slapchop.getConfig(
