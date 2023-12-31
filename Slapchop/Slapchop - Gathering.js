@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel SlapChop - Gathering Code
 // @namespace    godofnades.idlepixel
-// @version      0.1
+// @version      0.1.1
 // @description  Split off of IdlePixel Slapchop for all Gathering Code.
 // @author       GodofNades
 // @license      MIT
