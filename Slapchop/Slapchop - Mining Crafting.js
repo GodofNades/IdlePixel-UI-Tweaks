@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         IdlePixel SlapChop - Mining/Crafting Tabs
+// @name         IdlePixel SlapChop - Mining/Crafting Code
 // @namespace    godofnades.idlepixel
 // @version      0.2.1
 // @description  Split off of IdlePixel Slapchop for all Mining and Crafting Code.
@@ -11,8 +11,6 @@
 
 (function () {
 	"use strict";
-
-	//Code base being funky
 
 	var singleOverride;
 
