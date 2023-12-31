@@ -477,14 +477,41 @@
 		});
 	}
 
-	window.initMiningPresets = initMiningPresets;
-	window.allMachines = allMachines;
-	window.noMachines = noMachines;
-	window.miningPresetSave = miningPresetSave;
-	window.miningPresetLoad = miningPresetLoad;
+	function quickCraft() {
+		const max = window.maxCraftable();
+		if (max > 0) {
+			IdlePixelPlus.sendMessage(`CRAFT=rocket_fuel~${max}`);
+		}
+	}
+
+	function quickCraftSingle() {
+		IdlePixelPlus.sendMessage(`CRAFT=rocket_fuel~1`);
+	}
+
+	function initQuickRocketFuel() {
+		$("#crafting-table tbody tr[data-crafting-item=rocket_fuel]").each(
+			function () {
+				const el = $(this);
+				const craft = el.attr("data-crafting-item");
+				if (!craft) {
+					return;
+				}
+				el.find("td:nth-child(4)").append(`
+            <div class="slapchop-rocketfuelsingle-button"
+            onclick="event.stopPropagation(); window.quickCraftSingle()"">Quick Craft 1</div>
+            <div class="slapchop-rocketfuelmax-button"
+            onclick="event.stopPropagation(); window.quickCraft()"">Quick Craft Max</div>
+            `);
+			}
+		);
+	}
+
+
 	window.initQuickMineral = initQuickMineral;
 	window.initQuickMining = initQuickMining;
 	window.initQuickSmelt = initQuickSmelt;
+    window.initQuickRocketFuel = initQuickRocketFuel;
+    window.initMiningPresets = initMiningPresets;
 	window.maxSmeltable = maxSmeltable;
 	window.quickSmelt = quickSmelt;
 	window.maxCraftable = maxCraftable;
@@ -492,6 +519,12 @@
 	window.updateQuickSmelt = updateQuickSmelt;
 	window.quickMining = quickMining;
 	window.quickMineral = quickMineral;
+	window.quickCraft = quickCraft;
+	window.quickCraftSingle = quickCraftSingle;
+	window.allMachines = allMachines;
+	window.noMachines = noMachines;
+	window.miningPresetSave = miningPresetSave;
+	window.miningPresetLoad = miningPresetLoad;
 	window.SMELTABLES = SMELTABLES;
 	window.MINING = MINING;
 	window.MINERAL = MINERAL;
