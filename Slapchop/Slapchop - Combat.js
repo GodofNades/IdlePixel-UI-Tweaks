@@ -63,8 +63,6 @@
 		},
 	};
 
-	const username = var_username;
-
 	const EXPLOSIVES = ["bomb", "tnt", "large_tnt", "mega_bomb"];
 
 	function loadPresets(buttonNum) {
