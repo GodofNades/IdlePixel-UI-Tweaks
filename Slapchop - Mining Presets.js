@@ -2,7 +2,7 @@
 // @name         IdlePixel SlapChop - Mining Equipment
 // @namespace    godofnades.idlepixel
 // @version      0.1
-// @description  Split off of IdlePixel UI Tweaks for only showing the Heat and Energy in the fishing tab.
+// @description  Split off of IdlePixel Slapchop for Mining Machine Presets.
 // @author       GodofNades
 // @license      MIT
 // @match        *://idle-pixel.com/login/play/
