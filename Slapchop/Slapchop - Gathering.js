@@ -12,7 +12,7 @@
 (function () {
 	"use strict";
 
-    var singleOverride;
+    let singleOverride;
 
 	const IMAGE_URL_BASE = document
     .querySelector("itembox[data-item=copper] img")
