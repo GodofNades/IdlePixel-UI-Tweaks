@@ -2,7 +2,7 @@
 // @name         IdlePixel SlapChop - Styles
 // @namespace    godofnades.idlepixel
 // @version      0.1
-// @description  Split off of IdlePixel UI Tweaks for only showing the Heat and Energy in the fishing tab.
+// @description  Split off of IdlePixel Slapchop for all style information.
 // @author       GodofNades
 // @license      MIT
 // @match        *://idle-pixel.com/login/play/
