@@ -22,7 +22,7 @@
 
 	function quickBurn(item, alt) {
 		let n = IdlePixelPlus.getVarOrDefault(item, 0, "int");
-		singleOverride = window.getConfig("autoSingleEnabled");
+		singleOverride = IdlePixelPlus.plugins.slapchop.getConfig("autoSingleEnabled");
 		if (alt || singleOverride) {
 			n--;
 		}
@@ -34,7 +34,7 @@
 	function initQuickBurn() {
 		LOGS.forEach((item) => {
 			$(`itembox[data-item="${item}"]`).on("contextmenu", (event) => {
-				if (window.getConfig("quickBurnRightClickEnabled")) {
+				if (IdlePixelPlus.plugins.slapchop.getConfig("quickBurnRightClickEnabled")) {
 					const primary = window.isPrimaryActionSlapchop(event);
 					const alt = window.isAltActionSlapchop(event);
 					if (primary || alt) {
@@ -151,8 +151,8 @@
 		for (let i = 1; i <= 5; i++) {
 			let status = IdlePixelPlus.getVarOrDefault("tree_stage_" + i, 0, "int");
 			let treeType = IdlePixelPlus.getVarOrDefault("tree_" + i, "none");
-			let sdCut = window.getConfig("quickChopSDTreesEnabled");
-			let regCut = window.getConfig("quickChopRegTreesEnabled");
+			let sdCut = IdlePixelPlus.plugins.slapchop.getConfig("quickChopSDTreesEnabled");
+			let regCut = IdlePixelPlus.plugins.slapchop.getConfig("quickChopRegTreesEnabled");
 			if (
 				(status == 4 && treeType != "stardust_tree" && treeType != "tree") ||
 				(status == 4 && treeType == "stardust_tree" && sdCut) ||

@@ -14,6 +14,7 @@
 // @require      https://greasyfork.org/scripts/483546-idlepixel-slapchop-gathering-code/code/IdlePixel%20SlapChop%20-%20Gathering%20Code.js?anticache=20220905
 // @require      https://greasyfork.org/scripts/483549-idlepixel-slapchop-farming-code/code/IdlePixel%20SlapChop%20-%20Farming%20Code.js?anticache=20220905
 // @require      https://greasyfork.org/scripts/483553-idlepixel-slapchop-brewing/code/IdlePixel%20SlapChop%20-%20Brewing.js?anticache=20220905
+// @require      https://greasyfork.org/scripts/483555-idlepixel-slapchop-woodcutting-code/code/IdlePixel%20SlapChop%20-%20Woodcutting%20Code.js?anticache=20220905
 // ==/UserScript==
 
 (function () {
