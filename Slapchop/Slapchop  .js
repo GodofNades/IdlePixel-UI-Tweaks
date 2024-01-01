@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Slap Chop - GodofNades Fork
 // @namespace    godofnades.idlepixel
-// @version      3.0
+// @version      3.0.1
 // @description  Ain't nobody got time for that! Adds some QoL 1-click actions.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
