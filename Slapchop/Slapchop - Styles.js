@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel SlapChop - Styles
 // @namespace    godofnades.idlepixel
-// @version      0.1
+// @version      0.1.1
 // @description  Split off of IdlePixel Slapchop for all style information.
 // @author       GodofNades
 // @license      MIT
@@ -168,6 +168,10 @@
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
+        }
+
+        #lamp-zone-all {
+            display: inline-flex;
         }
 
         #melee-lamp-zone {
