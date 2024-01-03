@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Slap Chop - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      3.0.3
+// @version      3.0.4
 // @description  Ain't nobody got time for that! Adds some QoL 1-click actions.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -1663,6 +1663,28 @@
 
         window.SCUSERNAME = getVar("username", "", "string");
 
+        window.SCRINGS = [
+            "accuracy_ring",
+            "ancient_accuracy_ring",
+            "ancient_damage_ring",
+            "ancient_defence_ring",
+            "damage_ring",
+            "defence_ring",
+            "good_accuracy_ring",
+            "good_damage_ring",
+            "good_defence_ring",
+            "great_accuracy_ring",
+            "great_damage_ring",
+            "great_defence_ring",
+            "master_ring",
+            "perfect_accuracy_ring",
+            "perfect_damage_ring",
+            "perfect_defence_ring",
+            "weak_accuracy_ring",
+            "weak_damage_ring",
+            "weak_defence_ring",
+        ]
+
         return {
             loadPresets: function(buttonNum) {
                 // Retrieve all presets from local storage
@@ -1703,7 +1725,6 @@
                 // Update the single entry in local storage with the modified allPresets object
                 localStorage.setItem(SCUSERNAME + ".combat_presets", JSON.stringify(allPresets));
             },
-
 
             initQuickFight: async function() {
                 let html = `
@@ -1796,6 +1817,11 @@
               <button onclick="sCCombat().loadPresets(10)">Load 10</button>
             </div>
           </div>
+          <br>
+          <h5>Rings:</h5>
+          <div>
+              <button onclick="sCCombat().equipAllRings()">All</button>
+              <button onclick="sCCombat().unEquipAllRings()">None</button>
           <hr>
         </div>
       `;
@@ -2109,52 +2135,85 @@
               <img data-tooltip="Preset 8" id="in-combat-presets-icon-8" onclick="sCCombat().loadPresets(8)" class="combat-presets-combat-icon hover w30" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/melee.png" />
               <img data-tooltip="Preset 9" id="in-combat-presets-icon-9" onclick="sCCombat().loadPresets(9)" class="combat-presets-combat-icon hover w30" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/melee.png" />
               <img data-tooltip="Preset 10" id="in-combat-presets-icon-10" onclick="sCCombat().loadPresets(10)" class="combat-presets-combat-icon hover w30" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/melee.png" />
+              <br />
+              <br />
+              <img id="in-combat-presets-equip-rings" onclick="sCCombat().equipAllRings()" class="combat-presets-combat-icon hover w30" style="background-color: darkgreen" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/rings_icon.png" title="Equip All Rings">
+              <img id="in-combat-presets-unequip-rings" onclick="sCCombat().unEquipAllRings()" class="combat-presets-combat-icon hover w30" style="background-color: darkred" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/rings_icon.png" title="All Rings">
             `);
             },
 
             initPresetListener: function() {
                 document.addEventListener("keyup", (e) => {
+                    let chatFocused = $("#chat-area-input").is(":focus");
                     switch (e.keyCode) {
                         case 54: //6
-                            var chat_focused_6 = $("#chat-area-input").is(":focus");
                             if (
                                 Globals.currentPanel == "panel-combat-canvas" ||
-                                (Globals.currentPanel == "panel-combat" && !chat_focused_6)
+                                (Globals.currentPanel == "panel-combat" && !chatFocused)
                             )
-                                loadPresets(6);
+                                sCCombat().loadPresets(6);
                             break;
                         case 55: //7
-                            var chat_focused_7 = $("#chat-area-input").is(":focus");
                             if (
                                 Globals.currentPanel == "panel-combat-canvas" ||
-                                (Globals.currentPanel == "panel-combat" && !chat_focused_7)
+                                (Globals.currentPanel == "panel-combat" && !chatFocused)
                             )
-                                loadPresets(7);
+                                sCCombat().loadPresets(7);
                             break;
                         case 56: //8
-                            var chat_focused_8 = $("#chat-area-input").is(":focus");
                             if (
                                 Globals.currentPanel == "panel-combat-canvas" ||
-                                (Globals.currentPanel == "panel-combat" && !chat_focused_8)
+                                (Globals.currentPanel == "panel-combat" && !chatFocused)
                             )
-                                loadPresets(8);
+                                sCCombat().loadPresets(8);
                             break;
                         case 57: //9
-                            var chat_focused_9 = $("#chat-area-input").is(":focus");
                             if (
                                 Globals.currentPanel == "panel-combat-canvas" ||
-                                (Globals.currentPanel == "panel-combat" && !chat_focused_9)
+                                (Globals.currentPanel == "panel-combat" && !chatFocused)
                             )
-                                loadPresets(9);
+                                sCCombat().loadPresets(9);
                             break;
                         case 48: //0
-                            var chat_focused_10 = $("#chat-area-input").is(":focus");
                             if (
                                 Globals.currentPanel == "panel-combat-canvas" ||
-                                (Globals.currentPanel == "panel-combat" && !chat_focused_10)
+                                (Globals.currentPanel == "panel-combat" && !chatFocused)
                             )
-                                loadPresets(10);
+                                sCCombat().loadPresets(10);
                             break;
+                        case 189: //-
+                            if (
+                                Globals.currentPanel == "panel-combat-canvas" ||
+                                (Globals.currentPanel == "panel-combat" && !chatFocused)
+                            )
+                                sCCombat().equipAllRings();
+                            break;
+                        case 187: //=
+                            if (
+                                Globals.currentPanel == "panel-combat-canvas" ||
+                                (Globals.currentPanel == "panel-combat" && !chatFocused)
+                            )
+                                sCCombat().unEquipAllRings();
+                            break;
+                    }
+                });
+            },
+
+            equipAllRings: function() {
+                SCRINGS.forEach((ring) => {
+                    if(getVar(ring, 0, "int") != 0 &&
+                       getVar(ring + "_equipped", 0, "int") == 0 &&
+                       (getVar(ring + "_crafted", 0, "int") == 1
+                        || getVar(ring + "_assembled", 0, "int") == 1)) {
+                        IdlePixelPlus.sendMessage(`EQUIP_RING=${ring}`);
+                    }
+                });
+            },
+
+            unEquipAllRings: function() {
+                SCRINGS.forEach((ring) => {
+                    if(getVar(ring + "_equipped", 0, "int") == 1) {
+                        IdlePixelPlus.sendMessage(`EQUIP_RING=${ring}`);
                     }
                 });
             },
