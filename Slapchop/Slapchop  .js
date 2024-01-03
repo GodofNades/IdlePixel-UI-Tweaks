@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Slap Chop - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      3.0.4
+// @version      3.0.5
 // @description  Ain't nobody got time for that! Adds some QoL 1-click actions.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -1176,7 +1176,7 @@
                             const primary = sCActionType().primary(event);
                             const alt = sCActionType().alt(event);
                             if (primary || alt) {
-                                window.quickPotion("rotten_potion", !primary);
+                                sCBrewing().quickPotion("rotten_potion", !primary);
                                 event.stopPropagation();
                                 event.preventDefault();
                                 return false;
@@ -1341,7 +1341,7 @@
              <div id="rain_pot-woodcutting" class="lumberjack-rain-pot-woodcutting" data-tooltip="rain_pot">
                <div class="itembox-fight-center"><img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/rain_potion.png" title="rain_potion"></div>
                <div class="center-flex">
-                  <div id="rain_potion-brew" class="hover" onclick="window.quickBrew('rain_potion')">BREW</div>
+                  <div id="rain_potion-brew" class="hover" onclick="sCBrewing().quickBrew('rain_potion')">BREW</div>
                   <div id="rain_potion-use" class="hover" onclick="websocket.send('DRINK=rain_potion')">USE</div>
                </div>
             </div>`);
@@ -1831,7 +1831,7 @@
             <div id="rare-monster-pot-in-combat-tab" class="itembox-fight" data-tooltip="fight">
                <div class="itembox-fight-center"><img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/rare_monster_potion.png" title="fight"></div>
                <div class="center-flex">
-                  <div id="rare_monster_potion-brew" class="hover" onclick="window.quickBrew('rare_monster_potion')">BREW</div>
+                  <div id="rare_monster_potion-brew" class="hover" onclick="sCBrewing().quickBrew('rare_monster_potion')">BREW</div>
                   <div id="rare_monster_potion-use" class="hover" onclick="Modals.clicks_rare_monster_potion()">USE</div>
                </div>
             </div>
@@ -1840,7 +1840,7 @@
              <div id="super_rare-monster-pot-in-combat-tab" class="itembox-fight" data-tooltip="fight">
                <div class="itembox-fight-center"><img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/super_rare_monster_potion.png" title="fight"></div>
                <div class="center-flex">
-                  <div id="super_rare_monster_potion-brew" class="hover" onclick="window.quickBrew('super_rare_monster_potion')">BREW</div>
+                  <div id="super_rare_monster_potion-brew" class="hover" onclick="sCBrewing().quickBrew('super_rare_monster_potion')">BREW</div>
                   <div id="super_rare_monster_potion-use" class="hover" onclick="Modals.clicks_super_rare_monster_potion()">USE</div>
                </div>
             </div>
