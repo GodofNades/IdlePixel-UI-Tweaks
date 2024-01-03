@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Slap Chop - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      3.0.5
+// @version      3.0.6
 // @description  Ain't nobody got time for that! Adds some QoL 1-click actions.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -2082,7 +2082,7 @@
             },
 
             maxCraftableArrows: function(feather) {
-                const data = sCCombat().FEATHER2ARROW[feather];
+                const data = SCFEATHER2ARROW[feather];
                 if (!data) return 0;
 
                 let max = Number.MAX_SAFE_INTEGER;
@@ -2099,7 +2099,7 @@
                 let n = sCCombat().maxCraftableArrows(item);
                 if (n > 0) {
                     IdlePixelPlus.sendMessage(
-                        `CRAFT=${sCCombat().FEATHER2ARROW[item].craft}~${n}`
+                        `CRAFT=${SCFEATHER2ARROW[item].craft}~${n}`
 			);
                 }
             },
