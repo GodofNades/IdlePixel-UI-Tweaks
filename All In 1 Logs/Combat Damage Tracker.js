@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Combat Damage Tracker
 // @namespace    com.godofnades.idlepixel
-// @version      1.2.5
+// @version      1.2.6
 // @description  IdlePixel Combat Damage Tracker for those that want to know how their weapons are doing
 // @author       GodofNades
 // @license      MIT
@@ -55,8 +55,8 @@
         constructor() {
             super("combatdmgtracker", {
                 about: {
-                    name: `IdlePixel Combat Damage Tracker (ver: 1.2.5)`,
-                    version: `1.2.5`,
+                    name: `IdlePixel Combat Damage Tracker (ver: 1.2.6)`,
+                    version: `1.2.6`,
                     author: `GodofNades`,
                     description: `IdlePixel Combat Damage Tracker for those that want to know how their weapons are doing`,
                 },
@@ -242,23 +242,6 @@
             closeButton.addEventListener('click', function () {
                 modalStyleCdl.style.display = 'none';
             });
-
-            document.addEventListener('keydown', function (event) {
-                var chat_focused = $('#chat-area-input').is(':focus');
-                if(!chat_focused) {
-                    // Use the key code for backtick, which is 192
-                    if (event.keyCode === 192) {
-                        if (modalStyleCdl.style.display === 'block') {
-                            // Close the modal
-                            modalStyleCdl.style.display = 'none';
-                        } else {
-                            // Open the modal
-                            modalStyleCdl.style.display = 'block';
-                        }
-                    }
-                }
-            });
-
 
             modalStyleCdl.addEventListener('click', function(event) {
                 // Check if the click happened outside the modal window
