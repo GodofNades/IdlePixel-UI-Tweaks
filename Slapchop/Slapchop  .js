@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Slap Chop - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      3.0.9
+// @version      3.0.10
 // @description  Ain't nobody got time for that! Adds some QoL 1-click actions.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -1828,7 +1828,7 @@
                 `;
 				html += `
                     <div id="slapchop-quickfight-castle" class="slapchop-quickfight-zone m-1 castle">
-                        <button type="button" onclick="Castle.clicks_castle_entrance()">Faradox Castle</button>
+                        <button type="button" onclick="Castle.clicks_castle_entrance(); document.getElementById('combat-stats').style.display = 'none'; document.getElementById('game-panels-combat-items-area').style.display = 'none'; Combat.refresh_small_icons_combat_selection();"">Faradox Castle</button>
                         <div class="slapchop-quickfight-fightpoints slapchop-quickfight-progress-container" title="Fight Points: Castle}">
                             <span class="slapchop-quickfight-progress-value">No FP to Enter</span>
                             <div class="slapchop-quickfight-progress"></div>
