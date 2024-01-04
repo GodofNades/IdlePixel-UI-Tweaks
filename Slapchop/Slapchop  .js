@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Slap Chop - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      3.0.7
+// @version      3.0.8
 // @description  Ain't nobody got time for that! Adds some QoL 1-click actions.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -2642,9 +2642,9 @@
 					"elite"
 				);
 				if (woodCuttingElite) {
-					document.getElementById("#rain_pot-woodcutting").style.display = "";
+					document.getElementById("rain_pot-woodcutting").style.display = "";
 				} else {
-					document.getElementById("#rain_pot-woodcutting").style.display =
+					document.getElementById("rain_pot-woodcutting").style.display =
 						"none";
 				}
 				if (Globals.currentPanel == "panel-combat") {
