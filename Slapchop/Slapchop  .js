@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Slap Chop - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      3.0.8
+// @version      3.0.9
 // @description  Ain't nobody got time for that! Adds some QoL 1-click actions.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -1815,7 +1815,7 @@
 				});
 				html += `
                     <div id="slapchop-quickfight-pirate" class="slapchop-quickfight-zone m-1 pirate">
-                        <button type="button" onclick="websocket.send(FIGHT_EVIL_PIRATE)">Evil Pirate</button>
+                        <button type="button" onclick="websocket.send('FIGHT_EVIL_PIRATE')">Evil Pirate</button>
                         <div class="slapchop-quickfight-fightpoints slapchop-quickfight-progress-container" title="Fight Points: Pirate">
                             <span class="slapchop-quickfight-progress-value">2,000 FP</span>
                             <div class="slapchop-quickfight-progress"></div>
