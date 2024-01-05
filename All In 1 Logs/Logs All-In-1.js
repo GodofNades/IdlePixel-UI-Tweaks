@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Logs All-In-1
 // @namespace    godofnades.idlepixel
-// @version      0.1.1
+// @version      0.1.2
 // @description  Combines the installing of 'IdlePixel Activity Log Tweaks', 'IdlePixel Combat Damage Tracker' and IdlePixel Loot Log Tweaks' into a single script.
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
@@ -9,7 +9,7 @@
 // @license
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
 // @require      https://update.greasyfork.org/scripts/477085/IdlePixel%20Combat%20Damage%20Tracker.user.js?anticache=20220905
-// @require      https://update.greasyfork.org/scripts/481582/IdlePixel%20Activity%20Log%20Tweaks.user.js?anticache=20220905
+// @require      https://greasyfork.org/en/scripts/481582-idlepixel-activity-log-tweaks/code?anticache=20220905
 // @require      https://update.greasyfork.org/scripts/482718/IdlePixel%20Loot%20Log%20Tweaks.user.js?anticache=20220905
 // ==/UserScript==
 
