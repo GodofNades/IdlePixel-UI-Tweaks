@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Activity Log Tweaks
 // @namespace    godofnades.idlepixel
-// @version      0.7.15
+// @version      0.7.16
 // @description  Adds a new activity log to the top next to player count and introduces a new Activity Log modal.
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
@@ -13,15 +13,34 @@
 (function () {
 	"use strict";
 
-	let player = "";
-	let activityLog = "";
+	let player, storeName, activityLog;
+	const dbName = "ActivityLogDB";
+
+	function initDB() {
+		return new Promise((resolve, reject) => {
+			const request = indexedDB.open(dbName, 1);
+			request.onerror = (event) => reject(event.target.error);
+			request.onsuccess = (event) => resolve(event.target.result);
+			request.onupgradeneeded = (event) => {
+				const db = event.target.result;
+				db.createObjectStore(storeName, { keyPath: "id", autoIncrement: true });
+			};
+		});
+	}
+
+	async function saveNewData(newData) {
+		const db = await initDB();
+		const transaction = db.transaction([storeName], "readwrite");
+		const store = transaction.objectStore(storeName);
+		store.add({newData});
+	}
 
 	class UITweaksPlugin extends IdlePixelPlusPlugin {
 		constructor() {
 			super("actlogtweaks", {
 				about: {
-					name: `IdlePixel Activity Log Tweaks (ver: 0.7.15)`,
-					version: `0.7.15`,
+					name: `IdlePixel Activity Log Tweaks (ver: 0.7.16)`,
+					version: `0.7.16`,
 					author: `GodofNades`,
 					description: `Adds a new activity log to the top next to player count and introduces a new Activity Log modal.`,
 				},
@@ -614,6 +633,7 @@
 			this.createPanel();
 			this.initFilters();
 			player = IdlePixelPlus.getVarOrDefault("username");
+			storeName = `${player}.activityLog`;
 			const oldData = this.fetchOldData(player);
 			const updatedData = this.updateData(oldData);
 			this.saveNewData(player, updatedData);
@@ -779,6 +799,16 @@
 			);
 			// Update the table with the new log entry
 			//this.displayActivityLog();
+
+			const newLogEntry = {
+				timestamp: time,
+				category: category,
+				message: message,
+				color: color,
+			};
+
+			saveNewData(newLogEntry);
+
 			this.applyFilters();
 		}
 
@@ -869,9 +899,9 @@
 				const timestamp = this.formatDate();
 				let category = this.determineCategory(message);
 
-                if (message != "UNSET CHAT TAG" && message == "UNSET SIGIL") {
-                    this.buildActivityLog(timestamp, category, message, color);
-                }
+				if (message != "UNSET CHAT TAG" && message == "UNSET SIGIL") {
+					this.buildActivityLog(timestamp, category, message, color);
+				}
 			}
 			//TSUNAMI_ANIMATE
 			if (data == "TSUNAMI_ANIMATE") {
