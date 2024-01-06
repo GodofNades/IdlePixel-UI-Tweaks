@@ -13,16 +13,251 @@
 (function() {
     'use strict';
 
+    const LEVELS = function(){
+        let result = [];
+        result[1] = 0;
+        for(let lv = 2; lv <= 100; lv++) {
+            result[lv] = Math.ceil(Math.pow(lv, 3+(lv/200)));
+        }
+        return result;
+    }();
 
+    const POTION_XP_MAP = {
+        "stardust_potion": 75,
+        "energy_potion": 50,
+        "anti_disease_potion": 250,
+        "tree_speed_potion": 525,
+        "smelting_upgrade_potion": 550,
+        "great_stardust_potion": 1925,
+        "farming_speed_potion": 500,
+        "rare_monster_potion": 2125,
+        "super_stardust_potion": 4400,
+        "gathering_unique_potion": 3000,
+        "heat_potion": 2500,
+        "bait_potion": 1000,
+        "bone_potion": 1550,
+        "furnace_speed_potion": 6000,
+        "promethium_potion": 2000,
+        "oil_potion": 5000,
+        "super_rare_monster_potion": 6000,
+        "ultra_stardust_potion": 12900,
+        "magic_shiny_crystal_ball_potion": 7000,
+        "birdhouse_potion": 800,
+        "rocket_potion": 1500,
+        "titanium_potion": 5000,
+        "blue_orb_potion": 50000,
+        "geode_potion": 9500,
+        "magic_crystal_ball_potion": 12000,
+        "stone_converter_potion": 4000,
+        "rain_potion": 2500,
+        "combat_loot_potion": 9500,
+        "rotten_potion": 1250,
+        "merchant_speed_potion": 50000,
+        "green_orb_potion": 200000,
+        "guardian_key_potion": 42500,
+        "ancient_potion": 40000,
+        "red_orb_potion": 500000,
+        "cooks_dust_potion": 100000,
+        "farm_dust_potion": 100000,
+        "fighting_dust_potion": 100000,
+        "tree_dust_potion": 100000,
+        "infinite_oil_potion": 0
+    }
+
+    const FISH_ENERGY_MAP = {
+        // Normal Raw Fish
+        "shrimp": 25,
+        "anchovy": 100,
+        "sardine": 200,
+        "crab": 500,
+        "piranha": 1000,
+        "salmon": 100,
+        "trout": 300,
+        "pike": 1000,
+        "eel": 3000,
+        "rainbow_fish": 30000,
+        "tuna": 500,
+        "swordfish": 3000,
+        "manta_ray": 9000,
+        "shark": 20000,
+        "whale": 40000,
+
+        // Shiny Raw Fish
+        "shrimp_shiny": 125,
+        "anchovy_shiny": 500,
+        "sardine_shiny": 1000,
+        "crab_shiny": 2500,
+        "piranha_shiny": 5000,
+        "salmon_shiny": 500,
+        "trout_shiny": 1500,
+        "pike_shiny": 5000,
+        "eel_shiny": 15000,
+        "rainbow_fish_shiny": 150000,
+        "tuna_shiny": 2500,
+        "swordfish_shiny": 15000,
+        "manta_ray_shiny": 45000,
+        "shark_shiny": 100000,
+        "whale_shiny": 200000,
+
+        // Mega Shiny Raw Fish
+        "shrimp_mega_shiny": 625,
+        "anchovy_mega_shiny": 2500,
+        "sardine_mega_shiny": 5000,
+        "crab_mega_shiny": 12500,
+        "piranha_mega_shiny": 25000,
+        "salmon_mega_shiny": 2500,
+        "trout_mega_shiny": 7500,
+        "pike_mega_shiny": 25000,
+        "eel_mega_shiny": 75000,
+        "rainbow_fish_mega_shiny": 750000,
+        "tuna_mega_shiny": 12500,
+        "swordfish_mega_shiny": 75000,
+        "manta_ray_mega_shiny": 225000,
+        "shark_mega_shiny": 500000,
+        "whale_mega_shiny": 1000000,
+
+        // Misc Fish
+        "small_stardust_fish": 1000,
+        "medium_stardust_fish": 2500,
+        "large_stardust_fish": 5000,
+        "angler_fish": 100000
+    }
+
+    const FISH_HEAT_MAP = {
+        // Normal Raw Fish
+        "shrimp": 10,
+        "anchovy": 20,
+        "sardine": 40,
+        "crab": 75,
+        "piranha": 120,
+        "salmon": 20,
+        "trout": 40,
+        "pike": 110,
+        "eel": 280,
+        "rainbow_fish": 840,
+        "tuna": 75,
+        "swordfish": 220,
+        "manta_ray": 1200,
+        "shark": 3000,
+        "whale": 5000,
+
+        //Shiny Raw Fish
+        "shrimp_shiny": 10,
+        "anchovy_shiny": 20,
+        "sardine_shiny": 40,
+        "crab_shiny": 75,
+        "piranha_shiny": 120,
+        "salmon_shiny": 20,
+        "trout_shiny": 40,
+        "pike_shiny": 110,
+        "eel_shiny": 280,
+        "rainbow_fish_shiny": 840,
+        "tuna_shiny": 75,
+        "swordfish_shiny": 220,
+        "manta_ray_shiny": 1200,
+        "shark_shiny": 3000,
+        "whale_shiny": 5000,
+
+        //Mega Shiny Raw Fish
+        "shrimp_mega_shiny": 10,
+        "anchovy_mega_shiny": 20,
+        "sardine_mega_shiny": 40,
+        "crab_mega_shiny": 75,
+        "piranha_mega_shiny": 120,
+        "salmon_mega_shiny": 20,
+        "trout_mega_shiny": 40,
+        "pike_mega_shiny": 110,
+        "eel_mega_shiny": 280,
+        "rainbow_fish_mega_shiny": 840,
+        "tuna_mega_shiny": 75,
+        "swordfish_mega_shiny": 220,
+        "manta_ray_mega_shiny": 1200,
+        "shark_mega_shiny": 3000,
+        "whale_mega_shiny": 5000,
+
+        // Misc Fish
+        "small_stardust_fish": 300,
+        "medium_stardust_fish": 600,
+        "large_stardust_fish": 2000,
+        "angler_fish": 10000
+    }
 
     let onLoginLoaded = false;
 
-
+    let purpleKeyGo;
+    const receivedFilter = ['OPEN_DIALOGUE=MESSAGE'];
+    const currentTime = new Date();
+    let startTime;
+    let timeDiff;
+    let purpleKeyTimer;
     let del = false;
 
-    
+    function onPurpleKey(monster, rarity, timer) {
+        if (purpleKeyGo) {
+            const timeLeft = format_time(timer);
+            const imageSrc = monster;
+            const monsterName = imageSrc
+            .replace(/_/g, " ")
+            .replace(/\b\w/g, letter => letter.toUpperCase());
 
-    
+            const purpleKeyNotification = document.querySelector('#notification-purple_key');
+            const imageElement = document.querySelector('#notification-purple_key-image');
+            const imageTextElement = document.querySelector('#notification-purple_key-image-text');
+            const rarityElement = document.querySelector('#notification-purple_key-rarity');
+            const timeElement = document.querySelector('#notification-purple_key-time');
+
+            imageElement.setAttribute("src", `https://d1xsc8x7nc5q8t.cloudfront.net/images/${imageSrc}_icon.png`);
+            imageTextElement.innerText = `${monsterName} `;
+            rarityElement.innerText = ` ${rarity}`;
+            timeElement.innerText = ` ⏲️${timeLeft}`;
+
+            if (rarity === "Very Rare") {
+                purpleKeyNotification.style.backgroundColor = "DarkRed";
+                [imageTextElement, rarityElement, timeElement].forEach(element => element.style.color = "white");
+            } else {
+                let textColor = "black";
+                if (rarity === "Rare") {
+                    purpleKeyNotification.style.backgroundColor = "orange";
+                } else if (rarity === "Uncommon") {
+                    purpleKeyNotification.style.backgroundColor = "gold";
+                } else if (rarity === "Common") {
+                    purpleKeyNotification.style.backgroundColor = "DarkGreen";
+                    textColor = "white";
+                }
+                [imageTextElement, rarityElement, timeElement].forEach(element => element.style.color = textColor);
+            }
+            return;
+        }
+
+    }
+
+    function xpToLevel(xp) {
+        if(xp <= 0) {
+            return 1;
+        }
+        if(xp >= LEVELS[100]) {
+            return 100;
+        }
+        let lower = 1;
+        let upper = 100;
+        while(lower <= upper) {
+            let mid = Math.floor((lower + upper) / 2);
+            let midXP = LEVELS[mid];
+            let midPlus1XP = LEVELS[mid+1];
+            if(xp < midXP) {
+                upper = mid;
+                continue;
+            }
+            if(xp > midPlus1XP) {
+                lower=mid+1;
+                continue;
+            }
+            if(mid<100 && xp == LEVELS[mid+1]) {
+                return mid+1;
+            }
+            return mid;
+        }
+    }
 
 
     // will be overwritten if data available in IdlePixelPlus.info
@@ -618,7 +853,294 @@
             });
         }
 
-        
+        condensedUI() {
+            let leftbar = document.getElementById('menu-bar-buttons')
+
+            let styleElement = document.getElementById('condensed-ui-tweaks');
+
+            if (styleElement) {
+                styleElement.parentNode.removeChild(styleElement);
+            }
+            document.getElementById('menu-bar-buttons')
+                .querySelectorAll('.font-small')
+                .forEach(function(smallFont) {
+                let classInfo = smallFont.className.replaceAll('font-small', 'font-medium');
+                smallFont.className = classInfo;
+            });
+
+            var spans = document.querySelectorAll('#menu-bar-cooking-table-btn-wrapper span');
+
+            var cookingSpan = Array.from(spans).find(span => span.textContent === "COOKING");
+
+            if (cookingSpan) {
+                cookingSpan.className = "font-medium color-white";
+            }
+
+            leftbar.querySelectorAll('img').forEach(function(img) {
+                img.className = "w20";
+            });
+
+            const style = document.createElement('style');
+            style.id = 'condensed-ui-tweaks';
+            style.textContent = `
+            <style id="condensed-ui-tweaks">
+            .game-menu-bar-left-table-btn tr
+            {
+              background-color: transparent !important;
+              border:0 !important;
+              font-size:medium;
+            }
+            .hover-menu-bar-item:hover {
+              background: #256061 !important;
+              border:0 !important;
+              filter:unset;
+              font-size:medium;
+            }
+            .thin-progress-bar {
+              background:#437b7c !important;
+              border:0 !important;
+              height:unset;
+            }
+            .thin-progress-bar-inner {
+              background:#88e8ea !important;
+            }
+            .game-menu-bar-left-table-btn td{
+              padding-left:20px !important;
+              padding:unset;
+              margin:0px;
+              font-size:medium;
+            }
+            .game-menu-bar-left-table-btn {
+              background-color: transparent !important;
+            }
+            .left-menu-item {
+              margin-bottom:unset;
+              font-size:medium;
+            }
+            .left-menu-item > img {
+              margin-left: 20px;
+              margin-right: 20px;
+            }
+            </style>
+            `;
+
+            document.head.appendChild(style);
+            setTimeout(function() {
+                document.getElementById("market-sidecar").parentNode.parentNode.style.paddingLeft = "20px";
+                document.getElementById("market-sidecar").parentNode.parentNode.style.padding = "";
+            }, 1000);
+            document.getElementById("left-menu-bar-labels").style.paddingBottom = "10px !important";
+        }
+
+        defaultUI() {
+            var styleElement = document.getElementById('condensed-ui-tweaks');
+
+            if (styleElement) {
+                styleElement.parentNode.removeChild(styleElement);
+            }
+        }
+
+        updateCrippledToeTimer() {
+            var now = new Date(); // Create a new date object with the current date and time
+            var hours = now.getUTCHours(); // Get the hours value in UTC
+            var minutes = now.getUTCMinutes(); // Get the minutes value in UTC
+            var seconds = now.getUTCSeconds(); // Get the seconds value in UTC
+
+            // Pad the hours, minutes, and seconds with leading zeros if they are less than 10
+            hours = hours.toString().padStart(2, '0');
+            minutes = minutes.toString().padStart(2, '0');
+            seconds = seconds.toString().padStart(2, '0');
+
+            // Concatenate the hours, minutes, and seconds with colons
+
+            const menuBarCrippledtoeRow = document.querySelector('#left-panel-criptoe_market-btn table tbody tr');
+
+            // Find the cell that contains the text "CRIPTOE MARKET"
+            const cells = menuBarCrippledtoeRow.getElementsByTagName('td');
+            let criptoeMarketCell = null;
+            for (let cell of cells) {
+                if (cell.textContent.includes('CRIPTOE MARKET')) {
+                    criptoeMarketCell = cell;
+                    break;
+                }
+            }
+            if (criptoeMarketCell) {
+                criptoeMarketCell.innerHTML = `CRIPTOE MARKET <span style="color:cyan;">(${hours + ':' + minutes + ':' + seconds})<span>`
+            }
+        }
+
+        hideOrbsAndRing() {
+            if (Globals.currentPanel === 'panel-invention') {
+                const masterRing = IdlePixelPlus.getVarOrDefault("master_ring_assembled", 0, "int");
+                const fishingOrb = IdlePixelPlus.getVarOrDefault("mega_shiny_glass_ball_fish_assembled", 0, "int");
+                const leafOrb = IdlePixelPlus.getVarOrDefault("mega_shiny_glass_ball_leaf_assembled", 0, "int");
+                const logsOrb = IdlePixelPlus.getVarOrDefault("mega_shiny_glass_ball_logs_assembled", 0, "int");
+                const monstersOrb = IdlePixelPlus.getVarOrDefault("mega_shiny_glass_ball_monsters_assembled", 0, "int");
+                const volcanoTab = IdlePixelPlus.getVarOrDefault("volcano_tablette_charged", 0, "int");
+                const ancientTab = IdlePixelPlus.getVarOrDefault("ancient_tablette_charged", 0, "int");
+
+                const selectors = {
+                    masterRing: "#invention-table > tbody [data-invention-item=master_ring]",
+                    fishOrb: "#invention-table > tbody [data-invention-item=mega_shiny_glass_ball_fish]",
+                    leafOrb: "#invention-table > tbody [data-invention-item=mega_shiny_glass_ball_leaf]",
+                    logsOrb: "#invention-table > tbody [data-invention-item=mega_shiny_glass_ball_logs]",
+                    monstersOrb: "#invention-table > tbody [data-invention-item=mega_shiny_glass_ball_monsters]",
+                };
+
+                const uiTweaksConfig = IdlePixelPlus.plugins['ui-tweaks'].getConfig("hideOrbRing");
+
+                for (const orb in selectors) {
+                    if (selectors.hasOwnProperty(orb)) {
+                        const element = document.querySelector(selectors[orb]);
+                        if (uiTweaksConfig) {
+                            if (orb === 'masterRing' && masterRing === 1) {
+                                element.style.display = 'none';
+                            } else if (orb === 'fishingOrb' && fishingOrb === 1) {
+                                element.style.display = 'none';
+                            } else if (orb === 'leafOrb' && leafOrb === 1) {
+                                element.style.display = 'none';
+                            } else if (orb === 'logsOrb' && logsOrb === 1) {
+                                element.style.display = 'none';
+                            } else if (orb === 'monstersOrb' && monstersOrb === 1) {
+                                element.style.display = 'none';
+                            } else {
+                                element.style.display = '';
+                            }
+                        } else {
+                            if ((orb !== 'masterRing' && volcanoTab === 1)) {
+                                element.style.display = '';
+                            } else if (orb === 'masterRing' && ancientTab === 1) {
+                                element.style.display = '';
+                            } else {
+                                element.style.display = 'none';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        addTableCraftLabels() {
+            // Invention Table
+            const inventionTableRows = document.querySelectorAll('#invention-table tbody tr[data-tablette-required]');
+            inventionTableRows.forEach(row => {
+                const outputs = row.querySelectorAll('td:nth-child(4) item-invention-table');
+                outputs.forEach(output => {
+                    output.textContent = Number(output.textContent).toLocaleString() + " (" + output.getAttribute("data-materials-item").replaceAll("_", " ") + ")";
+                });
+            });
+
+            // Crafting Table
+            const craftingTableRows = document.querySelectorAll('#crafting-table tbody tr[data-crafting-item]');
+            craftingTableRows.forEach(row => {
+                const outputs = row.querySelectorAll('td:nth-child(3) item-crafting-table');
+                outputs.forEach(output => {
+                    output.textContent = Number(output.textContent).toLocaleString() + " (" + output.getAttribute("data-materials-item").replaceAll("_", " ") + ")";
+                });
+            });
+
+            // Brewing Table
+            const brewingTableRows = document.querySelectorAll('#brewing-table tbody tr[data-brewing-item]');
+            brewingTableRows.forEach(row => {
+                const outputs = row.querySelectorAll('td:nth-child(3) item-brewing-table');
+                outputs.forEach(output => {
+                    output.textContent = output.textContent + " (" + output.getAttribute("data-materials-item").replaceAll("_", " ") + ")";
+                });
+            });
+        }
+
+        updateTableCraftLabels() {
+            const brewingTable = document.querySelector("#brewing-table");
+            if (brewingTable) {
+                const rows = brewingTable.querySelectorAll("tbody tr[data-brewing-item]");
+                rows.forEach(row => {
+                    const brewingXP = row.querySelector("td:nth-child(6)");
+                    if (brewingXP) {
+                        const potionName = brewingXP.id.replace("_xp", "");
+                        const potionXP = POTION_XP_MAP[potionName].toLocaleString() + " xp";
+                        const potionOrig = document.createElement("span");
+                        potionOrig.classList.add("font-small", "color-grey");
+                        potionOrig.textContent = potionXP;
+                        brewingXP.innerHTML = "";
+                        brewingXP.appendChild(potionOrig);
+                    }
+                });
+            }
+        }
+
+        calcFishEnergy() {
+            const fishRawEnergy = Object.keys(FISH_ENERGY_MAP);
+            const fishHeat = Object.keys(FISH_HEAT_MAP);
+            const fishCookedEnergy = Object.keys(FISH_ENERGY_MAP);
+            let totalRawEnergy = 0;
+            let totalHeat = 0;
+            let totalCookedEnergy = 0;
+            let oilGainTimer;
+            const collectorModeFish = this.getConfig("minusOneHeatInFishingTab");
+
+            fishRawEnergy.forEach(fish => {
+                let currentRawFish = IdlePixelPlus.getVarOrDefault("raw_" + fish, 0, "int");
+                let currentCookedFish = IdlePixelPlus.getVarOrDefault("cooked_" + fish, 0, "int");
+
+                if (currentRawFish > 0 && collectorModeFish) {
+                    currentRawFish--;
+                }
+                if (currentCookedFish > 0 && collectorModeFish) {
+                    currentCookedFish--;
+                }
+                const currentRawEnergy = currentRawFish * FISH_ENERGY_MAP[fish];
+                const currentHeat = currentRawFish * FISH_HEAT_MAP[fish];
+                const currentCookedEnergy = currentCookedFish * FISH_ENERGY_MAP[fish];
+                totalRawEnergy += currentRawEnergy;
+                totalHeat += currentHeat;
+                totalCookedEnergy += currentCookedEnergy;
+            });
+
+            document.getElementById("raw-fish-energy-number").textContent = totalRawEnergy.toLocaleString();
+            document.getElementById("fish-heat-required-number").textContent = totalHeat.toLocaleString();
+            document.getElementById("cooked-fish-energy-number").textContent = totalCookedEnergy.toLocaleString();
+        }
+
+        miningMachTimer() {
+            const drillNotifications = this.getConfig("hideDrillNotifications");
+
+            if (drillNotifications) {
+                document.getElementById("notification-drill").style.display = "none";
+                document.getElementById("notification-crusher").style.display = "none";
+                document.getElementById("notification-giant_drill").style.display = "none";
+                document.getElementById("notification-excavator").style.display = "none";
+                document.getElementById("notification-giant_excavator").style.display = "none";
+                document.getElementById("notification-massive_excavator").style.display = "none";
+            } else {
+                const drill = IdlePixelPlus.getVarOrDefault("drill_on", 0, "int");
+                const crusher = IdlePixelPlus.getVarOrDefault("crusher_on", 0, "int");
+                const giant_drill = IdlePixelPlus.getVarOrDefault("giant_drill_on", 0, "int");
+                const excavator = IdlePixelPlus.getVarOrDefault("excavator_on", 0, "int");
+                const giant_excavator = IdlePixelPlus.getVarOrDefault("giant_excavator_on", 0, "int");
+                const massive_excavator = IdlePixelPlus.getVarOrDefault("massive_excavator_on", 0, "int");
+
+                if (drill > 0) {
+                    document.getElementById("notification-drill").style.display = "inline-block";
+                }
+                if (crusher > 0) {
+                    document.getElementById("notification-crusher").style.display = "inline-block";
+                }
+                if (giant_drill > 0) {
+                    document.getElementById("notification-giant_drill").style.display = "inline-block";
+                }
+                if (excavator > 0) {
+                    document.getElementById("notification-excavator").style.display = "inline-block";
+                }
+                if (giant_excavator > 0) {
+                    document.getElementById("notification-giant_excavator").style.display = "inline-block";
+                }
+                if (massive_excavator > 0) {
+                    document.getElementById("notification-massive_excavator").style.display = "inline-block";
+                }
+            }
+        }
+
         oilTimerNotification() {
             const notifDiv = document.createElement('div');
             notifDiv.id = 'notification-oil_gain';
@@ -698,6 +1220,115 @@
 
             notifDiv.append(notifIcon, notifDivLabel)
             document.querySelector('#notifications-area').append(notifDiv)
+        }
+
+        extendedLevelsUpdate() {
+            let overallLevel = 0;
+
+            const xpMining = IdlePixelPlus.getVarOrDefault("mining_xp", 0, "int");
+            const extendedLevelMining = this.calculateExtendedLevel(xpMining);
+
+            const xpCrafting = IdlePixelPlus.getVarOrDefault("crafting_xp", 0, "int");
+            const extendedLevelCrafting = this.calculateExtendedLevel(xpCrafting);
+
+            const xpGathering = IdlePixelPlus.getVarOrDefault("gathering_xp", 0, "int");
+            const extendedLevelGathering = this.calculateExtendedLevel(xpGathering);
+
+            const xpFarming = IdlePixelPlus.getVarOrDefault("farming_xp", 0, "int");
+            const extendedLevelFarming = this.calculateExtendedLevel(xpFarming);
+
+            const xpBrewing = IdlePixelPlus.getVarOrDefault("brewing_xp", 0, "int");
+            const extendedLevelBrewing = this.calculateExtendedLevel(xpBrewing);
+
+            const xpWoodcutting = IdlePixelPlus.getVarOrDefault("woodcutting_xp", 0, "int");
+            const extendedLevelWoodcutting = this.calculateExtendedLevel(xpWoodcutting);
+
+            const xpCooking = IdlePixelPlus.getVarOrDefault("cooking_xp", 0, "int");
+            const extendedLevelCooking = this.calculateExtendedLevel(xpCooking);
+
+            const xpFishing = IdlePixelPlus.getVarOrDefault("fishing_xp", 0, "int");
+            const extendedLevelFishing = this.calculateExtendedLevel(xpFishing);
+
+            const xpInvention = IdlePixelPlus.getVarOrDefault("invention_xp", 0, "int");
+            const extendedLevelInvention = this.calculateExtendedLevel(xpInvention);
+
+            const xpMelee = IdlePixelPlus.getVarOrDefault("melee_xp", 0, "int");
+            const extendedLevelMelee = this.calculateExtendedLevel(xpMelee);
+
+            const xpArchery = IdlePixelPlus.getVarOrDefault("archery_xp", 0, "int");
+            const extendedLevelArchery = this.calculateExtendedLevel(xpArchery);
+
+            const xpMagic = IdlePixelPlus.getVarOrDefault("magic_xp", 0, "int");
+            const extendedLevelMagic = this.calculateExtendedLevel(xpMagic);
+
+            overallLevel = extendedLevelMining + extendedLevelCrafting + extendedLevelGathering + extendedLevelFarming + extendedLevelBrewing + extendedLevelWoodcutting + extendedLevelCooking + extendedLevelFishing + extendedLevelInvention + extendedLevelMelee + extendedLevelArchery + extendedLevelMagic;
+
+            // Build new levels in place.
+            this.updateExtendedLevel("mining", extendedLevelMining);
+            this.updateExtendedLevel("crafting", extendedLevelCrafting);
+            this.updateExtendedLevel("gathering", extendedLevelGathering);
+            this.updateExtendedLevel("farming", extendedLevelFarming);
+            this.updateExtendedLevel("brewing", extendedLevelBrewing);
+            this.updateExtendedLevel("woodcutting", extendedLevelWoodcutting);
+            this.updateExtendedLevel("cooking", extendedLevelCooking);
+            this.updateExtendedLevel("fishing", extendedLevelFishing);
+            this.updateExtendedLevel("invention", extendedLevelInvention);
+            this.updateExtendedLevel("melee", extendedLevelMelee);
+            this.updateExtendedLevel("archery", extendedLevelArchery);
+            this.updateExtendedLevel("magic", extendedLevelMagic);
+
+            this.updateOverallLevel(overallLevel);
+
+            // Hide original level elements
+            this.hideOriginalLevels();
+        }
+
+        calculateExtendedLevel(xp) {
+            let extendedLevel = 0;
+            while (Math.pow(extendedLevel, (3 + (extendedLevel / 200))) < xp) {
+                extendedLevel++;
+            }
+            if(extendedLevel == 0) {
+                return 1;
+            }
+            return extendedLevel - 1;
+        }
+
+        updateExtendedLevel(skill, extendedLevel) {
+            const skillElement = document.querySelector(`#overallLevelExtended-${skill}`);
+            const colorStyle = extendedLevel >= 100 ? "color:cyan" : "";
+            skillElement.textContent = `(LEVEL ${Math.max(extendedLevel, 1)})`;
+            skillElement.setAttribute("style", colorStyle);
+        }
+
+        updateOverallLevel(overallLevel) {
+            const totalElement = document.querySelector("#overallLevelExtended-total");
+            if (overallLevel >= 100) {
+                totalElement.textContent = ` (${overallLevel})`;
+                totalElement.style.color = "cyan";
+                /*if(document.querySelector("#top-bar > a:nth-child(4) > item-display")) {
+                    document.querySelector("#top-bar > a:nth-child(4) > item-display").style.display = "none";
+                } else {
+                    document.querySelector("#top-bar > a:nth-child(5) > item-display").style.display = "none";
+                }*/
+            } else {
+                totalElement.textContent = "";
+                totalElement.style.display = "none";
+            }
+        }
+
+        hideOriginalLevels() {
+            const skills = [
+                "mining", "crafting", "gathering", "farming", "brewing", "woodcutting", "cooking",
+                "fishing", "invention", "melee", "archery", "magic"
+            ];
+
+            skills.forEach(skill => {
+                const skillElement = document.querySelector(`#menu-bar-${skill}-level`);
+                if (skillElement) {
+                    skillElement.style.display = "none";
+                }
+            });
         }
 
         fightPointsFull() {
