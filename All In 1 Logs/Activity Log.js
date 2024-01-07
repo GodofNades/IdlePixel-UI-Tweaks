@@ -662,7 +662,7 @@
 				"New Loot": /^You looted a new item/,
 				"SD Watch": /^SD Watch Charge Used/,
 				Woodcutting: /^You chop down/,
-				XP: /^(You gain a mining level|You unlocked a new skill|You gained)/,
+				XP: /^(You gain a [a-z_]+ level|You unlocked a new skill|You gained)/,
 			};
 
 			for (const [category, pattern] of Object.entries(categoryPatterns)) {

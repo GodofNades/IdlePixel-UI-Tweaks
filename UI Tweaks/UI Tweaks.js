@@ -13,6 +13,7 @@
 (function() {
     'use strict';
 
+    let IPP, getVar, getThis;
     const LEVELS = function(){
         let result = [];
         result[1] = 0;
@@ -971,13 +972,13 @@
 
         hideOrbsAndRing() {
             if (Globals.currentPanel === 'panel-invention') {
-                const masterRing = IdlePixelPlus.getVarOrDefault("master_ring_assembled", 0, "int");
-                const fishingOrb = IdlePixelPlus.getVarOrDefault("mega_shiny_glass_ball_fish_assembled", 0, "int");
-                const leafOrb = IdlePixelPlus.getVarOrDefault("mega_shiny_glass_ball_leaf_assembled", 0, "int");
-                const logsOrb = IdlePixelPlus.getVarOrDefault("mega_shiny_glass_ball_logs_assembled", 0, "int");
-                const monstersOrb = IdlePixelPlus.getVarOrDefault("mega_shiny_glass_ball_monsters_assembled", 0, "int");
-                const volcanoTab = IdlePixelPlus.getVarOrDefault("volcano_tablette_charged", 0, "int");
-                const ancientTab = IdlePixelPlus.getVarOrDefault("ancient_tablette_charged", 0, "int");
+                const masterRing = getVar("master_ring_assembled", 0, "int");
+                const fishingOrb = getVar("mega_shiny_glass_ball_fish_assembled", 0, "int");
+                const leafOrb = getVar("mega_shiny_glass_ball_leaf_assembled", 0, "int");
+                const logsOrb = getVar("mega_shiny_glass_ball_logs_assembled", 0, "int");
+                const monstersOrb = getVar("mega_shiny_glass_ball_monsters_assembled", 0, "int");
+                const volcanoTab = getVar("volcano_tablette_charged", 0, "int");
+                const ancientTab = getVar("ancient_tablette_charged", 0, "int");
 
                 const selectors = {
                     masterRing: "#invention-table > tbody [data-invention-item=master_ring]",
@@ -1077,11 +1078,11 @@
             let totalHeat = 0;
             let totalCookedEnergy = 0;
             let oilGainTimer;
-            const collectorModeFish = this.getConfig("minusOneHeatInFishingTab");
+            const collectorModeFish = getThis.getConfig("minusOneHeatInFishingTab");
 
             fishRawEnergy.forEach(fish => {
-                let currentRawFish = IdlePixelPlus.getVarOrDefault("raw_" + fish, 0, "int");
-                let currentCookedFish = IdlePixelPlus.getVarOrDefault("cooked_" + fish, 0, "int");
+                let currentRawFish = getVar("raw_" + fish, 0, "int");
+                let currentCookedFish = getVar("cooked_" + fish, 0, "int");
 
                 if (currentRawFish > 0 && collectorModeFish) {
                     currentRawFish--;
@@ -1103,7 +1104,7 @@
         }
 
         miningMachTimer() {
-            const drillNotifications = this.getConfig("hideDrillNotifications");
+            const drillNotifications = getThis.getConfig("hideDrillNotifications");
 
             if (drillNotifications) {
                 document.getElementById("notification-drill").style.display = "none";
@@ -1113,12 +1114,12 @@
                 document.getElementById("notification-giant_excavator").style.display = "none";
                 document.getElementById("notification-massive_excavator").style.display = "none";
             } else {
-                const drill = IdlePixelPlus.getVarOrDefault("drill_on", 0, "int");
-                const crusher = IdlePixelPlus.getVarOrDefault("crusher_on", 0, "int");
-                const giant_drill = IdlePixelPlus.getVarOrDefault("giant_drill_on", 0, "int");
-                const excavator = IdlePixelPlus.getVarOrDefault("excavator_on", 0, "int");
-                const giant_excavator = IdlePixelPlus.getVarOrDefault("giant_excavator_on", 0, "int");
-                const massive_excavator = IdlePixelPlus.getVarOrDefault("massive_excavator_on", 0, "int");
+                const drill = getVar("drill_on", 0, "int");
+                const crusher = getVar("crusher_on", 0, "int");
+                const giant_drill = getVar("giant_drill_on", 0, "int");
+                const excavator = getVar("excavator_on", 0, "int");
+                const giant_excavator = getVar("giant_excavator_on", 0, "int");
+                const massive_excavator = getVar("massive_excavator_on", 0, "int");
 
                 if (drill > 0) {
                     document.getElementById("notification-drill").style.display = "inline-block";
@@ -1171,14 +1172,14 @@
 
         oilGain() {
             const notificationFurnaceAvail = document.getElementById('notification-furnace_avail');
-            const oilDelta = IdlePixelPlus.getVarOrDefault("oil_delta", 0, "int");
-            const oil = IdlePixelPlus.getVarOrDefault("oil", 0, "int");
-            const oilMax = IdlePixelPlus.getVarOrDefault("max_oil", 0, "int");
+            const oilDelta = getVar("oil_delta", 0, "int");
+            const oil = getVar("oil", 0, "int");
+            const oilMax = getVar("max_oil", 0, "int");
             const notificationOilGain = document.getElementById("notification-oil_gain");
             const notificationOilGainLabel = document.getElementById("notification-oil_gain-label");
 
             if(notificationOilGainLabel) {
-                if (this.getConfig("oilGainNotification")) {
+                if (getThis.getConfig("oilGainNotification")) {
                     if (oilDelta === 0) {
                         notificationOilGainLabel.textContent = ' Balanced';
                         notificationOilGain.style.display = 'inline-block';
@@ -1225,62 +1226,62 @@
         extendedLevelsUpdate() {
             let overallLevel = 0;
 
-            const xpMining = IdlePixelPlus.getVarOrDefault("mining_xp", 0, "int");
-            const extendedLevelMining = this.calculateExtendedLevel(xpMining);
+            const xpMining = getVar("mining_xp", 0, "int");
+            const extendedLevelMining = getThis.calculateExtendedLevel(xpMining);
 
-            const xpCrafting = IdlePixelPlus.getVarOrDefault("crafting_xp", 0, "int");
-            const extendedLevelCrafting = this.calculateExtendedLevel(xpCrafting);
+            const xpCrafting = getVar("crafting_xp", 0, "int");
+            const extendedLevelCrafting = getThis.calculateExtendedLevel(xpCrafting);
 
-            const xpGathering = IdlePixelPlus.getVarOrDefault("gathering_xp", 0, "int");
-            const extendedLevelGathering = this.calculateExtendedLevel(xpGathering);
+            const xpGathering = getVar("gathering_xp", 0, "int");
+            const extendedLevelGathering = getThis.calculateExtendedLevel(xpGathering);
 
-            const xpFarming = IdlePixelPlus.getVarOrDefault("farming_xp", 0, "int");
-            const extendedLevelFarming = this.calculateExtendedLevel(xpFarming);
+            const xpFarming = getVar("farming_xp", 0, "int");
+            const extendedLevelFarming = getThis.calculateExtendedLevel(xpFarming);
 
-            const xpBrewing = IdlePixelPlus.getVarOrDefault("brewing_xp", 0, "int");
-            const extendedLevelBrewing = this.calculateExtendedLevel(xpBrewing);
+            const xpBrewing = getVar("brewing_xp", 0, "int");
+            const extendedLevelBrewing = getThis.calculateExtendedLevel(xpBrewing);
 
-            const xpWoodcutting = IdlePixelPlus.getVarOrDefault("woodcutting_xp", 0, "int");
-            const extendedLevelWoodcutting = this.calculateExtendedLevel(xpWoodcutting);
+            const xpWoodcutting = getVar("woodcutting_xp", 0, "int");
+            const extendedLevelWoodcutting = getThis.calculateExtendedLevel(xpWoodcutting);
 
-            const xpCooking = IdlePixelPlus.getVarOrDefault("cooking_xp", 0, "int");
-            const extendedLevelCooking = this.calculateExtendedLevel(xpCooking);
+            const xpCooking = getVar("cooking_xp", 0, "int");
+            const extendedLevelCooking = getThis.calculateExtendedLevel(xpCooking);
 
-            const xpFishing = IdlePixelPlus.getVarOrDefault("fishing_xp", 0, "int");
-            const extendedLevelFishing = this.calculateExtendedLevel(xpFishing);
+            const xpFishing = getVar("fishing_xp", 0, "int");
+            const extendedLevelFishing = getThis.calculateExtendedLevel(xpFishing);
 
-            const xpInvention = IdlePixelPlus.getVarOrDefault("invention_xp", 0, "int");
-            const extendedLevelInvention = this.calculateExtendedLevel(xpInvention);
+            const xpInvention = getVar("invention_xp", 0, "int");
+            const extendedLevelInvention = getThis.calculateExtendedLevel(xpInvention);
 
-            const xpMelee = IdlePixelPlus.getVarOrDefault("melee_xp", 0, "int");
-            const extendedLevelMelee = this.calculateExtendedLevel(xpMelee);
+            const xpMelee = getVar("melee_xp", 0, "int");
+            const extendedLevelMelee = getThis.calculateExtendedLevel(xpMelee);
 
-            const xpArchery = IdlePixelPlus.getVarOrDefault("archery_xp", 0, "int");
-            const extendedLevelArchery = this.calculateExtendedLevel(xpArchery);
+            const xpArchery = getVar("archery_xp", 0, "int");
+            const extendedLevelArchery = getThis.calculateExtendedLevel(xpArchery);
 
-            const xpMagic = IdlePixelPlus.getVarOrDefault("magic_xp", 0, "int");
-            const extendedLevelMagic = this.calculateExtendedLevel(xpMagic);
+            const xpMagic = getVar("magic_xp", 0, "int");
+            const extendedLevelMagic = getThis.calculateExtendedLevel(xpMagic);
 
             overallLevel = extendedLevelMining + extendedLevelCrafting + extendedLevelGathering + extendedLevelFarming + extendedLevelBrewing + extendedLevelWoodcutting + extendedLevelCooking + extendedLevelFishing + extendedLevelInvention + extendedLevelMelee + extendedLevelArchery + extendedLevelMagic;
 
             // Build new levels in place.
-            this.updateExtendedLevel("mining", extendedLevelMining);
-            this.updateExtendedLevel("crafting", extendedLevelCrafting);
-            this.updateExtendedLevel("gathering", extendedLevelGathering);
-            this.updateExtendedLevel("farming", extendedLevelFarming);
-            this.updateExtendedLevel("brewing", extendedLevelBrewing);
-            this.updateExtendedLevel("woodcutting", extendedLevelWoodcutting);
-            this.updateExtendedLevel("cooking", extendedLevelCooking);
-            this.updateExtendedLevel("fishing", extendedLevelFishing);
-            this.updateExtendedLevel("invention", extendedLevelInvention);
-            this.updateExtendedLevel("melee", extendedLevelMelee);
-            this.updateExtendedLevel("archery", extendedLevelArchery);
-            this.updateExtendedLevel("magic", extendedLevelMagic);
+            getThis.updateExtendedLevel("mining", extendedLevelMining);
+            getThis.updateExtendedLevel("crafting", extendedLevelCrafting);
+            getThis.updateExtendedLevel("gathering", extendedLevelGathering);
+            getThis.updateExtendedLevel("farming", extendedLevelFarming);
+            getThis.updateExtendedLevel("brewing", extendedLevelBrewing);
+            getThis.updateExtendedLevel("woodcutting", extendedLevelWoodcutting);
+            getThis.updateExtendedLevel("cooking", extendedLevelCooking);
+            getThis.updateExtendedLevel("fishing", extendedLevelFishing);
+            getThis.updateExtendedLevel("invention", extendedLevelInvention);
+            getThis.updateExtendedLevel("melee", extendedLevelMelee);
+            getThis.updateExtendedLevel("archery", extendedLevelArchery);
+            getThis.updateExtendedLevel("magic", extendedLevelMagic);
 
-            this.updateOverallLevel(overallLevel);
+            getThis.updateOverallLevel(overallLevel);
 
             // Hide original level elements
-            this.hideOriginalLevels();
+            getThis.hideOriginalLevels();
         }
 
         calculateExtendedLevel(xp) {
@@ -1332,8 +1333,8 @@
         }
 
         fightPointsFull() {
-            const max = IdlePixelPlus.getVarOrDefault("max_fight_points", 0, "int");
-            const current = IdlePixelPlus.getVarOrDefault("fight_points", 0, "int");
+            const max = getVar("max_fight_points", 0, "int");
+            const current = getVar("fight_points", 0, "int");
             const remaining = max - current;
             const remaining_time = format_time(remaining);
 
@@ -1347,7 +1348,7 @@
                 fightPointsFullTimerMain.textContent = "full";
                 fightPointsFullTimerCombat.textContent = "full";
             } else {
-                var masterRingEquip = IdlePixelPlus.getVarOrDefault("master_ring_equipped", 0, "int");
+                var masterRingEquip = getVar("master_ring_equipped", 0, "int");
                 if (masterRingEquip === 1) {
                     fightPointsFullTimerMain.textContent = format_time(remaining / 2);
                     fightPointsFullTimerMain_2.textContent = format_time(remaining / 2);
@@ -1362,14 +1363,14 @@
 
         //////////////////////////////// updateColors Start ////////////////////////////////
         updateColors(filter) {
-            const bgColorCheck = this.getConfig("disableBGColorOverrides");
+            const bgColorCheck = getThis.getConfig("disableBGColorOverrides");
 
             if (!bgColorCheck) {
                 Object.keys(BG_COLORS).forEach(selector => {
                     if (!filter || filter.includes(selector)) {
                         const key = selector.replace(/[#\.]/g, '').replace(/-?\s+-?/, "-");
-                        const enabled = this.getConfig(`color-enabled-${key}`);
-                        const color = enabled ? this.getConfig(`color-${key}`) : BG_COLORS[selector];
+                        const enabled = getThis.getConfig(`color-enabled-${key}`);
+                        const color = enabled ? getThis.getConfig(`color-${key}`) : BG_COLORS[selector];
                         const selected = document.querySelectorAll(selector);
 
                         for (const element of selected) {
@@ -1381,8 +1382,8 @@
                 Object.keys(FONT_COLORS).forEach(selector => {
                     if (!filter || filter.includes(selector)) {
                         const key = selector.replace(/[#\.]/g, '').replace(/-?\s+-?/, "-");
-                        const enabled = this.getConfig(`font-color-enabled-${key}`);
-                        const color = enabled ? this.getConfig(`font-color-${key}`) : FONT_COLORS[selector];
+                        const enabled = getThis.getConfig(`font-color-enabled-${key}`);
+                        const color = enabled ? getThis.getConfig(`font-color-${key}`) : FONT_COLORS[selector];
                         const selected = document.querySelectorAll(selector);
 
                         for (const element of selected) {
@@ -1391,8 +1392,8 @@
                     }
                 });
 
-                const chatBorderOverrideColorEnabled = this.getConfig("chatBorderOverrideColorEnabled");
-                const chatBorderOverrideColor = this.getConfig("chatBorderOverrideColor");
+                const chatBorderOverrideColorEnabled = getThis.getConfig("chatBorderOverrideColorEnabled");
+                const chatBorderOverrideColor = getThis.getConfig("chatBorderOverrideColor");
                 if (chatBorderOverrideColorEnabled) {
                     const chatElements = document.querySelectorAll("#game-chat.chat.m-3");
                     for (const element of chatElements) {
@@ -1400,8 +1401,8 @@
                     }
                 }
 
-                const serverMessageTextOverrideEnabled = this.getConfig("serverMessageTextOverrideEnabled");
-                const serverMessageTextOverrideColor = serverMessageTextOverrideEnabled ? this.getConfig("serverMessageTextOverrideColor") : "blue";
+                const serverMessageTextOverrideEnabled = getThis.getConfig("serverMessageTextOverrideEnabled");
+                const serverMessageTextOverrideColor = serverMessageTextOverrideEnabled ? getThis.getConfig("serverMessageTextOverrideColor") : "blue";
                 const serverMessageElements = document.querySelectorAll("#chat-area .server_message");
                 for (const element of serverMessageElements) {
                     element.parentElement.style.color = serverMessageTextOverrideColor;
@@ -1419,38 +1420,27 @@
         //////////////////////////////// onConfigsChanged Start ////////////////////////////////
         onConfigsChanged() {
             if(onLoginLoaded) {
-                this.fightPointsFull();
-                this.miningMachTimer();
+                getThis.fightPointsFull();
+                getThis.miningMachTimer();
 
                 document.body.style.fontFamily = '';
-                const font = this.getConfig("font");
+                const font = getThis.getConfig("font");
                 if (font && font !== FONT_DEFAULT) {
                     const bodyStyle = document.body.getAttribute("style");
                     document.body.setAttribute("style", `${bodyStyle}; font-family: ${font} !important`);
                 }
 
-                const sideChat = this.getConfig("sideChat");
+                const sideChat = getThis.getConfig("sideChat");
                 if (sideChat) {
                     document.getElementById("content").classList.add("side-chat");
                 } else {
                     document.getElementById("content").classList.remove("side-chat");
                 }
 
-                /*const pinChat = this.getConfig("pinChat");
-                if (sideChat && pinChat) {
-                    // Pin when both side chat and pin chat options are enabled
-                    document.getElementById("game-chat").style.position = "sticky";
-                    document.getElementById("game-chat").style.top = 0;
-                } else {
-                    // No existing position or top styles for game-chat element so safe to remove them if we've already added them
-                    document.getElementById("game-chat").style.position = null;
-                    document.getElementById("game-chat").style.top = null;
-                }*/
-
-                if (this.getConfig("fightPointsStats")) {
+                if (getThis.getConfig("fightPointsStats")) {
                     document.getElementById("menu-bar-fight-points").style.display = "inline-block";
                 }
-                if (this.getConfig("fightPointsStats")) {
+                if (getThis.getConfig("fightPointsStats")) {
                     document.getElementById("menu-bar-fight-points").style.display = "inline-block";
                     document.getElementById("menu-bar-fight-fight-points").style.display = "block";
                 } else {
@@ -1459,7 +1449,7 @@
                 }
 
                 //////
-                const condenseWoodcuttingPatches = this.getConfig("condenseWoodcuttingPatches");
+                const condenseWoodcuttingPatches = getThis.getConfig("condenseWoodcuttingPatches");
                 if (condenseWoodcuttingPatches) {
                     const farmingPatchesArea = document.querySelector("#panel-woodcutting .farming-patches-area");
                     farmingPatchesArea.classList.add("condensed");
@@ -1476,7 +1466,7 @@
                     });
                 }
 
-                const condenseFarmingPatches = this.getConfig("condenseFarmingPatches");
+                const condenseFarmingPatches = getThis.getConfig("condenseFarmingPatches");
                 if (condenseFarmingPatches) {
                     const farmingPatchesArea = document.querySelector("#panel-farming .farming-patches-area");
                     farmingPatchesArea.classList.add("condensed");
@@ -1493,7 +1483,7 @@
                     });
                 }
 
-                const condenseGatheringBoxes = this.getConfig("condenseGatheringBoxes");
+                const condenseGatheringBoxes = getThis.getConfig("condenseGatheringBoxes");
                 if (condenseGatheringBoxes) {
                     const gatheringBoxes = document.querySelectorAll("#panel-gathering .gathering-box");
                     gatheringBoxes.forEach(function (el) {
@@ -1506,7 +1496,7 @@
                     });
                 }
 
-                if (this.getConfig("imageTitles")) {
+                if (getThis.getConfig("imageTitles")) {
                     const images = document.querySelectorAll("img");
                     images.forEach(function (el) {
                         const src = el.getAttribute("src");
@@ -1522,7 +1512,7 @@
                     });
                 }
 
-                if (this.getConfig("miningMachineArrows")) {
+                if (getThis.getConfig("miningMachineArrows")) {
                     const panelMining = document.querySelector("#panel-mining");
                     panelMining.classList.add("add-arrow-controls");
                 } else {
@@ -1533,7 +1523,7 @@
                 document.addEventListener("DOMContentLoaded", function() {
                     const toast = document.querySelector(".toast-container");
                     if (toast) {
-                        if (this.getConfig("lowerToast")) {
+                        if (getThis.getConfig("lowerToast")) {
                             toast.classList.remove("top-0");
                             toast.style.top = "45px";
                         } else {
@@ -1543,28 +1533,28 @@
                     }
                 });
 
-                const oilSummaryMining = this.getConfig("oilSummaryMining");
+                const oilSummaryMining = getThis.getConfig("oilSummaryMining");
                 if (oilSummaryMining) {
                     document.getElementById("oil-summary-mining").style.display = "block";
                 } else {
                     document.getElementById("oil-summary-mining").style.display = "none";
                 }
 
-                const oilSummaryCrafting = this.getConfig("oilSummaryCrafting");
+                const oilSummaryCrafting = getThis.getConfig("oilSummaryCrafting");
                 if (oilSummaryCrafting) {
                     document.getElementById("oil-summary-crafting").style.display = "block";
                 } else {
                     document.getElementById("oil-summary-crafting").style.display = "none";
                 }
 
-                const smeltingNotificationTimer = this.getConfig("smeltingNotificationTimer");
+                const smeltingNotificationTimer = getThis.getConfig("smeltingNotificationTimer");
                 if (smeltingNotificationTimer) {
                     document.getElementById("notification-furnace-timer").style.display = "inline-block";
                 } else {
                     document.getElementById("notification-furnace-timer").style.display = "none";
                 }
 
-                const rocketETATimer = this.getConfig("rocketETATimer");
+                const rocketETATimer = getThis.getConfig("rocketETATimer");
                 if (rocketETATimer) {
                     document.getElementById("notification-rocket-timer").style.display = "inline-block";
                     document.getElementById("notification-mega_rocket-timer").style.display = "inline-block";
@@ -1573,7 +1563,7 @@
                     document.getElementById("notification-mega_rocket-timer").style.display = "none";
                 }
 
-                const hideRocketKM = this.getConfig("hideRocketKM");
+                const hideRocketKM = getThis.getConfig("hideRocketKM");
                 if (hideRocketKM) {
                     document.getElementById("notification-rocket-label").style.display = "none";
                     document.getElementById("notification-mega_rocket-label").style.display = "none";
@@ -1582,7 +1572,7 @@
                     document.getElementById("notification-mega_rocket-label").style.display = "inline-block";
                 }
 
-                const heatInFishingTab = this.getConfig("heatInFishingTab");
+                const heatInFishingTab = getThis.getConfig("heatInFishingTab");
                 const heatFishingTab = document.getElementById("heat-fishing-tab");
                 if (heatInFishingTab) {
                     heatFishingTab.style.display = "block";
@@ -1592,8 +1582,8 @@
                     heatFishingTab.removeAttribute("data-item");
                 }
 
-                const merchantReady = this.getConfig("merchantReady");
-                const merchAvail = IdlePixelPlus.getVarOrDefault("merchant");
+                const merchantReady = getThis.getConfig("merchantReady");
+                const merchAvail = getVar("merchant");
                 const merchantAvailNotification = document.getElementById("notification-merchant_avail");
                 if (merchAvail === 1) {
                     if (merchantReady) {
@@ -1603,8 +1593,8 @@
                     }
                 }
 
-                const mixerTimer = this.getConfig("mixerTimer");
-                const mixerAvail = IdlePixelPlus.getVarOrDefault("brewing_xp_mixer_crafted");
+                const mixerTimer = getThis.getConfig("mixerTimer");
+                const mixerAvail = getVar("brewing_xp_mixer_crafted");
                 const brewingMixerTimerNotification = document.getElementById("notification-brewing_mixer_timer");
                 if (mixerAvail == 1) {
                     if (mixerTimer) {
@@ -1614,8 +1604,8 @@
                     }
                 }
 
-                const robotReady = this.getConfig("robotReady");
-                const robotAvail = IdlePixelPlus.getVarOrDefault("robot_crafted");
+                const robotReady = getThis.getConfig("robotReady");
+                const robotAvail = getVar("robot_crafted");
                 const robotAvailNotification = document.getElementById("notification-robot_avail");
                 if (robotReady && robotAvailNotification) {
                     if (robotReady) {
@@ -1625,14 +1615,14 @@
                     }
                 }
 
-                const drillNotifications = this.getConfig("hideDrillNotifications");
+                const drillNotifications = getThis.getConfig("hideDrillNotifications");
                 if (drillNotifications) {
-                    this.miningMachTimer();
+                    getThis.miningMachTimer();
                 }
 
                 //////
-                const sdWatchShow = this.getConfig("moveSDWatch");
-                const sdWatchUnlocked = IdlePixelPlus.getVarOrDefault("stardust_watch_crafted", 0, "int");
+                const sdWatchShow = getThis.getConfig("moveSDWatch");
+                const sdWatchUnlocked = getVar("stardust_watch_crafted", 0, "int");
                 if (sdWatchShow && sdWatchUnlocked === 1) {
                     document.getElementById("notification-stardust_watch").style.display = "none";
                     document.getElementById("menu-bar-sd_watch").style.display = "block";
@@ -1644,18 +1634,18 @@
                     document.getElementById("menu-bar-sd_watch").style.display = "none";
                 }
 
-                const showHeat = this.getConfig("showHeat");
+                const showHeat = getThis.getConfig("showHeat");
                 if (showHeat) {
                     document.getElementById("menu-bar-heat").style.display = "block";
                 } else {
                     document.getElementById("menu-bar-heat").style.display = "none";
                 }
 
-                this.onVariableSet("oil", window.var_oil, window.var_oil);
+                getThis.onVariableSet("oil", window.var_oil, window.var_oil);
 
-                this.updateColors();
+                getThis.updateColors();
 
-                const combatInfoPanel = this.getConfig("combatInfoSideSelect");
+                const combatInfoPanel = getThis.getConfig("combatInfoSideSelect");
                 if (combatInfoPanel === "left") {
                     document.getElementById("combat-info-fight_point-left").style.display = "block";
                     document.getElementById("combat-info-rare_pot-left").style.display = "block";
@@ -1672,19 +1662,19 @@
                     document.getElementById("combat-info-loot_pot-right").style.display = "block";
                 }
 
-                const showPurpleKey = this.getConfig("showPurpleKeyNotification");
-                const purpleKeyUnlock = IdlePixelPlus.getVarOrDefault("guardian_purple_key_hint", 0, "int");
+                const showPurpleKey = getThis.getConfig("showPurpleKeyNotification");
+                const purpleKeyUnlock = getVar("guardian_purple_key_hint", 0, "int");
                 if (showPurpleKey && purpleKeyUnlock === 1) {
                     document.getElementById("notification-purple_key").style.display = "inline-block";
                 } else {
                     document.getElementById("notification-purple_key").style.display = "none";
                 }
 
-                const hideBoatNotifications = this.getConfig("hideBoat");
-                const pirate_ship_timer = IdlePixelPlus.getVarOrDefault("pirate_ship_timer", 0, "int");
-                const row_boat_timer = IdlePixelPlus.getVarOrDefault("row_boat_timer", 0, "int");
-                const canoe_boat_timer = IdlePixelPlus.getVarOrDefault("canoe_boat_timer", 0, "int");
-                const stardust_boat_timer = IdlePixelPlus.getVarOrDefault("stardust_boat_timer", 0, "int");
+                const hideBoatNotifications = getThis.getConfig("hideBoat");
+                const pirate_ship_timer = getVar("pirate_ship_timer", 0, "int");
+                const row_boat_timer = getVar("row_boat_timer", 0, "int");
+                const canoe_boat_timer = getVar("canoe_boat_timer", 0, "int");
+                const stardust_boat_timer = getVar("stardust_boat_timer", 0, "int");
                 if (hideBoatNotifications) {
                     document.getElementById("notification-row_boat").style.display = "none";
                     document.getElementById("notification-canoe_boat").style.display = "none";
@@ -1706,15 +1696,15 @@
                 }
 
                 //////
-                const rocket_usable = IdlePixelPlus.getVarOrDefault("rocket_usable", 0, "int");
-                const rocket_travel_check = IdlePixelPlus.getVarOrDefault("rocket_distance_required", 0, "int");
-                const rocket_pot_timer_check = IdlePixelPlus.getVarOrDefault("rocket_potion_timer", 0, "int");
-                const rocket_check = IdlePixelPlus.getVarOrDefault("mega_rocket", 0, "int");
+                const rocket_usable = getVar("rocket_usable", 0, "int");
+                const rocket_travel_check = getVar("rocket_distance_required", 0, "int");
+                const rocket_pot_timer_check = getVar("rocket_potion_timer", 0, "int");
+                const rocket_check = getVar("mega_rocket", 0, "int");
 
-                if (this.getConfig("leftSideRocketInfoSection") && rocket_usable > 0) {
+                if (getThis.getConfig("leftSideRocketInfoSection") && rocket_usable > 0) {
                     document.getElementById("current-rocket-info").style.display = "block";
 
-                    if (this.getConfig("leftSideRocketInfo")) {
+                    if (getThis.getConfig("leftSideRocketInfo")) {
                         document.getElementById("rocket-travel-info").style.display = "block";
                         document.getElementById("notification-mega_rocket").style.display = "none";
                         document.getElementById("notification-rocket").style.display = "none";
@@ -1728,13 +1718,13 @@
                         document.getElementById("rocket-travel-info").style.display = "none";
                     }
 
-                    if (this.getConfig("leftSideRocketFuel")) {
+                    if (getThis.getConfig("leftSideRocketFuel")) {
                         document.getElementById("current-rocket-fuel-info").style.display = "block";
                     } else {
                         document.getElementById("current-rocket-fuel-info").style.display = "none";
                     }
 
-                    if (this.getConfig("leftSideRocketPot")) {
+                    if (getThis.getConfig("leftSideRocketPot")) {
                         document.getElementById("current-rocket-pot-info").style.display = "block";
                         document.getElementById("notification-potion-rocket_potion_timer").style.display = "none";
                     } else if (rocket_pot_timer_check > 0) {
@@ -1755,7 +1745,7 @@
 
                 setTimeout(function () {
                     if(document.getElementById('notification-furnace_avail')) {
-                        const furnaceOreTypeVar = IdlePixelPlus.getVarOrDefault("furnace_ore_amount_set", 0, "int");
+                        const furnaceOreTypeVar = getVar("furnace_ore_amount_set", 0, "int");
                         const furnaceNotifVar = IdlePixelPlus.plugins['ui-tweaks'].getConfig("furnaceEmptyNotification");
                         if (furnaceOreTypeVar <= 0 && furnaceNotifVar) {
                             document.getElementById('notification-furnace_avail').style.display = "inline-block";
@@ -1765,12 +1755,12 @@
                     }
                 }, 500);
 
-                const purpleKeyGo = this.getConfig("showPurpleKeyNotification");
+                const purpleKeyGo = getThis.getConfig("showPurpleKeyNotification");
 
-                if(this.getConfig("condensedUI")) {
-                    this.condensedUI();
+                if(getThis.getConfig("condensedUI")) {
+                    getThis.condensedUI();
                 } else {
-                    this.defaultUI();
+                    getThis.defaultUI();
                 }
             }
         }
@@ -1791,22 +1781,22 @@
         addCriptoeValues() {
             const wallet_1_text = document.getElementById("wallet_1_payout");
             const wallet_1_perct = document.getElementById("criptoe-wallet-1-percentage").innerText.replace(' %', '');
-            const wallet_1 = IdlePixelPlus.getVarOrDefault("wallet1_invested", 0, "int");
+            const wallet_1 = getVar("wallet1_invested", 0, "int");
             const wallet_1_payout = Math.floor(wallet_1 * (wallet_1_perct / 100 + 1));
 
             const wallet_2_text = document.getElementById("wallet_2_payout");
             const wallet_2_perct = document.getElementById("criptoe-wallet-2-percentage").innerText.replace(' %', '');
-            const wallet_2 = IdlePixelPlus.getVarOrDefault("wallet1_invested", 0, "int");
+            const wallet_2 = getVar("wallet2_invested", 0, "int");
             const wallet_2_payout = Math.floor(wallet_2 * (wallet_2_perct / 100 + 1));
 
             const wallet_3_text = document.getElementById("wallet_3_payout");
             const wallet_3_perct = document.getElementById("criptoe-wallet-3-percentage").innerText.replace(' %', '');
-            const wallet_3 = IdlePixelPlus.getVarOrDefault("wallet3_invested", 0, "int");
+            const wallet_3 = getVar("wallet3_invested", 0, "int");
             const wallet_3_payout = Math.floor(wallet_3 * (wallet_3_perct / 100 + 1));
 
             const wallet_4_text = document.getElementById("wallet_4_payout");
             const wallet_4_perct = document.getElementById("criptoe-wallet-4-percentage").innerText.replace(' %', '');
-            const wallet_4 = IdlePixelPlus.getVarOrDefault("wallet4_invested", 0, "int");
+            const wallet_4 = getVar("wallet4_invested", 0, "int");
             const wallet_4_payout = Math.floor(wallet_4 * (wallet_4_perct / 100 + 1));
 
             if(wallet_1 > 0) {
@@ -1853,6 +1843,9 @@
 
         //////////////////////////////// onLogin Start ////////////////////////////////
         onLogin() {
+			IPP = IdlePixelPlus;
+			getVar = IdlePixelPlus.getVarOrDefault;
+			getThis = IdlePixelPlus.plugins['ui-tweaks'];
             document.getElementById("menu-bar").style.borderTop = "1px solid grey";
             document.getElementById("menu-bar").style.paddingTop = "10px";
             document.getElementById("left-menu-bar-labels").style.borderBottom = "1px solid rgba(66,66,66,1)";
@@ -1907,21 +1900,21 @@
             addLoadingSpanAfterElement("#menu-bar-magic-level", "overallLevelExtended-magic");
 
 
-            this.updateColors();
+            getThis.updateColors();
 
-            var loot_pot = IdlePixelPlus.getVarOrDefault("combat_loot_potion_active", 0, "int");
-            var merchantTiming = IdlePixelPlus.getVarOrDefault("merchant_timer", 0, "int");
-            var merchantUnlocked = IdlePixelPlus.getVarOrDefault("merchant", 0, "int");
-            let robotTiming = IdlePixelPlus.getVarOrDefault("robot_wave_timer", 0, "int");
-            var robotUnlocked = IdlePixelPlus.getVarOrDefault("robot_crafted", 0, "int");
-            const tableLabel = this.getConfig("tableLabels");
-            this.loot_pot_avail();
+            var loot_pot = getVar("combat_loot_potion_active", 0, "int");
+            var merchantTiming = getVar("merchant_timer", 0, "int");
+            var merchantUnlocked = getVar("merchant", 0, "int");
+            let robotTiming = getVar("robot_wave_timer", 0, "int");
+            var robotUnlocked = getVar("robot_crafted", 0, "int");
+            const tableLabel = getThis.getConfig("tableLabels");
+            getThis.loot_pot_avail();
             if(tableLabel) {
-                this.addTableCraftLabels();
+                getThis.addTableCraftLabels();
             }
 
             const addBrewerNotifications = (timer, charges) => {
-                var mixerUnlocked = IdlePixelPlus.getVarOrDefault("brewing_xp_mixer_crafted");
+                var mixerUnlocked = getVar("brewing_xp_mixer_crafted");
                 const notifDiv = document.createElement('div');
                 notifDiv.id = `notification-brewing_mixer_timer`;
                 notifDiv.onclick = function () {
@@ -1950,17 +1943,17 @@
             }
 
             const brewingTimer = () => {
-                var mixerUnlocked = IdlePixelPlus.getVarOrDefault("brewing_xp_mixer_crafted");
+                var mixerUnlocked = getVar("brewing_xp_mixer_crafted");
                 if(mixerUnlocked == 1) {
-                    let playerTimer = IdlePixelPlus.getVarOrDefault("playtime", 0, "int");
-                    let chargesUsed = IdlePixelPlus.getVarOrDefault("brewing_xp_mixer_used", 0, "int");
+                    let playerTimer = getVar("playtime", 0, "int");
+                    let chargesUsed = getVar("brewing_xp_mixer_used", 0, "int");
                     let chargesLeft = 5 - chargesUsed;
                     let playTimeMod = (1 - ((playerTimer / (86400)) - Math.floor(playerTimer / (86400))));
                     let etaTimerBrew = format_time(playTimeMod*86400);
 
                     const runBrewingTimer = setInterval(function() {
-                        playerTimer = IdlePixelPlus.getVarOrDefault("playtime", 0, "int");
-                        chargesUsed = IdlePixelPlus.getVarOrDefault("brewing_xp_mixer_used", 0, "int");
+                        playerTimer = getVar("playtime", 0, "int");
+                        chargesUsed = getVar("brewing_xp_mixer_used", 0, "int");
                         chargesLeft = 5 - chargesUsed;
                         playTimeMod = (1 - ((playerTimer / (86400)) - Math.floor(playerTimer / (86400))));
                         etaTimerBrew = format_time(playTimeMod*86400);
@@ -1973,8 +1966,8 @@
             }
 
             const addMerchantNotifications = () => {
-                var merchantTimerCheck = IdlePixelPlus.getVarOrDefault("merchant_timer", 0, "int");
-                var merchantUnlocked = IdlePixelPlus.getVarOrDefault("merchant", 0, "int");
+                var merchantTimerCheck = getVar("merchant_timer", 0, "int");
+                var merchantUnlocked = getVar("merchant", 0, "int");
                 const notifDiv = document.createElement('div');
                 notifDiv.id = `notification-merchant_avail`;
                 notifDiv.onclick = function () {
@@ -2002,12 +1995,12 @@
             }
 
             const merchantTimer = () => {
-                var merchantUnlocked = IdlePixelPlus.getVarOrDefault("merchant", 0, "int");
+                var merchantUnlocked = getVar("merchant", 0, "int");
                 if(merchantUnlocked == 1) {
-                    let merchantTiming = IdlePixelPlus.getVarOrDefault("merchant_timer", 0, "int");
+                    let merchantTiming = getVar("merchant_timer", 0, "int");
                     let etaTimerMerch = format_time(merchantTiming);
                     const runMerchantTimer = setInterval(function() {
-                        merchantTiming = IdlePixelPlus.getVarOrDefault("merchant_timer", 0, "int");
+                        merchantTiming = getVar("merchant_timer", 0, "int");
                         etaTimerMerch = format_time(merchantTiming);
                         const merchantLabel = document.querySelector('#notification-merchant_avail-label')
                         if(merchantTiming == 0) {
@@ -2024,17 +2017,17 @@
             }
 
             const addFurnaceNotification = () => {
-                if(IdlePixelPlus.getVarOrDefault("stone_furnace_crafted", 0, "int") == 1) {
-                    var furnaceOreType = IdlePixelPlus.getVarOrDefault("furnace_ore_type", "none", "string");
-                    var dragFur = IdlePixelPlus.getVarOrDefault("dragon_furnace", 0, "int");
-                    var ancFur = IdlePixelPlus.getVarOrDefault("ancient_furnace_crafted", 0, "int");
-                    var titFur = IdlePixelPlus.getVarOrDefault("titanium_furnace_crafted", 0, "int");
-                    var promFur = IdlePixelPlus.getVarOrDefault("promethium_furnace_crafted", 0, "int");
-                    var goldFur = IdlePixelPlus.getVarOrDefault("gold_furnace_crafted", 0, "int");
-                    var silvFur = IdlePixelPlus.getVarOrDefault("silver_furnace_crafted", 0, "int");
-                    var ironFur = IdlePixelPlus.getVarOrDefault("iron_furnace_crafted", 0, "int");
-                    var bronzeFur = IdlePixelPlus.getVarOrDefault("bronze_furnace_crafted", 0, "int");
-                    var stoneFur = IdlePixelPlus.getVarOrDefault("stone_furnace_crafted", 0, "int");
+                if(getVar("stone_furnace_crafted", 0, "int") == 1) {
+                    var furnaceOreType = getVar("furnace_ore_type", "none", "string");
+                    var dragFur = getVar("dragon_furnace", 0, "int");
+                    var ancFur = getVar("ancient_furnace_crafted", 0, "int");
+                    var titFur = getVar("titanium_furnace_crafted", 0, "int");
+                    var promFur = getVar("promethium_furnace_crafted", 0, "int");
+                    var goldFur = getVar("gold_furnace_crafted", 0, "int");
+                    var silvFur = getVar("silver_furnace_crafted", 0, "int");
+                    var ironFur = getVar("iron_furnace_crafted", 0, "int");
+                    var bronzeFur = getVar("bronze_furnace_crafted", 0, "int");
+                    var stoneFur = getVar("stone_furnace_crafted", 0, "int");
                     var furnImg;
 
                     if(dragFur == 1) {
@@ -2080,7 +2073,7 @@
 
                     notifDiv.append(notifIcon, notifDivLabel)
                     document.querySelector('#notifications-area').prepend(notifDiv)
-                    var furnaceNotif = this.getConfig("furnaceEmptyNotification");
+                    var furnaceNotif = getThis.getConfig("furnaceEmptyNotification");
                     if(furnaceOreType != "none" || !furnaceNotif) {
                         document.querySelector('#notification-furnace_avail').style.display = 'none';
                     }
@@ -2088,8 +2081,8 @@
             }
 
             const addRobotNotifications = () => {
-                var robotTimerCheck = IdlePixelPlus.getVarOrDefault("robot_wave_timer", 0, "int");
-                var robotUnlocked = IdlePixelPlus.getVarOrDefault("robot_crafted", 0, "int");
+                var robotTimerCheck = getVar("robot_wave_timer", 0, "int");
+                var robotUnlocked = getVar("robot_crafted", 0, "int");
                 const notifDiv = document.createElement('div');
                 notifDiv.id = `notification-robot_avail`;
                 notifDiv.onclick = function () {
@@ -2118,14 +2111,14 @@
 
             const robotTimer = () => {
                 let robotNotification = false;
-                var robotUnlocked = IdlePixelPlus.getVarOrDefault("robot_crafted", 0, "int");
+                var robotUnlocked = getVar("robot_crafted", 0, "int");
                 var thisScript = "";
                 if(robotUnlocked == 1) {
-                    let robotTiming = IdlePixelPlus.getVarOrDefault("robot_wave_timer", 0, "int");
+                    let robotTiming = getVar("robot_wave_timer", 0, "int");
                     let etaTimerRobot = format_time(robotTiming);
                     const runRobotTimer = setInterval(function() {
                         robotNotification =  IdlePixelPlus.plugins['ui-tweaks'].getConfig("robotReady");
-                        robotTiming = IdlePixelPlus.getVarOrDefault("robot_wave_timer", 0, "int");
+                        robotTiming = getVar("robot_wave_timer", 0, "int");
                         etaTimerRobot = format_time(robotTiming);
                         const robotLabel = document.querySelector('#notification-robot_avail-label')
                         if(robotTiming == 0 && robotNotification) {
@@ -2174,7 +2167,7 @@
 
 
             const addPurpleKeyNotifications = () => {
-                var purpleKeyUnlocked = IdlePixelPlus.getVarOrDefault("guardian_purple_key_hint", 0, "int");
+                var purpleKeyUnlocked = getVar("guardian_purple_key_hint", 0, "int");
                 const notifDiv = document.createElement('div');
                 notifDiv.id = `notification-purple_key`;
                 notifDiv.onclick = function () {
@@ -2225,11 +2218,11 @@
 
             addPurpleKeyNotifications();
 
-            this.miningMachTimer();
+            getThis.miningMachTimer();
             // fix chat
-            purpleKeyGo = this.getConfig("showPurpleKeyNotification");
+            purpleKeyGo = getThis.getConfig("showPurpleKeyNotification");
 
-            this.onConfigsChanged();
+            getThis.onConfigsChanged();
 
             const style = document.createElement('style');
             style.id = 'styles-ui-tweaks';
@@ -2760,9 +2753,9 @@
                 self.updateColors();
             }
 
-            var currentFP = IdlePixelPlus.getVarOrDefault("fight_points", 0, "int").toLocaleString();
-            var rarePotTimer = IdlePixelPlus.getVarOrDefault("rare_monster_potion_timer", 0, "int");
-            var rarePotPlusTimer = IdlePixelPlus.getVarOrDefault("super_rare_monster_potion_timer", 0, "int");
+            var currentFP = getVar("fight_points", 0, "int").toLocaleString();
+            var rarePotTimer = getVar("rare_monster_potion_timer", 0, "int");
+            var rarePotPlusTimer = getVar("super_rare_monster_potion_timer", 0, "int");
             var rarePotInfo = "";
 
             if (rarePotTimer > 0) {
@@ -2773,8 +2766,8 @@
                 rarePotInfo = "Inactive";
             }
 
-            var combatLootPotActive = IdlePixelPlus.getVarOrDefault("combat_loot_potion_active", 0, "int");
-            var combatLootPotTimer = IdlePixelPlus.getVarOrDefault("combat_loot_potion_timer", 0, "int");
+            var combatLootPotActive = getVar("combat_loot_potion_active", 0, "int");
+            var combatLootPotTimer = getVar("combat_loot_potion_timer", 0, "int");
             var combatLootPotInfo = "";
 
             if (combatLootPotActive == 1) {
@@ -2905,14 +2898,14 @@
                     button.textContent = "Hide";
                 }
             }
-            this.calcFishEnergy();
+            getThis.calcFishEnergy();
             document.querySelector("#fishing-calculator-div").style.display = "none";
 
-            this.oilTimerNotification();
+            getThis.oilTimerNotification();
             setTimeout(function() {
                 onLoginLoaded = true;
-                const rocket_fuel = IdlePixelPlus.getVarOrDefault("rocket_fuel", 0, "int");
-                const rocket_pot_count = IdlePixelPlus.getVarOrDefault("rocket_potion", 0, "int");
+                const rocket_fuel = getVar("rocket_fuel", 0, "int");
+                const rocket_pot_count = getVar("rocket_potion", 0, "int");
                 document.querySelector("#rocket-fuel-count").textContent = rocket_fuel;
                 document.querySelector("#rocket-pot-count").textContent = rocket_pot_count;
                 IdlePixelPlus.plugins['ui-tweaks'].onConfigsChanged();
@@ -2953,13 +2946,13 @@
 
             existingElement.parentNode.replaceChild(newContainer, existingElement);
 
-            if(this.getConfig("condensedUI")) {
-                this.condensedUI();
+            if(getThis.getConfig("condensedUI")) {
+                getThis.condensedUI();
             } else {
-                this.defaultUI();
+                getThis.defaultUI();
             }
 
-            this.restructureTopBar();
+            getThis.restructureTopBar();
         }
         //////////////////////////////// onLogin End ////////////////////////////////
 
@@ -2976,7 +2969,7 @@
         limitChat() {
             const chatArea = document.getElementById('chat-area');
             const chatLength = chatArea.innerHTML.length;
-            const limit = this.getConfig("chatLimit");
+            const limit = getThis.getConfig("chatLimit");
 
             if (limit > 0 || chatLength > 190000) {
                 const children = chatArea.children;
@@ -3013,8 +3006,8 @@
 
 
         onPanelChanged(panelBefore, panelAfter) {
-            this.updateTableCraftLabels();
-            this.hideOrbsAndRing();
+            getThis.updateTableCraftLabels();
+            getThis.hideOrbsAndRing();
 
             if (panelBefore !== panelAfter && panelAfter === "idlepixelplus") {
                 const options = document.querySelectorAll("#idlepixelplus-config-ui-tweaks-font option");
@@ -3030,7 +3023,7 @@
                 }
             }
 
-            if (["farming", "woodcutting", "combat"].includes(panelAfter) && this.getConfig("imageTitles")) {
+            if (["farming", "woodcutting", "combat"].includes(panelAfter) && getThis.getConfig("imageTitles")) {
                 const images = document.querySelectorAll(`#panel-${panelAfter} img`);
                 if (images) {
                     images.forEach(function (el) {
@@ -3044,7 +3037,7 @@
             }
 
             if (Globals.currentPanel === "panel-fishing") {
-                this.calcFishEnergy();
+                getThis.calcFishEnergy();
             }
         }
 
@@ -3061,11 +3054,11 @@
                     }
 
                     if(Globals.currentPanel == "panel-brewing") {
-                        this.updateTableCraftLabels();
+                        getThis.updateTableCraftLabels();
                     }
 
                     if(key == "oil") {
-                        this.oilGain();
+                        getThis.oilGain();
                     }
 
                     if(key.endsWith("_xp")) {
@@ -3080,7 +3073,7 @@
                     if(["oil", "max_oil"].includes(key)) {
                         const oil = IdlePixelPlus.getVar("oil");
                         const maxOil = IdlePixelPlus.getVar("max_oil");
-                        if(oil && oil==maxOil && this.getConfig("oilFullNotification")) {
+                        if(oil && oil==maxOil && getThis.getConfig("oilFullNotification")) {
                             document.querySelector("#ui-tweaks-notification-oil-full").style.display = '';
                         }
                         else {
@@ -3089,24 +3082,24 @@
                     }
 
                     if(["oil_in", "oil_out"].includes(key)) {
-                        const oilIn = IdlePixelPlus.getVarOrDefault("oil_in", 0, "int");
-                        const oilOut = IdlePixelPlus.getVarOrDefault("oil_out", 0, "int");
+                        const oilIn = getVar("oil_in", 0, "int");
+                        const oilOut = getVar("oil_out", 0, "int");
                         window.var_oil_delta = `${oilIn-oilOut}`;
                     }
 
-                    this.fightPointsFull();
+                    getThis.fightPointsFull();
 
                     if(["furnace_ore_type", "furnace_countdown", "furnace_ore_amount_at"].includes(key)) {
                         const el = document.querySelector("#notification-furnace-timer");
-                        const ore = IdlePixelPlus.getVarOrDefault("furnace_ore_type", "none");
+                        const ore = getVar("furnace_ore_type", "none");
                         if(ore == "none") {
                             el.textContent = "";
                             return;
                         }
-                        const timerRemaining = IdlePixelPlus.getVarOrDefault("furnace_countdown", 0, "int");
+                        const timerRemaining = getVar("furnace_countdown", 0, "int");
                         const timePerOre = SMELT_TIMES[ore] - 1;
-                        const startAmount = IdlePixelPlus.getVarOrDefault("furnace_ore_amount_set", 0, "int");
-                        const doneAmount = IdlePixelPlus.getVarOrDefault("furnace_ore_amount_at", 0, "int");
+                        const startAmount = getVar("furnace_ore_amount_set", 0, "int");
+                        const doneAmount = getVar("furnace_ore_amount_at", 0, "int");
                         const remaining = startAmount - doneAmount - 1;
                         const totalTime = (remaining*timePerOre) + timerRemaining;
                         el.textContent = (" - " + format_time(totalTime));
@@ -3115,9 +3108,9 @@
                     ////////////////////////////////////// Rocket Info Start
 
                     if(["rocket_km", "rocket_status"].includes(key) || key.includes("rocket_potion_timer") || key.includes("rocket_fuel") || key.includes("rocket_potion")) {
-                        const status = IdlePixelPlus.getVarOrDefault("rocket_status", "none", "string");
-                        const km = IdlePixelPlus.getVarOrDefault("rocket_km", 0, "int");
-                        var rocket_quest = IdlePixelPlus.getVarOrDefault("junk_planet_quest", 0, "int");
+                        const status = getVar("rocket_status", "none", "string");
+                        const km = getVar("rocket_km", 0, "int");
+                        var rocket_quest = getVar("junk_planet_quest", 0, "int");
                         var rQComp;
                         if(rocket_quest == -1) {
                             rQComp = 2
@@ -3125,11 +3118,11 @@
                         else {
                             rQComp = 1
                         }
-                        const total = IdlePixelPlus.getVarOrDefault("rocket_distance_required", 0, "int");
-                        const rocket_pot = IdlePixelPlus.getVarOrDefault("rocket_potion_timer", 0, "int");
-                        const rocket_type = IdlePixelPlus.getVarOrDefault("mega_rocket", 0, "int");
-                        const rocket_fuel = IdlePixelPlus.getVarOrDefault("rocket_fuel", 0, "int");
-                        const rocket_pot_count = IdlePixelPlus.getVarOrDefault("rocket_potion", 0, "int");
+                        const total = getVar("rocket_distance_required", 0, "int");
+                        const rocket_pot = getVar("rocket_potion_timer", 0, "int");
+                        const rocket_type = getVar("mega_rocket", 0, "int");
+                        const rocket_fuel = getVar("rocket_fuel", 0, "int");
+                        const rocket_pot_count = getVar("rocket_potion", 0, "int");
                         const rocket_pot_timer = format_time(rocket_pot);
                         const rocket_speed_moon = rocket_pot * 12 * rQComp;
                         const rocket_speed_sun = rocket_pot * 2400 * rQComp;
@@ -3156,7 +3149,7 @@
                             }
                             label = format_time(eta);
                             label_side = format_time(eta);
-                            if(this.getConfig("rocketETATimer") && !this.getConfig("hideRocketKM")) {
+                            if(getThis.getConfig("rocketETATimer") && !getThis.getConfig("hideRocketKM")) {
                                 label = " - " + label;
                                 label_side_car_dist = km.toLocaleString() + "/" + total.toLocaleString();
                                 label_side_car_eta = label_side;
@@ -3179,7 +3172,7 @@
                             }
                             label = format_time(eta);
                             label_side = format_time(eta);
-                            if(this.getConfig("rocketETATimer") && !this.getConfig("hideRocketKM")) {
+                            if(getThis.getConfig("rocketETATimer") && !getThis.getConfig("hideRocketKM")) {
                                 label = " - " + label;
                                 if(km == total) {
                                     label_side_car_dist = "LANDED";
@@ -3210,8 +3203,8 @@
 
                     ////////////////////////////////////// Rocket Status Start
 
-                    const megaRocketType = IdlePixelPlus.getVarOrDefault("mega_rocket", 0, "int");
-                    const rocketStatus = IdlePixelPlus.getVarOrDefault("rocket_status", "");
+                    const megaRocketType = getVar("mega_rocket", 0, "int");
+                    const rocketStatus = getVar("rocket_status", "");
                     const rocketImage = document.querySelector("img#notification-rocket-image");
                     const moonRocketImage = document.querySelector("img#moon-rocket-img");
                     const sunRocketImage = document.querySelector("img#sun-rocket-img");
@@ -3361,14 +3354,14 @@
                     }
                     //}
 
-                    const rocket_usable = IdlePixelPlus.getVarOrDefault("rocket_usable", 0, "int");
-                    const rocket_travel_check = IdlePixelPlus.getVarOrDefault("rocket_distance_required", 0, "int");
-                    const rocket_pot_timer_check = IdlePixelPlus.getVarOrDefault("rocket_potion_timer", 0, "int");
-                    const rocket_check = IdlePixelPlus.getVarOrDefault("mega_rocket", 0, "int");
-                    if (this.getConfig("leftSideRocketInfoSection") && rocket_usable > 0) {
+                    const rocket_usable = getVar("rocket_usable", 0, "int");
+                    const rocket_travel_check = getVar("rocket_distance_required", 0, "int");
+                    const rocket_pot_timer_check = getVar("rocket_potion_timer", 0, "int");
+                    const rocket_check = getVar("mega_rocket", 0, "int");
+                    if (getThis.getConfig("leftSideRocketInfoSection") && rocket_usable > 0) {
                         showBlockElement(document.getElementById("current-rocket-info"));
 
-                        if (this.getConfig("leftSideRocketInfo")) {
+                        if (getThis.getConfig("leftSideRocketInfo")) {
                             showBlockElement(document.getElementById("rocket-travel-info"));
                             hideElement(document.getElementById("notification-mega_rocket"));
                             hideElement(document.getElementById("notification-rocket"));
@@ -3382,13 +3375,13 @@
                             hideElement(document.getElementById("rocket-travel-info"));
                         }
 
-                        if (this.getConfig("leftSideRocketFuel")) {
+                        if (getThis.getConfig("leftSideRocketFuel")) {
                             showBlockElement(document.getElementById("current-rocket-fuel-info"));
                         } else {
                             hideElement(document.getElementById("current-rocket-fuel-info"));
                         }
 
-                        if (this.getConfig("leftSideRocketPot")) {
+                        if (getThis.getConfig("leftSideRocketPot")) {
                             showBlockElement(document.getElementById("current-rocket-pot-info"));
                             hideElement(document.getElementById("notification-potion-rocket_potion_timer"));
                         } else if (rocket_pot_timer_check > 0) {
@@ -3408,7 +3401,7 @@
                     }
 
                     if (key == "combat_loot_potion_active") {
-                        const loot_pot = IdlePixelPlus.getVarOrDefault("combat_loot_potion_active", 0, "int");
+                        const loot_pot = getVar("combat_loot_potion_active", 0, "int");
                         if (loot_pot == 0) {
                             hideElement(document.getElementById("notification-loot_pot_avail"));
                         } else {
@@ -3417,13 +3410,13 @@
                     }
 
                     ////////// SD Watch Notification
-                    const sdWatchCrafted = IdlePixelPlus.getVarOrDefault("stardust_watch_crafted", 0, "int");
-                    const sdWatchCharges = IdlePixelPlus.getVarOrDefault("stardust_watch_charges", 0, "int");
-                    if (this.getConfig("moveSDWatch") && sdWatchCrafted === 1) {
+                    const sdWatchCrafted = getVar("stardust_watch_crafted", 0, "int");
+                    const sdWatchCharges = getVar("stardust_watch_charges", 0, "int");
+                    if (getThis.getConfig("moveSDWatch") && sdWatchCrafted === 1) {
                         hideElement(document.getElementById("notification-stardust_watch"));
                         document.querySelector("#menu-bar-sd_watch .sd-watch-charges").textContent = sdWatchCharges;
                         document.querySelector("#menu-bar-sd_watch_2 .sd-watch-charges_2").textContent = sdWatchCharges;
-                    } else if (!this.getConfig("moveSDWatch") && sdWatchCharges > 0) {
+                    } else if (!getThis.getConfig("moveSDWatch") && sdWatchCharges > 0) {
                         showElement(document.getElementById("notification-stardust_watch"));
                     } else {
                         hideElement(document.getElementById("notification-stardust_watch"));
@@ -3444,29 +3437,29 @@
                             useGrouping: false
                         });
                         var location = key.replace("gathering_working_gathering_loot_bag_", "");
-                        var bagCount = IdlePixelPlus.getVarOrDefault(key, 0, "int").toLocaleString();
+                        var bagCount = getVar(key, 0, "int").toLocaleString();
                     }
 
                     if(key.includes("raw_") || key.includes("cooked_")) {
                         if(Globals.currentPanel == "panel-fishing") {
-                            this.calcFishEnergy();
+                            getThis.calcFishEnergy();
                         }
                     }
 
                     if(key.endsWith("_xp")) {
-                        this.extendedLevelsUpdate();
+                        getThis.extendedLevelsUpdate();
                     }
 
                     if(key == 'moon_distance' || key == 'sun_distance') {
-                        this.rocketInfoUpdate(key);
+                        getThis.rocketInfoUpdate(key);
                     }
 
-                    const hideBoatNotifications = this.getConfig("hideBoat");
-                    const pirate_ship_timer = IdlePixelPlus.getVarOrDefault("pirate_ship_timer", 0, "int");
-                    const row_boat_timer = IdlePixelPlus.getVarOrDefault("row_boat_timer", 0, "int");
-                    const canoe_boat_timer = IdlePixelPlus.getVarOrDefault("canoe_boat_timer", 0, "int");
-                    const stardust_boat_timer = IdlePixelPlus.getVarOrDefault("stardust_boat_timer", 0, "int");
-                    const submarine_boat_timer = IdlePixelPlus.getVarOrDefault("submarine_boat_timer", 0, "int");
+                    const hideBoatNotifications = getThis.getConfig("hideBoat");
+                    const pirate_ship_timer = getVar("pirate_ship_timer", 0, "int");
+                    const row_boat_timer = getVar("row_boat_timer", 0, "int");
+                    const canoe_boat_timer = getVar("canoe_boat_timer", 0, "int");
+                    const stardust_boat_timer = getVar("stardust_boat_timer", 0, "int");
+                    const submarine_boat_timer = getVar("submarine_boat_timer", 0, "int");
                     if (hideBoatNotifications) {
                         hideElement(document.getElementById("notification-row_boat"));
                         hideElement(document.getElementById("notification-canoe_boat"));
@@ -3493,7 +3486,7 @@
 
                     if (key === "furnace_ore_amount_set") {
                         setTimeout(function () {
-                            var furnaceOreTypeVar = IdlePixelPlus.getVarOrDefault("furnace_ore_amount_set", 0, "int");
+                            var furnaceOreTypeVar = getVar("furnace_ore_amount_set", 0, "int");
                             var furnaceNotifVar = IdlePixelPlus.plugins['ui-tweaks'].getConfig("furnaceEmptyNotification");
 
                             if (furnaceOreTypeVar <= 0 && furnaceNotifVar) {
@@ -3505,24 +3498,24 @@
                     }
 
                     if(key.startsWith("nades_purple_key")) {
-                        let purpKeyMonst = IdlePixelPlus.getVarOrDefault("nades_purple_key_monster", "", "string");
-                        let purpKeyRarity = IdlePixelPlus.getVarOrDefault("nades_purple_key_rarity", "", "string");
-                        let purpKeyTimer = IdlePixelPlus.getVarOrDefault("nades_purple_key_timer", 0, "int");
+                        let purpKeyMonst = getVar("nades_purple_key_monster", "", "string");
+                        let purpKeyRarity = getVar("nades_purple_key_rarity", "", "string");
+                        let purpKeyTimer = getVar("nades_purple_key_timer", 0, "int");
 
                         onPurpleKey(purpKeyMonst, purpKeyRarity, purpKeyTimer);
                     }
 
                     if(key === "playtime") {
-                        this.updateCrippledToeTimer();
+                        getThis.updateCrippledToeTimer();
                     }
 
                 }
                 ////////// Allowed to Run while in combat
                 ////////// Current FP with Timer (Left Sidecar)
                 if (Globals.currentPanel == "panel-combat-canvas") {
-                    var currentFP = IdlePixelPlus.getVarOrDefault("fight_points", 0, "int").toLocaleString();
-                    var rarePotTimer = IdlePixelPlus.getVarOrDefault("rare_monster_potion_timer", 0, "int");
-                    var rarePotPlusTimer = IdlePixelPlus.getVarOrDefault("super_rare_monster_potion_timer", 0, "int");
+                    var currentFP = getVar("fight_points", 0, "int").toLocaleString();
+                    var rarePotTimer = getVar("rare_monster_potion_timer", 0, "int");
+                    var rarePotPlusTimer = getVar("super_rare_monster_potion_timer", 0, "int");
                     var rarePotInfo = "";
 
                     if (rarePotTimer > 0) {
@@ -3533,7 +3526,7 @@
                         rarePotInfo = "Inactive";
                     }
 
-                    var combatLootPotActive = IdlePixelPlus.getVarOrDefault("combat_loot_potion_active", 0, "int");
+                    var combatLootPotActive = getVar("combat_loot_potion_active", 0, "int");
                     var combatLootPotInfo = combatLootPotActive ? "Active" : "Inactive";
 
                     document.getElementById("combat-info-fight_point-right-fp").textContent = " " + currentFP;
@@ -3581,26 +3574,26 @@
             if (variable == 'moon_distance') {
                 var distanceMoon = Number(var_moon_distance);
                 document.getElementById("menu-bar-rocket_moon").querySelector(".rocket-dist_moon").textContent = distanceMoon.toLocaleString();
-                var goodMoon = Number(this.getConfig("goodMoon"));
+                var goodMoon = Number(getThis.getConfig("goodMoon"));
                 var rocketDistMoonSymbol = document.getElementById("menu-bar-rocket_moon").querySelector(".rocket-dist_moon-symbol");
                 rocketDistMoonSymbol.textContent = goodMoon >= distanceMoon ? "🟢" : "🔴";
             } else if (variable == 'sun_distance') {
                 var distanceSun = Number(var_sun_distance);
                 document.getElementById("menu-bar-rocket_sun").querySelector(".rocket-dist_sun").textContent = distanceSun.toLocaleString();
-                var goodSun = Number(this.getConfig("goodSun"));
+                var goodSun = Number(getThis.getConfig("goodSun"));
                 var rocketDistSunSymbol = document.getElementById("menu-bar-rocket_sun").querySelector(".rocket-dist_sun-symbol");
                 rocketDistSunSymbol.textContent = goodSun >= distanceSun ? "🟢" : "🔴";
             }
         }
 
         onChat(data) {
-            this.updateColors(CHAT_UPDATE_FILTER);
-            this.limitChat();
+            getThis.updateColors(CHAT_UPDATE_FILTER);
+            getThis.limitChat();
         }
 
         onCombatEnd() {
-            this.updateColors(PANEL_UPDATE_FILTER);
-            this.updateColors();
+            getThis.updateColors(PANEL_UPDATE_FILTER);
+            getThis.updateColors();
         }
     }
 
