@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Slap Chop - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      3.0.10
+// @version      3.0.11
 // @description  Ain't nobody got time for that! Adds some QoL 1-click actions.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -2010,12 +2010,12 @@
 				}
 
 				const lamps = getVar("combat_xp_lamp", 0, "int");
-				const quickLampZone = document.getElementById("quick-lamp-zone");
-				if (quickLampZone) {
+				const quickLampContainer = document.getElementById("quick-lamp-container");
+				if (quickLampContainer) {
 					if (lamps === 0) {
-						quickLampZone.style.display = "none";
+						quickLampContainer.style.display = "none";
 					} else {
-						quickLampZone.style.display = "block";
+						quickLampContainer.style.display = "block";
 					}
 				}
 			},
