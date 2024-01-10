@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Activity Log Tweaks
 // @namespace    godofnades.idlepixel
-// @version      0.7.17
+// @version      0.7.18
 // @description  Adds a new activity log to the top next to player count and introduces a new Activity Log modal.
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
@@ -39,8 +39,8 @@
 		constructor() {
 			super("actlogtweaks", {
 				about: {
-					name: `IdlePixel Activity Log Tweaks (ver: 0.7.17)`,
-					version: `0.7.17`,
+					name: `IdlePixel Activity Log Tweaks (ver: 0.7.18)`,
+					version: `0.7.18`,
 					author: `GodofNades`,
 					description: `Adds a new activity log to the top next to player count and introduces a new Activity Log modal.`,
 				},
@@ -899,14 +899,12 @@
 				const timestamp = this.formatDate();
 				let category = this.determineCategory(message);
 
-				if (message != "UNSET CHAT TAG" && message == "UNSET SIGIL") {
+				if (message != "UNSET CHAT TAG" && message != "UNSET SIGIL") {
 					this.buildActivityLog(timestamp, category, message, color);
 				}
 			}
 			//TSUNAMI_ANIMATE
 			if (data == "TSUNAMI_ANIMATE") {
-				// SCROLL_TOAST=images/badge_10_percent_fp.png~yellow~FP REFUNDED
-				// SCROLL_TOAST=images/badge_10_percent_energy.png~red~ENERGY REFUNDED
 				let message = "Tsunami Triggered in Beach";
 				let color = "white";
 				const timestamp = this.formatDate();
