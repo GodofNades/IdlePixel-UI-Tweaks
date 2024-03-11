@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel TCG Dex
 // @namespace    godofnades.idlepixel
-// @version      0.1.2
+// @version      0.1.3
 // @description  Organizational script for the Criptoe Trading Card Game
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
@@ -209,7 +209,7 @@
                     ).innerText = ` ${timerLabel}`;
                 } else {
                     document.getElementById(
-                        "notification-tcf-timer-label"
+                        "notification-tcg-timer-label"
                     ).innerText = ` Time to buy cards!`;
                 }
             } else {
@@ -423,8 +423,6 @@
                 document.getElementById(`ttl-overall-holo-label`).textContent = ` || Total: (${overallCardCounts.overallHolo}) ]`;
                 document.getElementById(`uni-overall-normal-label`).textContent = ` Normal: [ Unique: (${overallCardCounts.overallUniNormal}/${overallCardCounts.overallTTL})`;
                 document.getElementById(`ttl-overall-normal-label`).textContent = ` || Total: (${overallCardCounts.overallNormal}) ]`;
-
-                console.log(overallCardCounts);
 
                 document.querySelectorAll(".tcg-card").forEach((card) => {
                     categoriesTCG.forEach((category) => {
