@@ -10,8 +10,8 @@
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
 // ==/UserScript==
 
-(function() {
-    'use strict';
+(function () {
+    "use strict";
 
     let playername = "";
     window.TCG_IMAGE_URL_BASE =
@@ -20,18 +20,9 @@
         .src.replace(/\/[^/]+.png$/, "") + "/";
     let onLoginLoaded = false;
 
-    const categoriesTCG = [
-        { id: 'ORE', label: '1. Ore' },
-        { id: 'BAR', label: '2. Bar' },
-        { id: 'SEED', label: '3. Seed' },
-        { id: 'WOOD', label: '4. Wood' },
-        { id: 'LEAF', label: '5. Leaf' },
-        { id: 'GEM', label: '6. Gem' },
-        { id: 'FISH', label: '7. Fish' },
-        { id: 'MONSTER', label: '8. Monster' },
-        { id: 'GEAR', label: '9. Gear' },
-        { id: 'LEGENDARY', label: '10. Legendary' }
-    ];
+    let categoriesTCG = [];
+    let currentCards = [];
+    let overallCardCounts = {};
 
     class tcgDex extends IdlePixelPlusPlugin {
         constructor() {
@@ -40,7 +31,7 @@
                     name: GM_info.script.name + " (ver: " + GM_info.script.version + ")",
                     version: GM_info.script.version,
                     author: GM_info.script.author,
-                    description: GM_info.script.description
+                    description: GM_info.script.description,
                 },
                 config: [
                     {
@@ -50,22 +41,127 @@
                     },
                     {
                         id: "tcgNotification",
-                        label: "Enable TCG Card Buying Available Notification (Default: Enabled)",
+                        label:
+                        "Enable TCG Card Buying Available Notification (Default: Enabled)",
                         type: "boolean",
-                        default: true
-                    }
-                ]
+                        default: true,
+                    },
+                ],
             });
         }
 
+        getCategoryData() {
+            let uniqueDescriptionTitles = [];
+            const descriptionTitlesSet = new Set();
+            let i = 1;
+
+            Object.values(CardData.data).forEach((card) => {
+                const descriptionTitle = card["description_title"];
+                const properTitles =
+                      descriptionTitle.charAt(0).toUpperCase() +
+                      descriptionTitle.slice(1).toLowerCase();
+
+                if (!descriptionTitlesSet.has(descriptionTitle)) {
+                    descriptionTitlesSet.add(descriptionTitle);
+
+                    uniqueDescriptionTitles.push({
+                        id: `[${descriptionTitle}]`,
+                        desc: descriptionTitle,
+                        label: `${i}. ${properTitles}`,
+                    });
+                    i++;
+                }
+            });
+
+            return uniqueDescriptionTitles;
+        }
+
+        calculateCardCounts() {
+            let cardCounts = {};
+
+            // Initialize counts
+            categoriesTCG.forEach((category) => {
+                cardCounts[category.desc] = {
+                    uniHolo: 0,
+                    ttlHolo: 0,
+                    uniNormal: 0,
+                    ttlNormal: 0,
+                    possHolo: 0,
+                    possNormal: 0,
+                    possUniHolo: 0,
+                    possUniNormal: 0,
+                };
+            });
+
+            overallCardCounts = {
+                overallUniHolo: 0,
+                overallHolo: 0,
+                overallTTL: 0,
+                overallUniNormal: 0,
+                overallNormal:0,
+            }
+
+            // Count unique cards in each category
+            Object.values(CardData.data).forEach((card) => {
+                const category = categoriesTCG.find(
+                    (c) => c.id === `[${card.description_title}]`
+				);
+                if (category) {
+                    cardCounts[category.desc].uniHolo++;
+                    cardCounts[category.desc].uniNormal++;
+                    overallCardCounts.overallTTL++;
+                }
+            });
+
+            // Count possessed cards
+
+            const uniHoloSetOverall = new Set();
+            const uniNormalSetOverall = new Set();
+
+            currentCards.forEach((card) => {
+                const category = Object.entries(CardData.data).find(
+                    (c) => c[0] === card.id
+                );
+                if (category) {
+                    if (card.holo) {
+                        cardCounts[category[1].description_title].possHolo++;
+                        cardCounts[category[1].description_title].ttlHolo++;
+                        overallCardCounts.overallHolo++;
+                        if (!uniHoloSetOverall.has(card.id)) {
+                            uniHoloSetOverall.add(card.id);
+                            overallCardCounts.overallUniHolo++;
+                            cardCounts[category[1].description_title].possUniHolo++;
+                        }
+                    } else {
+                        cardCounts[category[1].description_title].possNormal++;
+                        cardCounts[category[1].description_title].ttlNormal++;
+                        overallCardCounts.overallNormal++;
+                        if (!uniNormalSetOverall.has(card.id)) {
+                            uniNormalSetOverall.add(card.id);
+                            overallCardCounts.overallUniNormal++;
+                            cardCounts[category[1].description_title].possUniNormal++;
+                        }
+                    }
+                }
+            });
+            return cardCounts;
+        }
+
         updateTcgSettings(categoryId, state) {
-            const settings = JSON.parse(localStorage.getItem(`${playername}.tcgSettings`));
+            const settings = JSON.parse(
+                localStorage.getItem(`${playername}.tcgSettings`)
+            );
             settings[categoryId] = state;
-            localStorage.setItem(`${playername}.tcgSettings`, JSON.stringify(settings));
+            localStorage.setItem(
+                `${playername}.tcgSettings`,
+                JSON.stringify(settings)
+            );
         }
 
         getTcgSetting(categoryId) {
-            const settings = JSON.parse(localStorage.getItem(`${playername}.tcgSettings`));
+            const settings = JSON.parse(
+                localStorage.getItem(`${playername}.tcgSettings`)
+            );
             return settings[categoryId];
         }
 
@@ -75,7 +171,7 @@
             const notifDiv = document.createElement("div");
             notifDiv.id = `notification-tcg-timer`;
             notifDiv.onclick = function () {
-                websocket.send(switch_panels('panel-criptoe-tcg'));
+                websocket.send(switch_panels("panel-criptoe-tcg"));
                 websocket.send(Modals.open_buy_tcg());
             };
             notifDiv.className = "notification hover";
@@ -98,52 +194,64 @@
                 document.querySelector("#notification-tcg-timer").style.display =
                     "none";
             }
-        };
+        }
 
         updateTCGNotification() {
             let tcgTimerCheck = IdlePixelPlus.getVarOrDefault("tcg_timer", 0, "int");
             let tcgUnlocked = IdlePixelPlus.getVarOrDefault("tcg_active", 0, "int");
-            if(this.getConfig("tcgNotification") && tcgUnlocked != 0) {
-                document.getElementById("notification-tcg-timer").style.display = "inline-block";
-                if(tcgTimerCheck > 0) {
+            if (this.getConfig("tcgNotification") && tcgUnlocked != 0) {
+                document.getElementById("notification-tcg-timer").style.display =
+                    "inline-block";
+                if (tcgTimerCheck > 0) {
                     let timerLabel = format_time(tcgTimerCheck);
-                    document.getElementById("notification-tcg-timer-label").innerText = ` ${timerLabel}`;
+                    document.getElementById(
+                        "notification-tcg-timer-label"
+                    ).innerText = ` ${timerLabel}`;
                 } else {
-                    document.getElementById("notification-tcf-timer-label").innerText = ` Time to buy cards!`;
+                    document.getElementById(
+                        "notification-tcf-timer-label"
+                    ).innerText = ` Time to buy cards!`;
                 }
             } else {
-                document.getElementById("notification-tcg-timer").style.display = "none";
+                document.getElementById("notification-tcg-timer").style.display =
+                    "none";
             }
         }
 
         onLogin() {
-            CToe.loadCards=function() {};
+            CToe.loadCards = function () {};
             playername = IdlePixelPlus.getVarOrDefault("username", "", "string");
-            if (!localStorage.getItem(`${playername}.tcgSettings`)) {
-                const defaultSettings = categoriesTCG.reduce((settings, category) => {
-                    settings[category.id] = true; // Default state is true (visible)
-                    return settings;
-                }, {});
-                localStorage.setItem(`${playername}.tcgSettings`, JSON.stringify(defaultSettings));
-            }
-            this.tcgBuyerNotifications();
-            this.updateTCGNotification();
-            onLoginLoaded = true;
-        };
+            setTimeout(() => {
+                categoriesTCG = this.getCategoryData();
+                if (!localStorage.getItem(`${playername}.tcgSettings`)) {
+                    const defaultSettings = categoriesTCG.reduce((settings, category) => {
+                        settings[category.desc] = true; // Default state is true (visible)
+                        return settings;
+                    }, {});
+                    localStorage.setItem(
+                        `${playername}.tcgSettings`,
+                        JSON.stringify(defaultSettings)
+                    );
+                }
+                this.tcgBuyerNotifications();
+                this.updateTCGNotification();
+                onLoginLoaded = true;
+            }, 1000);
+        }
 
         onVariableSet(key, valueBefore, valueAfter) {
-            if(onLoginLoaded) {
-                if(key.startsWith("tcg") && valueBefore != valueAfter) {
+            if (onLoginLoaded) {
+                if (key.startsWith("tcg") && valueBefore != valueAfter) {
                     IdlePixelPlus.plugins.tcgDex.updateTCGNotification();
                 }
             }
-        };
+        }
 
         onConfigChange() {
-            if(onLoginLoaded) {
+            if (onLoginLoaded) {
                 IdlePixelPlus.plugins.tcgDex.updateTCGNotification();
             }
-        };
+        }
 
         onPanelChanged(panelBefore, panelAfter) {
             //Insert Code Here
@@ -154,14 +262,13 @@
                 const parts = data.replace("REFRESH_TCG=", "").split("~");
 
                 let cardSort = [];
+                currentCards = [];
                 let order = 1; // Start numbering at 1
 
-                Object.keys(CardData.data).forEach(key => {
+                Object.keys(CardData.data).forEach((key) => {
                     cardSort.push({ id: key, order: order++, holo: true });
                     cardSort.push({ id: key, order: order++, holo: false });
                 });
-
-                let currentCards = [];
 
                 // Iterate through parts in steps of 3
                 for (let i = 0; i < parts.length; i += 3) {
@@ -169,56 +276,90 @@
                     const cardKey = parts[i + 1];
                     const isHolo = parts[i + 2] === "true";
 
-                    const matchingCard = cardSort.find(card => card.id === cardKey && card.holo === isHolo);
+                    const matchingCard = cardSort.find(
+                        (card) => card.id === cardKey && card.holo === isHolo
+                    );
 
                     if (matchingCard) {
                         currentCards.push({
                             id: cardKey,
                             cardNum: cardNum,
                             holo: isHolo,
-                            order: matchingCard.order
+                            order: matchingCard.order,
                         });
                     }
                 }
 
                 currentCards.sort((a, b) => a.order - b.order);
 
-                const joinedString = currentCards.map(card => `${card.cardNum}~${card.id}~${card.holo}`).join("~");
-
+                const joinedString = currentCards
+                .map((card) => `${card.cardNum}~${card.id}~${card.holo}`)
+                .join("~");
 
                 document.getElementById("tcg-area-context").innerHTML = "";
-                if(joinedString == "NONE") return;
+                if (joinedString == "NONE") return;
                 var dataArray = joinedString.split("~");
                 var html = "";
-                for (var i = 0; i < dataArray.length;) {
+                for (var i = 0; i < dataArray.length; ) {
                     var id = dataArray[i++];
                     var var_name = dataArray[i++];
-                    var holo = dataArray[i++] == 'true';
+                    var holo = dataArray[i++] == "true";
 
                     html += CardData.getCardHTML(id, var_name, holo);
                 }
                 document.getElementById("tcg-area-context").innerHTML = html;
 
                 const pendingTCGContainer = document.getElementById("tcg-area-context");
+                const cardOverallStatsLabel = document.createElement("span");
+                const ttlOverallCardsLabel = document.createElement("span");
+                ttlOverallCardsLabel.id = "ttl-overall-cards-label";
+                ttlOverallCardsLabel.style.marginLeft = "60px";
+                const uniOverallHoloLabel = document.createElement("span");
+                uniOverallHoloLabel.id = "uni-overall-holo-label";
+                const ttlOverallHoloLabel = document.createElement("span");
+                ttlOverallHoloLabel.id = "ttl-overall-holo-label";
+                const uniOverallNormalLabel = document.createElement("span");
+                uniOverallNormalLabel.id = "uni-overall-normal-label";
+                const ttlOverallNormalLabel = document.createElement("span");
+                ttlOverallNormalLabel.id = "ttl-overall-normal-label";
 
-                categoriesTCG.forEach(category => {
-                    const categoryDiv = document.createElement('div');
-                    categoryDiv.id = `pending${category.id}Container`;
+                cardOverallStatsLabel.appendChild(ttlOverallCardsLabel);
+                cardOverallStatsLabel.appendChild(uniOverallHoloLabel);
+                cardOverallStatsLabel.appendChild(ttlOverallHoloLabel);
+                cardOverallStatsLabel.appendChild(uniOverallNormalLabel);
+                cardOverallStatsLabel.appendChild(ttlOverallNormalLabel);
+                pendingTCGContainer.appendChild(cardOverallStatsLabel);
+                pendingTCGContainer.appendChild(document.createElement("br"));
+                pendingTCGContainer.appendChild(document.createElement("br"));
 
-                    const categoryDivInner = document.createElement('div');
-                    categoryDivInner.id = `pending${category.id}ContainerInner`;
+                categoriesTCG.forEach((category) => {
+                    const categoryDiv = document.createElement("div");
+                    categoryDiv.id = `pending${category.desc}Container`;
+
+                    const categoryDivInner = document.createElement("div");
+                    categoryDivInner.id = `pending${category.desc}ContainerInner`;
                     // Set initial visibility based on localStorage
-                    categoryDivInner.style.display = IdlePixelPlus.plugins.tcgDex.getTcgSetting(category.id) ? '' : 'none';
+                    categoryDivInner.style.display =
+                        IdlePixelPlus.plugins.tcgDex.getTcgSetting(category.desc)
+                        ? ""
+                    : "none";
 
-                    const toggleButton = document.createElement('button');
-                    toggleButton.textContent = IdlePixelPlus.plugins.tcgDex.getTcgSetting(category.id) ? ' ↥ ' : ' ↧ ';
+                    const toggleButton = document.createElement("button");
+                    toggleButton.textContent = IdlePixelPlus.plugins.tcgDex.getTcgSetting(
+                        category.desc
+                    )
+                        ? " ↥ "
+                    : " ↧ ";
                     toggleButton.style.width = "50px";
                     toggleButton.style.marginRight = "10px";
-                    toggleButton.addEventListener('click', () => {
-                        const isVisible = categoryDivInner.style.display !== 'none';
-                        categoryDivInner.style.display = isVisible ? 'none' : '';
-                        toggleButton.textContent = isVisible ? ' ↧ ' : ' ↥ ';
-                        IdlePixelPlus.plugins.tcgDex.updateTcgSettings(category.id, !isVisible);
+                    toggleButton.addEventListener("click", () => {
+                        const isVisible = categoryDivInner.style.display !== "none";
+                        categoryDivInner.style.display = isVisible ? "none" : "";
+                        toggleButton.textContent = isVisible ? " ↧ " : " ↥ ";
+                        IdlePixelPlus.plugins.tcgDex.updateTcgSettings(
+                            category.desc,
+                            !isVisible
+                        );
                     });
 
                     categoryDiv.innerHTML = `
@@ -226,41 +367,76 @@
                     `;
 
                     categoryDiv.appendChild(toggleButton);
-                    const labelSpan = document.createElement('span');
+                    const labelSpan = document.createElement("span");
                     labelSpan.textContent = category.label;
+                    const cardStatsLabel = document.createElement("span");
+                    //cardStatsLabel.style.justify = "right";
+                    const ttlCardsLabel = document.createElement("span");
+                    ttlCardsLabel.id = "ttl-cards-label";
+                    ttlCardsLabel.style.marginLeft = "60px";
+                    const uniHoloLabel = document.createElement("span");
+                    uniHoloLabel.id = "uni-holo-label";
+                    const ttlHoloLabel = document.createElement("span");
+                    ttlHoloLabel.id = "ttl-holo-label";
+                    const uniNormalLabel = document.createElement("span");
+                    uniNormalLabel.id = "uni-normal-label";
+                    const ttlNormalLabel = document.createElement("span");
+                    ttlNormalLabel.id = "ttl-normal-label";
                     categoryDiv.appendChild(toggleButton);
                     categoryDiv.appendChild(labelSpan);
-                    categoryDiv.appendChild(document.createElement('br'));
+                    cardStatsLabel.appendChild(ttlCardsLabel);
+                    cardStatsLabel.appendChild(uniHoloLabel);
+                    cardStatsLabel.appendChild(ttlHoloLabel);
+                    cardStatsLabel.appendChild(uniNormalLabel);
+                    cardStatsLabel.appendChild(ttlNormalLabel);
+                    categoryDiv.appendChild(document.createElement("br"));
+                    categoryDiv.appendChild(cardStatsLabel);
+                    categoryDiv.appendChild(document.createElement("br"));
                     categoryDiv.appendChild(categoryDivInner);
                     document.getElementById("tcg-area-context").appendChild(categoryDiv);
                 });
 
+                const cardCounts = this.calculateCardCounts();
+                categoriesTCG.forEach((category) => {
+                    const counts = cardCounts[category.desc];
+                    document.querySelector(
+                        `#pending${category.desc}Container #ttl-cards-label`
+					).textContent = `Total Cards (${
+						counts.possHolo + counts.possNormal
+                })`;
+                    document.querySelector(
+                        `#pending${category.desc}Container #uni-holo-label`
+					).textContent = ` => Holo: [ Unique: (${counts.possUniHolo}/${counts.uniHolo})`;
+                    document.querySelector(
+                        `#pending${category.desc}Container #ttl-holo-label`
+					).textContent = ` || Total: (${counts.ttlHolo}) ]`;
+                    document.querySelector(
+                        `#pending${category.desc}Container #uni-normal-label`
+					).textContent = ` Normal: [ Unique: (${counts.possUniNormal}/${counts.uniNormal})`;
+                    document.querySelector(
+                        `#pending${category.desc}Container #ttl-normal-label`
+					).textContent = ` || Total: (${counts.ttlNormal}) ]`;
+                });
+
+                document.getElementById(`ttl-overall-cards-label`).textContent = `Total Cards (${overallCardCounts.overallHolo + overallCardCounts.overallNormal})`;
+                document.getElementById(`uni-overall-holo-label`).textContent = ` => Holo: [ Unique: (${overallCardCounts.overallUniHolo}/${overallCardCounts.overallTTL})`;
+                document.getElementById(`ttl-overall-holo-label`).textContent = ` || Total: (${overallCardCounts.overallHolo}) ]`;
+                document.getElementById(`uni-overall-normal-label`).textContent = ` Normal: [ Unique: (${overallCardCounts.overallUniNormal}/${overallCardCounts.overallTTL})`;
+                document.getElementById(`ttl-overall-normal-label`).textContent = ` || Total: (${overallCardCounts.overallNormal}) ]`;
+
+                console.log(overallCardCounts);
+
                 document.querySelectorAll(".tcg-card").forEach((card) => {
-                    if(card.textContent.includes("ORE")) {
-                        document.getElementById("pendingOREContainerInner").appendChild(card);
-                    } else if (card.textContent.includes("BAR")) {
-                        document.getElementById("pendingBARContainerInner").appendChild(card);
-                    } else if (card.textContent.includes("SEED")) {
-                        document.getElementById("pendingSEEDContainerInner").appendChild(card);
-                    } else if (card.textContent.includes("WOOD")) {
-                        document.getElementById("pendingWOODContainerInner").appendChild(card);
-                    } else if (card.textContent.includes("LEAF")) {
-                        document.getElementById("pendingLEAFContainerInner").appendChild(card);
-                    } else if (card.textContent.includes("GEM")) {
-                        document.getElementById("pendingGEMContainerInner").appendChild(card);
-                    } else if (card.textContent.includes("FISH")) {
-                        document.getElementById("pendingFISHContainerInner").appendChild(card);
-                    } else if (card.textContent.includes("MONSTER")) {
-                        document.getElementById("pendingMONSTERContainerInner").appendChild(card);
-                    } else if (card.textContent.includes("GEAR")) {
-                        document.getElementById("pendingGEARContainerInner").appendChild(card);
-                    } else if (card.textContent.includes("LEGENDARY")) {
-                        document.getElementById("pendingLEGENDARYContainerInner").appendChild(card);
-                    }
-                })
+                    categoriesTCG.forEach((category) => {
+                        if (card.textContent.includes(category.id)) {
+                            document
+                                .getElementById(`pending${category.desc}ContainerInner`)
+                                .appendChild(card);
+                        }
+                    });
+                });
             }
         }
-
     }
 
     const plugin = new tcgDex();
