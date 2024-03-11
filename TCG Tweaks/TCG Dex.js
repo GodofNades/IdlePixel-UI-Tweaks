@@ -2,7 +2,7 @@
 // @name         IdlePixel TCG Dex
 // @namespace    godofnades.idlepixel
 // @version      0.1
-// @description  try to take over the world!
+// @description  Organizational script for the Criptoe Trading Card Game
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
 // @grant        none
