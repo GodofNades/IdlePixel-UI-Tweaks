@@ -1,13 +1,15 @@
 // ==UserScript==
 // @name         IdlePixel TCG Dex
 // @namespace    godofnades.idlepixel
-// @version      0.1.3
+// @version      0.1.4
 // @description  Organizational script for the Criptoe Trading Card Game
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
 // @grant        none
 // @license      MIT
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
+// @downloadURL https://update.greasyfork.org/scripts/489559/IdlePixel%20TCG%20Dex.user.js
+// @updateURL https://update.greasyfork.org/scripts/489559/IdlePixel%20TCG%20Dex.meta.js
 // ==/UserScript==
 
 (function () {
@@ -42,10 +44,16 @@
                     {
                         id: "tcgNotification",
                         label:
-                        "Enable TCG Card Buying Available Notification (Default: Enabled)",
+                        "Enable TCG Card Buying Available Notification<br/>(Default: Enabled)",
                         type: "boolean",
                         default: true,
                     },
+                    {
+                        id: "newCardTimer",
+                        label: "New Card Timer<br/>(How long do you want a card to show as new, in minutes.)",
+                        type: "int",
+                        default: 15
+                    }
                 ],
             });
         }
@@ -76,10 +84,17 @@
             return uniqueDescriptionTitles;
         }
 
+        ensureNewSettingExists() {
+            const settings = JSON.parse(localStorage.getItem(`${playername}.tcgSettings`));
+            if (settings && typeof settings.new === 'undefined') {
+                settings.new = true;
+                localStorage.setItem(`${playername}.tcgSettings`, JSON.stringify(settings));
+            }
+        }
+
         calculateCardCounts() {
             let cardCounts = {};
 
-            // Initialize counts
             categoriesTCG.forEach((category) => {
                 cardCounts[category.desc] = {
                     uniHolo: 0,
@@ -101,7 +116,6 @@
                 overallNormal:0,
             }
 
-            // Count unique cards in each category
             Object.values(CardData.data).forEach((card) => {
                 const category = categoriesTCG.find(
                     (c) => c.id === `[${card.description_title}]`
@@ -112,8 +126,6 @@
                     overallCardCounts.overallTTL++;
                 }
             });
-
-            // Count possessed cards
 
             const uniHoloSetOverall = new Set();
             const uniNormalSetOverall = new Set();
@@ -145,6 +157,66 @@
                 }
             });
             return cardCounts;
+        }
+
+        initializeDatabase() {
+            const dbName = "IdlePixel_TCG_DB";
+            const version = 1;
+            const request = indexedDB.open(dbName, version);
+
+            request.onerror = (event) => {
+                console.error("Database error: ", event.target.error);
+            };
+
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                const objectStoreName = `${playername}_current_cards`;
+                if (!db.objectStoreNames.contains(objectStoreName)) {
+                    const objectStore = db.createObjectStore(objectStoreName, { keyPath: ["id", "cardNum", "holo"] });
+                }
+            };
+
+            request.onsuccess = (event) => {
+                this.db = event.target.result;
+            };
+        }
+
+        fetchAllCardsFromDB(db, objectStoreName, callback) {
+            const transaction = db.transaction([objectStoreName], "readonly");
+            const objectStore = transaction.objectStore(objectStoreName);
+            const request = objectStore.getAll();
+            request.onerror = (event) => {
+                console.error("Error fetching cards from DB:", event.target.error);
+            };
+            request.onsuccess = () => {
+                callback(request.result);
+            };
+        }
+
+        identifyAndRemoveAbsentCards(db, objectStoreName, currentCards) {
+            IdlePixelPlus.plugins.tcgDex.fetchAllCardsFromDB(db, objectStoreName, (dbCards) => {
+                const currentCardsKeySet = new Set(currentCards.map(card => JSON.stringify([card.id, card.cardNum, card.holo.toString()])));
+
+                dbCards.forEach(dbCard => {
+                    const dbCardKey = JSON.stringify([dbCard.id, dbCard.cardNum, dbCard.holo.toString()]);
+                    if (!currentCardsKeySet.has(dbCardKey)) {
+                        // This card is in the DB but not in the currentCards array, so remove it from the DB
+                        IdlePixelPlus.plugins.tcgDex.removeCardFromDB(db, objectStoreName, [dbCard.id, dbCard.cardNum, dbCard.holo]);
+                    }
+                });
+            });
+        }
+
+        removeCardFromDB(db, objectStoreName, cardKey) {
+            const transaction = db.transaction([objectStoreName], "readwrite");
+            const objectStore = transaction.objectStore(objectStoreName);
+            const request = objectStore.delete(cardKey);
+            request.onerror = (event) => {
+                console.error("Error removing card from DB:", event.target.error);
+            };
+            request.onsuccess = () => {
+                console.log(`Card removed from DB: ${cardKey}`);
+            };
         }
 
         updateTcgSettings(categoryId, state) {
@@ -224,15 +296,19 @@
             setTimeout(() => {
                 categoriesTCG = this.getCategoryData();
                 if (!localStorage.getItem(`${playername}.tcgSettings`)) {
-                    const defaultSettings = categoriesTCG.reduce((settings, category) => {
-                        settings[category.desc] = true; // Default state is true (visible)
+                    let defaultSettings = categoriesTCG.reduce((settings, category) => {
+                        settings[category.desc] = true;
                         return settings;
                     }, {});
+                    defaultSettings.new = true;
                     localStorage.setItem(
                         `${playername}.tcgSettings`,
                         JSON.stringify(defaultSettings)
                     );
+                } else {
+                    IdlePixelPlus.plugins.tcgDex.ensureNewSettingExists();
                 }
+                this.initializeDatabase();
                 this.tcgBuyerNotifications();
                 this.updateTCGNotification();
                 onLoginLoaded = true;
@@ -253,24 +329,20 @@
             }
         }
 
-        onPanelChanged(panelBefore, panelAfter) {
-            //Insert Code Here
-        }
-
         onMessageReceived(data) {
             if (data.startsWith("REFRESH_TCG")) {
                 const parts = data.replace("REFRESH_TCG=", "").split("~");
 
                 let cardSort = [];
                 currentCards = [];
-                let order = 1; // Start numbering at 1
+                let order = 1;
+                let newCards = [];
 
                 Object.keys(CardData.data).forEach((key) => {
                     cardSort.push({ id: key, order: order++, holo: true });
                     cardSort.push({ id: key, order: order++, holo: false });
                 });
 
-                // Iterate through parts in steps of 3
                 for (let i = 0; i < parts.length; i += 3) {
                     const cardNum = parts[i];
                     const cardKey = parts[i + 1];
@@ -292,9 +364,59 @@
 
                 currentCards.sort((a, b) => a.order - b.order);
 
+                const objectStoreName = `${playername}_current_cards`;
+                const transaction = this.db.transaction([objectStoreName], "readwrite");
+                const objectStore = transaction.objectStore(objectStoreName);
+
+                currentCards.forEach((card) => {
+                    const key = [card.id, card.cardNum, card.holo.toString()];
+                    const getRequest = objectStore.get(key);
+                    getRequest.onsuccess = (event) => {
+                        let result = event.target.result;
+                        if (result) {
+                            let now = new Date();
+                            let timeBefore = new Date(now.getTime() - (15*60*1000));
+
+                            let receivedDateTime = new Date(result.received_datetime);
+                            if (receivedDateTime > timeBefore) {
+                                newCards.push({
+                                    cardNum: result.cardNum,
+                                    id: result.id,
+                                    holo: result.holo,
+                                    received_datetime: receivedDateTime
+                                });
+                            }
+                        } else {
+                            const cardData = {
+                                id: card.id.toString(),
+                                cardNum: card.cardNum.toString(),
+                                holo: card.holo.toString(),
+                                received_datetime: new Date().toISOString(),
+                            };
+                            const addRequest = objectStore.add(cardData);
+                            addRequest.onerror = (event) => {
+                                console.error("Error adding new card:", event.target.error);
+                            };
+                            addRequest.onsuccess = (event) => {
+                            };
+                            newCards.push({
+                                cardNum: card.cardNum.toString(),
+                                id: card.id.toString(),
+                                holo: card.holo.toString(),
+                                received_datetime: new Date().toISOString(),
+                            });
+                        }
+                    };
+                    getRequest.onerror = (event) => {
+                        console.error("Error fetching card record:", event.target.error);
+                    };
+                });
+
                 const joinedString = currentCards
                 .map((card) => `${card.cardNum}~${card.id}~${card.holo}`)
                 .join("~");
+
+                IdlePixelPlus.plugins.tcgDex.identifyAndRemoveAbsentCards(this.db, `${playername}_current_cards`, currentCards);
 
                 document.getElementById("tcg-area-context").innerHTML = "";
                 if (joinedString == "NONE") return;
@@ -332,13 +454,42 @@
                 pendingTCGContainer.appendChild(document.createElement("br"));
                 pendingTCGContainer.appendChild(document.createElement("br"));
 
+                const categoryNewDiv = document.createElement("div");
+                categoryNewDiv.id = `pendingNewContainer`;
+
+                const categoryNewDivInner = document.createElement("div");
+                categoryNewDivInner.id = `pendingNewContainerInner`;
+                categoryNewDivInner.style.display =
+                    IdlePixelPlus.plugins.tcgDex.getTcgSetting("new")? "": "none";
+                const toggleButtonNew = document.createElement("button");
+                toggleButtonNew.textContent = IdlePixelPlus.plugins.tcgDex.getTcgSetting("new")? " ↥ ": " ↧ ";
+                toggleButtonNew.style.width = "50px";
+                toggleButtonNew.style.marginRight = "10px";
+                toggleButtonNew.addEventListener("click", () => {
+                    const isVisible = categoryNewDivInner.style.display !== "none";
+                    categoryNewDivInner.style.display = isVisible ? "none" : "";
+                    toggleButtonNew.textContent = isVisible ? " ↧ " : " ↥ ";
+                    IdlePixelPlus.plugins.tcgDex.updateTcgSettings("new",!isVisible);
+                });
+
+                const newCardTimer = IdlePixelPlus.plugins.tcgDex.getConfig("newCardTimer");
+
+                const labelSpanNew = document.createElement("span");
+                labelSpanNew.textContent = `New Cards (Last ${newCardTimer} Mins)`;
+
+                categoryNewDiv.appendChild(toggleButtonNew);
+                categoryNewDiv.appendChild(labelSpanNew);
+                categoryNewDiv.appendChild(document.createElement("br"));
+                categoryNewDiv.appendChild(document.createElement("br"));
+                categoryNewDiv.appendChild(categoryNewDivInner);
+                document.getElementById("tcg-area-context").appendChild(categoryNewDiv);
+
                 categoriesTCG.forEach((category) => {
                     const categoryDiv = document.createElement("div");
                     categoryDiv.id = `pending${category.desc}Container`;
 
                     const categoryDivInner = document.createElement("div");
                     categoryDivInner.id = `pending${category.desc}ContainerInner`;
-                    // Set initial visibility based on localStorage
                     categoryDivInner.style.display =
                         IdlePixelPlus.plugins.tcgDex.getTcgSetting(category.desc)
                         ? ""
@@ -364,13 +515,15 @@
 
                     categoryDiv.innerHTML = `
                       <div id="tcgLabel" style="font-size: 1.25em"></div>
-                    `;
+                        `;
 
                     categoryDiv.appendChild(toggleButton);
                     const labelSpan = document.createElement("span");
                     labelSpan.textContent = category.label;
+                    categoryDiv.appendChild(toggleButton);
+                    categoryDiv.appendChild(labelSpan);
+
                     const cardStatsLabel = document.createElement("span");
-                    //cardStatsLabel.style.justify = "right";
                     const ttlCardsLabel = document.createElement("span");
                     ttlCardsLabel.id = "ttl-cards-label";
                     ttlCardsLabel.style.marginLeft = "60px";
@@ -382,8 +535,7 @@
                     uniNormalLabel.id = "uni-normal-label";
                     const ttlNormalLabel = document.createElement("span");
                     ttlNormalLabel.id = "ttl-normal-label";
-                    categoryDiv.appendChild(toggleButton);
-                    categoryDiv.appendChild(labelSpan);
+
                     cardStatsLabel.appendChild(ttlCardsLabel);
                     cardStatsLabel.appendChild(uniHoloLabel);
                     cardStatsLabel.appendChild(ttlHoloLabel);
@@ -402,7 +554,7 @@
                     document.querySelector(
                         `#pending${category.desc}Container #ttl-cards-label`
 					).textContent = `Total Cards (${
-						counts.possHolo + counts.possNormal
+                                                  counts.possHolo + counts.possNormal
                 })`;
                     document.querySelector(
                         `#pending${category.desc}Container #uni-holo-label`
@@ -433,6 +585,26 @@
                         }
                     });
                 });
+
+                setTimeout(() => {
+                    newCards.sort((a, b) => b.received_datetime - a.received_datetime);
+
+                    const newCardsJoinedString = newCards.map((card) => `${card.cardNum}~${card.id}~${card.holo}`).join("~");
+
+                    document.getElementById("pendingNewContainerInner").innerHTML = "";
+                    if (newCardsJoinedString == "") return;
+                    var dataArrayNew = newCardsJoinedString.split("~");
+                    var htmlNew = "";
+                    for (var ix = 0; ix < dataArrayNew.length; ) {
+                        var idNew = dataArrayNew[ix++];
+                        var var_nameNew = dataArrayNew[ix++];
+                        var holoNew = dataArrayNew[ix++] == "true";
+
+                        htmlNew += CardData.getCardHTML(idNew, var_nameNew, holoNew);
+                    }
+                    document.getElementById("pendingNewContainerInner").innerHTML = htmlNew;
+                },2000);
+
             }
         }
     }
