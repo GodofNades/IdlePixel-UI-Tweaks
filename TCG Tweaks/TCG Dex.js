@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel TCG Dex
 // @namespace    godofnades.idlepixel
-// @version      0.1.4
+// @version      0.1.5
 // @description  Organizational script for the Criptoe Trading Card Game
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
@@ -160,7 +160,7 @@
         }
 
         initializeDatabase() {
-            const dbName = "IdlePixel_TCG_DB";
+            const dbName = `IdlePixel_TCG_DB.${playername}`;
             const version = 1;
             const request = indexedDB.open(dbName, version);
 
@@ -170,7 +170,7 @@
 
             request.onupgradeneeded = (event) => {
                 const db = event.target.result;
-                const objectStoreName = `${playername}_current_cards`;
+                const objectStoreName = `current_cards`;
                 if (!db.objectStoreNames.contains(objectStoreName)) {
                     const objectStore = db.createObjectStore(objectStoreName, { keyPath: ["id", "cardNum", "holo"] });
                 }
@@ -364,7 +364,7 @@
 
                 currentCards.sort((a, b) => a.order - b.order);
 
-                const objectStoreName = `${playername}_current_cards`;
+                const objectStoreName = `current_cards`;
                 const transaction = this.db.transaction([objectStoreName], "readwrite");
                 const objectStore = transaction.objectStore(objectStoreName);
 
@@ -416,7 +416,7 @@
                 .map((card) => `${card.cardNum}~${card.id}~${card.holo}`)
                 .join("~");
 
-                IdlePixelPlus.plugins.tcgDex.identifyAndRemoveAbsentCards(this.db, `${playername}_current_cards`, currentCards);
+                IdlePixelPlus.plugins.tcgDex.identifyAndRemoveAbsentCards(this.db, `current_cards`, currentCards);
 
                 document.getElementById("tcg-area-context").innerHTML = "";
                 if (joinedString == "NONE") return;
