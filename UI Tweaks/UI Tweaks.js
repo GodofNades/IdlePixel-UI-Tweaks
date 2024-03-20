@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.8
+// @version      2.8.9
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -14,6 +14,9 @@
 	"use strict";
 
 	let IPP, getVar, getThis, purpleKeyGo;
+	window.uit_utcDate = new Date().getUTCDate();
+	window.uit_currUTCDate = 0;
+
 	window.UIT_IMAGE_URL_BASE =
 		document
 			.querySelector("itembox[data-item=copper] img")
@@ -309,81 +312,75 @@
 		// No global constants/declarations
 		return {
 			addCriptoeValues: function () {
-				const wallet_1_text = document.getElementById("wallet_1_payout");
-				const wallet_1_perct = document
-					.getElementById("criptoe-wallet-1-percentage")
-					.innerText.replace(" %", "");
-				const wallet_1 = getVar("wallet1_invested", 0, "int");
-				const wallet_1_payout = Math.floor(
-					wallet_1 * (wallet_1_perct / 100 + 1)
-				);
+				fetch('https://idle-pixel.com/criptoe/')
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(data => {
+						let walletPercentages = {};
+						let seenWallets = new Set();
 
-				const wallet_2_text = document.getElementById("wallet_2_payout");
-				const wallet_2_perct = document
-					.getElementById("criptoe-wallet-2-percentage")
-					.innerText.replace(" %", "");
-				const wallet_2 = getVar("wallet2_invested", 0, "int");
-				const wallet_2_payout = Math.floor(
-					wallet_2 * (wallet_2_perct / 100 + 1)
-				);
+						const dataArray = data.data;
 
-				const wallet_3_text = document.getElementById("wallet_3_payout");
-				const wallet_3_perct = document
-					.getElementById("criptoe-wallet-3-percentage")
-					.innerText.replace(" %", "");
-				const wallet_3 = getVar("wallet3_invested", 0, "int");
-				const wallet_3_payout = Math.floor(
-					wallet_3 * (wallet_3_perct / 100 + 1)
-				);
+						for (let i = dataArray.length - 1; i >= 0; i--) {
+							let entry = dataArray[i];
+							if (!seenWallets.has(entry.wallet)) {
+								seenWallets.add(entry.wallet);
+								walletPercentages[`wallet_${entry.wallet}`] = entry.percentage;
+							}
 
-				const wallet_4_text = document.getElementById("wallet_4_payout");
-				const wallet_4_perct = document
-					.getElementById("criptoe-wallet-4-percentage")
-					.innerText.replace(" %", "");
-				const wallet_4 = getVar("wallet4_invested", 0, "int");
-				const wallet_4_payout = Math.floor(
-					wallet_4 * (wallet_4_perct / 100 + 1)
-				);
+							if (seenWallets.size === 4) break;
+						}
 
-				if (wallet_1 > 0) {
-					if (wallet_1_perct > -100) {
-						wallet_1_text.innerText = ` ${wallet_1_payout.toLocaleString()}`;
-					} else {
-						wallet_1_text.innerText = ` Full Loss`;
-					}
-				} else {
-					wallet_1_text.innerText = ` No Investment`;
-				}
+						const wallets = ["wallet_1", "wallet_2", "wallet_3", "wallet_4"];
 
-				if (wallet_2 > 0) {
-					if (wallet_2_perct > -100) {
-						wallet_2_text.innerText = ` ${wallet_2_payout.toLocaleString()}`;
-					} else {
-						wallet_2_text.innerText = ` Full Loss`;
-					}
-				} else {
-					wallet_2_text.innerText = ` No Investment`;
-				}
+						wallets.forEach((walletKey) => {
+							const payoutElementId = `${walletKey}_payout`;
+							const payoutElement = document.getElementById(payoutElementId);
+							const percentage = walletPercentages[walletKey];
+							const investedAmount = getVar(`${walletKey.replace("_", "")}_invested`, 0, "int");
+							if (investedAmount > 0) {
+								if (percentage > -100) {
+									payoutElement.innerText = ` ${uitCriptoe().getPayout(investedAmount, percentage)}`;
+								} else {
+									payoutElement.innerText = ` Full Loss`;
+								}
+							} else {
+								payoutElement.innerText = ` No Investment`;
+							}
+							const percentageElementId = `criptoe-${walletKey.replace("_", "-")}-percentage`;
+							const percentageElement = document.getElementById(percentageElementId);
 
-				if (wallet_3 > 0) {
-					if (wallet_3_perct > -100) {
-						wallet_3_text.innerText = ` ${wallet_3_payout.toLocaleString()}`;
-					} else {
-						wallet_3_text.innerText = ` Full Loss`;
-					}
-				} else {
-					wallet_3_text.innerText = ` No Investment`;
-				}
+							let percentageText = "";
+							let weekday = new Date().getUTCDay();
+							if (weekday == 0) {
+								percentage = -20;
+								percentageText = `${percentage} %`;
+							} else if (weekday == 1) {
+								percentage = 0;
+								percentageText = `Go invest!`;
 
-				if (wallet_4 > 0) {
-					if (wallet_4_perct > -100) {
-						wallet_4_text.innerText = ` ${wallet_4_payout.toLocaleString()}`;
-					} else {
-						wallet_4_text.innerText = ` Full Loss`;
-					}
-				} else {
-					wallet_4_text.innerText = ` No Investment`;
-				}
+							} else {
+								percentageText = `${percentage} %`;
+							}
+
+							percentageElement.innerText = `${percentageText}`;
+
+							if (percentage < 0) {
+								percentageElement.style.color = "red";
+							} else if (percentage > 0) {
+								percentageElement.style.color = "lime";
+							} else {
+								percentageElement.style.color = "white";
+							}
+						});
+					})
+					.catch(error => {
+						console.error('There has been a problem with your fetch operation:', error);
+					});
 			},
 
 			initCriptoe: function () {
@@ -422,21 +419,27 @@
 
 				document.getElementById("left-panel-criptoe_market-btn").onclick =
 					function () {
-						if (Globals.currentpanel != "criptoe-market") {
-							CToe.called = false;
-							CToe.fetch_chart_data();
-							switch_panels("panel-criptoe-market");
-							setTimeout(function () {
-								uitCriptoe().addCriptoeValues();
-							}, 1000);
-						} else {
-							CToe.called = false;
-							CToe.fetch_chart_data();
-							setTimeout(function () {
-								uitCriptoe().addCriptoeValues();
-							}, 1000);
-						}
-					};
+						switch_panels('panel-criptoe-market');
+						uitCriptoe().addCriptoeValues();
+					}
+			},
+
+			getPayout: function (wallet, perct) {
+				let weekday = new Date().getUTCDay();
+				let payout;
+				if (weekday == "0") {
+					payout = Math.floor(
+						wallet * 0.8
+					)
+					return payout;
+				}
+				if (weekday == "1") {
+					return 0;
+				}
+				payout = Math.floor(
+					wallet * (perct / 100 + 1)
+				).toLocaleString();
+				return payout;
 			},
 
 			updateCrippledToeTimer: function () {
@@ -444,14 +447,14 @@
 				var hours = now.getUTCHours(); // Get the hours value in UTC
 				var minutes = now.getUTCMinutes(); // Get the minutes value in UTC
 				var seconds = now.getUTCSeconds(); // Get the seconds value in UTC
-	
+
 				// Pad the hours, minutes, and seconds with leading zeros if they are less than 10
 				hours = hours.toString().padStart(2, "0");
 				minutes = minutes.toString().padStart(2, "0");
 				seconds = seconds.toString().padStart(2, "0");
-	
+
 				// Concatenate the hours, minutes, and seconds with colons
-	
+
 				let path = getVar("criptoe_path_selected", "none", "string");
 				if (path === "none") {
 					path = "No Path Selected"
@@ -462,7 +465,7 @@
 				const menuBarCrippledtoeRow = document.querySelector(
 					"#left-panel-criptoe_market-btn table tbody tr"
 				);
-	
+
 				// Find the cell that contains the text "CRIPTOE MARKET"
 				const cells = menuBarCrippledtoeRow.getElementsByTagName("td");
 				let criptoeMarketCell = null;
@@ -473,9 +476,8 @@
 					}
 				}
 				if (criptoeMarketCell) {
-					criptoeMarketCell.innerHTML = `CRIPTOE MARKET <span style="color:cyan;">(${
-						hours + ":" + minutes + ":" + seconds
-					})</span>
+					criptoeMarketCell.innerHTML = `CRIPTOE MARKET <span style="color:cyan;">(${hours + ":" + minutes + ":" + seconds
+						})</span>
 					<i class="font-small" style="" id="criptoe_path_selected-left-label"><br>${path}</i>`;
 				}
 			},
@@ -1194,7 +1196,7 @@
 						document.getElementById("notification-mega_rocket").style.display = "none";
 						document.getElementById("notification-rocket").style.display = "none";
 					} else if (rocket_travel_check > 0 && rocket_check == 1) {
-						document.getElementById("notification-mega_rocket").style.display =	"block";
+						document.getElementById("notification-mega_rocket").style.display = "block";
 						document.getElementById("rocket-travel-info").style.display = "none";
 					} else if (rocket_travel_check > 0 && rocket_check == 0) {
 						document.getElementById("notification-rocket").style.display = "inline-block";
@@ -1413,7 +1415,7 @@
 				document.getElementById("rocket-travel-info").style.display = "";
 				document.getElementById("rocket-current-travel-location").src = locationImg;
 				document.getElementById("rocket-type-img").src = rocketImg;
-				document.getElementById("rocket-type-img").style.transform ="rotate(0deg)";
+				document.getElementById("rocket-type-img").style.transform = "rotate(0deg)";
 			},
 
 			fromLocation: function (location) {
@@ -1636,7 +1638,7 @@
 				  margin-right: 20px;
 				}
 				`;
-	
+
 				document.head.appendChild(style);
 			}
 		};
@@ -1833,7 +1835,7 @@
 			: "",
 		"#chat-area .color-green": document.querySelector("#chat-area .color-green")
 			? getComputedStyle(document.querySelector("#chat-area .color-green"))
-					.color
+				.color
 			: "",
 		"#chat-area .color-grey": document.querySelector("#chat-area .color-grey")
 			? getComputedStyle(document.querySelector("#chat-area .color-grey")).color
@@ -1842,7 +1844,7 @@
 			"#chat-area .chat-username"
 		)
 			? getComputedStyle(document.querySelector("#chat-area .chat-username"))
-					.color
+				.color
 			: "",
 		"#panels": document.querySelector("#panels")
 			? getComputedStyle(document.querySelector("#panels")).color
@@ -1907,11 +1909,11 @@
 						default: true,
 					},
 					/*{
-                        id: "pinChat",
-                        label: "Pin Chat on Side (Only works if Side Chat is active. Thanks BanBan)",
-                        type: "boolean",
-                        default: false
-                    },*/
+						id: "pinChat",
+						label: "Pin Chat on Side (Only works if Side Chat is active. Thanks BanBan)",
+						type: "boolean",
+						default: false
+					},*/
 					{
 						id: "chatLimit",
 						label: "Chat Message Limit (&leq; 0 means no limit)",
@@ -2664,6 +2666,11 @@
 						for (const element of selected) {
 							element.style.color = color;
 						}
+						document.getElementById("chat-area").querySelectorAll(".chat-username").forEach((user) => {
+							if (user.innerText == "orange cat" || user.innerText == "isorangcat") {
+								user.style.color = "darkOrange";
+							}
+						});
 					}
 				});
 
@@ -3099,6 +3106,7 @@
 
 		//////////////////////////////// onLogin Start ////////////////////////////////
 		onLogin() {
+			uit_currUTCDate = uit_utcDate;
 			IPP = IdlePixelPlus;
 			getVar = IdlePixelPlus.getVarOrDefault;
 			getThis = IdlePixelPlus.plugins["ui-tweaks"];
@@ -3878,7 +3886,6 @@
 
 			getThis.oilTimerNotification();
 			setTimeout(function () {
-				onLoginLoaded = true;
 				uitRocket().timeout();
 				IdlePixelPlus.plugins["ui-tweaks"].onConfigsChanged();
 			}, 20);
@@ -3930,6 +3937,9 @@
 			}
 
 			getThis.restructureTopBar();
+
+			uitCriptoe().addCriptoeValues();
+			onLoginLoaded = true;
 		}
 		//////////////////////////////// onLogin End ////////////////////////////////
 
@@ -3979,45 +3989,52 @@
 		}
 
 		onPanelChanged(panelBefore, panelAfter) {
-			uitTableLabels().updateTableCraftLabels();
-			uitInvention().hideOrbsAndRing();
+			if (onLoginLoaded) {
+				uitTableLabels().updateTableCraftLabels();
+				uitInvention().hideOrbsAndRing();
 
-			if (panelBefore !== panelAfter && panelAfter === "idlepixelplus") {
-				const options = document.querySelectorAll(
-					"#idlepixelplus-config-ui-tweaks-font option"
-				);
-				if (options) {
-					options.forEach(function (el) {
-						const value = el.getAttribute("value");
-						if (value === "IdlePixel Default") {
-							el.style.fontFamily = FONT_FAMILY_DEFAULT;
-						} else {
-							el.style.fontFamily = value;
-						}
-					});
+				if (panelBefore !== panelAfter && panelAfter === "idlepixelplus") {
+					const options = document.querySelectorAll(
+						"#idlepixelplus-config-ui-tweaks-font option"
+					);
+					if (options) {
+						options.forEach(function (el) {
+							const value = el.getAttribute("value");
+							if (value === "IdlePixel Default") {
+								el.style.fontFamily = FONT_FAMILY_DEFAULT;
+							} else {
+								el.style.fontFamily = value;
+							}
+						});
+					}
 				}
-			}
 
-			if (
-				["farming", "woodcutting", "combat"].includes(panelAfter) &&
-				getThis.getConfig("imageTitles")
-			) {
-				const images = document.querySelectorAll(`#panel-${panelAfter} img`);
-				if (images) {
-					images.forEach(function (el) {
-						let src = el.getAttribute("src");
-						if (src && src !== "x") {
-							src = src.replace(/.*\//, "").replace(/\.\w+$/, "");
-							el.setAttribute("title", src);
-						}
-					});
+				if (
+					["farming", "woodcutting", "combat"].includes(panelAfter) &&
+					getThis.getConfig("imageTitles")
+				) {
+					const images = document.querySelectorAll(`#panel-${panelAfter} img`);
+					if (images) {
+						images.forEach(function (el) {
+							let src = el.getAttribute("src");
+							if (src && src !== "x") {
+								src = src.replace(/.*\//, "").replace(/\.\w+$/, "");
+								el.setAttribute("title", src);
+							}
+						});
+					}
 				}
-			}
 
-			if (Globals.currentPanel === "panel-fishing") {
-				uitFishing().calcFishEnergy();
+				if (Globals.currentPanel === "panel-fishing") {
+					uitFishing().calcFishEnergy();
+				}
+
+				if (Globals.currentPanel === "panel-criptoe-market") {
+					uitCriptoe().addCriptoeValues();
+				}
 			}
 		}
+
 
 		//////////////////////////////// onVariableSet Start ////////////////////////////////
 		onVariableSet(key, valueBefore, valueAfter) {
@@ -4318,6 +4335,14 @@
 				function hideElement(element) {
 					element.style.display = "none";
 				}
+
+				if (key == "playtime") {
+					if (uit_utcDate != uit_currUTCDate) {
+						uit_currUTCDate = uit_utcDate;
+						//console.log(`UTCDate is now: ${uit_currUTCDate}, and the criptoe update has fired off.`);
+						uitCriptoe().addCriptoeValues();
+					}
+				}
 			}
 		}
 		//////////////////////////////// onVariableSet end ////////////////////////////////
@@ -4325,6 +4350,12 @@
 		onChat(data) {
 			getThis.updateColors(CHAT_UPDATE_FILTER);
 			getThis.limitChat();
+			if (data.username == "vibe cat") {
+				document.getElementById("chat-area").lastChild.querySelector(".chat-username").innerText = "orange cat";
+			}
+			if (data.username == "notorangcat") {
+				document.getElementById("chat-area").lastChild.querySelector(".chat-username").innerText = "isorangcat";
+			}
 		}
 
 		onCombatEnd() {
