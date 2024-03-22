@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.9
+// @version      2.8.10
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -13,9 +13,7 @@
 (function () {
 	"use strict";
 
-	let IPP, getVar, getThis, purpleKeyGo;
-	window.uit_utcDate = new Date().getUTCDate();
-	window.uit_currUTCDate = 0;
+	let IPP, getVar, getThis, purpleKeyGo, utcDate, currUTCDate;
 
 	window.UIT_IMAGE_URL_BASE =
 		document
@@ -3106,7 +3104,7 @@
 
 		//////////////////////////////// onLogin Start ////////////////////////////////
 		onLogin() {
-			uit_currUTCDate = uit_utcDate;
+			currUTCDate = new Date().getUTCDate();
 			IPP = IdlePixelPlus;
 			getVar = IdlePixelPlus.getVarOrDefault;
 			getThis = IdlePixelPlus.plugins["ui-tweaks"];
@@ -4337,9 +4335,10 @@
 				}
 
 				if (key == "playtime") {
-					if (uit_utcDate != uit_currUTCDate) {
-						uit_currUTCDate = uit_utcDate;
-						//console.log(`UTCDate is now: ${uit_currUTCDate}, and the criptoe update has fired off.`);
+					utcDate = new Date().getUTCDate();
+					if (utcDate != currUTCDate) {
+						currUTCDate = utcDate;
+						//console.log(`UTCDate is now: ${currUTCDate}, and the criptoe update has fired off.`);
 						uitCriptoe().addCriptoeValues();
 					}
 				}
