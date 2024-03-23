@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.13
+// @version      2.8.14
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -2342,6 +2342,21 @@
                         type: "color",
                         default: FONT_COLORS["#chat-area .color-grey"],
                     },
+
+
+
+                    {
+                        id: "font-color-chat-area-chat-raid-password",
+                        label: "Raid Password Link Text: Color",
+                        type: "color",
+                        default: "#c5baba",
+                    },
+                    {
+                        id: "background-color-chat-area-raid-password",
+                        label: "Raid Password Link Background: Color",
+                        type: "color",
+                        default: "darkred",
+                    },
                     {
                         id: "font-color-enabled-chat-area-server_message",
                         label: "Server Message Tag: Enabled",
@@ -4403,13 +4418,15 @@
             const regex = /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi;
             let chatArea = document.getElementById("chat-area");
             let lastMessageElement = chatArea.lastChild;
-			let player = lastMessageElement.querySelector('.chat-username').innerText;
+            let player = lastMessageElement.querySelector('.chat-username').innerText;
+            let bgColor = `background-color: ${IdlePixelPlus.plugins['ui-tweaks'].getConfig('background-color-chat-area-raid-password')}; `;
+            let fColor = `color: ${IdlePixelPlus.plugins['ui-tweaks'].getConfig('font-color-chat-area-chat-raid-password')}; `;
 
             if (lastMessageElement && 'innerHTML' in lastMessageElement) {
                 let lastMessage = lastMessageElement.innerHTML;
                 lastMessage = lastMessage.replace(regex, function(match) {
-                    console.log("Found UUID");
-                    return `<a href="#" style="background-color: #ff0000a1; color: black; font-weight: bold; font-style:italic" onclick="IdlePixelPlus.plugins['ui-tweaks'].sendRaidJoinMessage('${match}'); switch_panels('panel-combat'); document.getElementById('game-panels-combat-items-area').style.display = 'none';document.getElementById('combat-stats').style.display = 'none';document.getElementById('game-panels-combat-raids').style.display = ''; return false;">${player} Raid</a>`;
+                    //console.log("Found UUID");
+                    return `<a href="#" style="${bgColor}${fColor}font-weight: bold; font-style:italic" onclick="IdlePixelPlus.plugins['ui-tweaks'].sendRaidJoinMessage('${match}'); switch_panels('panel-combat'); document.getElementById('game-panels-combat-items-area').style.display = 'none';document.getElementById('combat-stats').style.display = 'none';document.getElementById('game-panels-combat-raids').style.display = ''; return false;">${player} Raid</a>`;
                 });
 
                 lastMessageElement.innerHTML = lastMessage;
