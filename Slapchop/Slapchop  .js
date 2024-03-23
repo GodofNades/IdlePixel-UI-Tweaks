@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name         IdlePixel Slap Chop - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      3.0.11
+// @version      3.0.12
 // @description  Ain't nobody got time for that! Adds some QoL 1-click actions.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
 // @match        *://idle-pixel.com/login/play*
 // @grant        none
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
-// @downloadURL https://update.greasyfork.org/scripts/459139/IdlePixel%20Slap%20Chop%20-%20GodofNades%20Fork.user.js
-// @updateURL https://update.greasyfork.org/scripts/459139/IdlePixel%20Slap%20Chop%20-%20GodofNades%20Fork.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/459139/IdlePixel%20Slap%20Chop%20-%20GodofNades%20Fork.user.js
+// @updateURL    https://update.greasyfork.org/scripts/459139/IdlePixel%20Slap%20Chop%20-%20GodofNades%20Fork.meta.js
 // ==/UserScript==
 
 (function () {
@@ -2283,6 +2283,7 @@
 					let isRelevantPanel = [
 						"panel-combat-canvas",
 						"panel-combat",
+                        "panel-combat-canvas-raids",
 					].includes(Globals.currentPanel);
 
 					if (chatFocused || !isRelevantPanel) {
