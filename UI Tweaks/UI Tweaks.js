@@ -2671,11 +2671,6 @@
                         for (const element of selected) {
                             element.style.color = color;
                         }
-                        document.getElementById("chat-area").querySelectorAll(".chat-username").forEach((user) => {
-                            if (user.innerText == "orange cat" || user.innerText == "isorangcat") {
-                                user.style.color = "darkOrange";
-                            }
-                        });
                     }
                 });
 
@@ -4396,12 +4391,6 @@
         onChat(data) {
             getThis.updateColors(CHAT_UPDATE_FILTER);
             getThis.limitChat();
-            if (data.username == "vibe cat") {
-                document.getElementById("chat-area").lastChild.querySelector(".chat-username").innerText = "orange cat";
-            }
-            if (data.username == "notorangcat") {
-                document.getElementById("chat-area").lastChild.querySelector(".chat-username").innerText = "isorangcat";
-            }
             IdlePixelPlus.plugins['ui-tweaks'].makeUUIDClickable();
         }
 
@@ -4414,12 +4403,13 @@
             const regex = /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi;
             let chatArea = document.getElementById("chat-area");
             let lastMessageElement = chatArea.lastChild;
+			let player = lastMessageElement.querySelector('.chat-username').innerText;
 
             if (lastMessageElement && 'innerHTML' in lastMessageElement) {
                 let lastMessage = lastMessageElement.innerHTML;
                 lastMessage = lastMessage.replace(regex, function(match) {
-                    //console.log("Found UUID");
-                    return `<a href="#" style="background-color: #ff0000a1; color: black; font-weight: bold; font-style:italic" onclick="IdlePixelPlus.plugins['ui-tweaks'].sendRaidJoinMessage('${match}'); switch_panels('panel-combat'); document.getElementById('game-panels-combat-items-area').style.display = 'none';document.getElementById('combat-stats').style.display = 'none';document.getElementById('game-panels-combat-raids').style.display = ''; return false;">${match}</a>`;
+                    console.log("Found UUID");
+                    return `<a href="#" style="background-color: #ff0000a1; color: black; font-weight: bold; font-style:italic" onclick="IdlePixelPlus.plugins['ui-tweaks'].sendRaidJoinMessage('${match}'); switch_panels('panel-combat'); document.getElementById('game-panels-combat-items-area').style.display = 'none';document.getElementById('combat-stats').style.display = 'none';document.getElementById('game-panels-combat-raids').style.display = ''; return false;">${player} Raid</a>`;
                 });
 
                 lastMessageElement.innerHTML = lastMessage;
