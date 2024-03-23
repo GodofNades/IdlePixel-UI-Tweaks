@@ -1,13 +1,15 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.11
+// @version      2.8.12
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
 // @match        *://idle-pixel.com/login/play/
 // @grant        none
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
+// @downloadURL https://update.greasyfork.org/scripts/459147/IdlePixel%20UI%20Tweaks%20-%20GodofNades%20Fork.user.js
+// @updateURL https://update.greasyfork.org/scripts/459147/IdlePixel%20UI%20Tweaks%20-%20GodofNades%20Fork.meta.js
 // ==/UserScript==
 
 (function () {
@@ -3942,6 +3944,46 @@
             getThis.restructureTopBar();
 
             uitCriptoe().addCriptoeValues();
+
+            // Add event listener to the element
+            document.getElementById('raids-team-panel-uuid').addEventListener('click', function(event) {
+                // This will copy the text content of the element to the clipboard
+                IdlePixelPlus.plugins['ui-tweaks'].copyTextToClipboard(event.target.innerText);
+            });
+
+            document.getElementById("raids-team-panel-uuid").addEventListener("click", function(event) {
+                // Copy text to clipboard
+                navigator.clipboard.writeText(this.innerText).then(() => {
+                    // Check if the message element already exists, create if not
+                    let message = document.getElementById("copy-message");
+                    if (!message) {
+                        message = document.createElement("div");
+                        message.id = "copy-message";
+                        message.style.position = "absolute";
+                        message.style.backgroundColor = "black";
+                        message.style.color = "white";
+                        message.style.padding = "5px";
+                        message.style.borderRadius = "5px";
+                        message.style.zIndex = "1000"; // Ensure it appears above other content
+                        message.style.fontSize = "20px";
+                        message.innerText = "Password Copied";
+                        document.getElementById("panel-combat").appendChild(message);
+                    }
+
+                    // Show the "Password Copied" message
+                    message.style.display = "block";
+                    message.style.left = `${event.clientX}px`;
+                    message.style.top = `${event.clientY}px`; // 20 pixels below the cursor for visibility
+
+                    // Hide the message after 2 seconds
+                    setTimeout(() => {
+                        message.style.display = "none";
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+            });
+
             onLoginLoaded = true;
         }
         //////////////////////////////// onLogin End ////////////////////////////////
@@ -4376,7 +4418,7 @@
             if (lastMessageElement && 'innerHTML' in lastMessageElement) {
                 let lastMessage = lastMessageElement.innerHTML;
                 lastMessage = lastMessage.replace(regex, function(match) {
-                    console.log("Found UUID");
+                    //console.log("Found UUID");
                     return `<a href="#" style="background-color: #ff0000a1; color: black; font-weight: bold; font-style:italic" onclick="IdlePixelPlus.plugins['ui-tweaks'].sendRaidJoinMessage('${match}'); switch_panels('panel-combat'); document.getElementById('game-panels-combat-items-area').style.display = 'none';document.getElementById('combat-stats').style.display = 'none';document.getElementById('game-panels-combat-raids').style.display = ''; return false;">${match}</a>`;
                 });
 
@@ -4389,6 +4431,15 @@
         sendRaidJoinMessage(uuid) {
             websocket.send(`JOIN_RAID_TEAM=${uuid}`);
         }
+
+        copyTextToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                //console.log('Copying to clipboard was successful!');
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+
     }
 
     const elementsWithWidth = document.querySelectorAll("[width]");
