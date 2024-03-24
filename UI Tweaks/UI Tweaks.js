@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.14
+// @version      2.8.15
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -340,7 +340,7 @@
                     wallets.forEach((walletKey) => {
                         const payoutElementId = `${walletKey}_payout`;
                         const payoutElement = document.getElementById(payoutElementId);
-                        const percentage = walletPercentages[walletKey];
+                        let percentage = walletPercentages[walletKey];
                         const investedAmount = getVar(`${walletKey.replace("_", "")}_invested`, 0, "int");
                         if (investedAmount > 0) {
                             if (percentage > -100) {
