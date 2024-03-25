@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.15
+// @version      2.8.16
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -1928,6 +1928,12 @@
                         default: 0,
                     },
                     {
+                        id: "combatChat",
+                        label: "Enable Chat to be visible while in combat.",
+                        type: "boolean",
+                        default: true
+                    },
+                    {
                         id: "imageTitles",
                         label: "Image Mouseover",
                         type: "boolean",
@@ -2653,6 +2659,27 @@
                 }
             }
         }
+
+        //Zlef Code Start
+        addChatDisplayWatcher() {
+            const chatElement = document.getElementById('game-chat');
+            if (!chatElement) {
+                console.log('Chat element not found.');
+                return;
+            }
+
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'style' && chatElement.style.display === 'none' && IdlePixelPlus.plugins['ui-tweaks'].getConfig("combatChat")) {
+                        chatElement.style.display = 'block'; // Force chat to be visible
+                    }
+                });
+            });
+
+            observer.observe(chatElement, { attributes: true, attributeFilter: ['style'] });
+            //Initiator in onLogin
+        }
+        //Zlef Code End
 
         //////////////////////////////// updateColors Start ////////////////////////////////
         updateColors(filter) {
@@ -3993,6 +4020,7 @@
                     console.error('Failed to copy text: ', err);
                 });
             });
+            IdlePixelPlus.plugins['ui-tweaks'].addChatDisplayWatcher();
 
             onLoginLoaded = true;
         }
