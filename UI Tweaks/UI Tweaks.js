@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.16
+// @version      2.8.17
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -466,6 +466,15 @@
                     "#left-panel-criptoe_market-btn table tbody tr"
                 );
 
+                let researchTimer = IdlePixelPlus.getVarOrDefault("criptoe_path_timer", 0, "int");
+                let rTimerText;
+
+                if(researchTimer > 0) {
+                    rTimerText = format_time(researchTimer);
+                } else {
+                    rTimerText = "Can swap";
+                }
+
                 // Find the cell that contains the text "CRIPTOE MARKET"
                 const cells = menuBarCrippledtoeRow.getElementsByTagName("td");
                 let criptoeMarketCell = null;
@@ -478,7 +487,7 @@
                 if (criptoeMarketCell) {
                     criptoeMarketCell.innerHTML = `CRIPTOE MARKET <span style="color:cyan;">(${hours + ":" + minutes + ":" + seconds
                 })</span>
-					<i class="font-small" style="" id="criptoe_path_selected-left-label"><br>${path}</i>`;
+					<i class="font-small" style="" id="criptoe_path_selected-left-label"><br>${path} (${rTimerText})</i>`;
                 }
             },
         };
@@ -1065,12 +1074,7 @@
                 rocketInfoSideCar.style.paddingLeft = "20px";
                 rocketInfoSideCar.style.paddingTop = "10px";
                 rocketInfoSideCar.style.paddingBottom = "10px";
-                /*
-		Commented out of the innerHTML:
-		<img id="moon-mega-rocket-img" class="img-20" src="${megaRocketImg}"></img>
-		<span class="sun-landed">LANDED</span>
-		<span class="moon-landed">LANDED</span>
-		*/
+
                 rocketInfoSideCar.innerHTML = `
 			<span id="rocket-info-label">MOON & SUN DISTANCE</span>
 			<br/>
@@ -1082,7 +1086,7 @@
 				}
 			</style>
 			<span onClick="websocket.send(Modals.clicks_rocket())" id="menu-bar-rocket_moon">
-			<img id="moon-img" class="img-20" src="${currentLocation}">
+			<img id="moon-img" class="img-20" src="${uitMoonImg}">
 			<span class="span2 rocket-dist_moon">0</span>
 			<span style='margin-left:0.75em;' class="rocket-dist_moon-symbol">🔴</span>
 			<img id="moon-rocket-img" class="img-20" src="${currentRocket}">
@@ -1417,7 +1421,7 @@
                 }
 
                 // Rocket Info Section
-                document.getElementById("rocket-travel-info").style.display = "";
+                document.getElementById("rocket-travel-info-dist").style.display = "";
                 document.getElementById("rocket-current-travel-location").src = locationImg;
                 document.getElementById("rocket-type-img").src = rocketImg;
                 document.getElementById("rocket-type-img").style.transform = "rotate(0deg)";
@@ -1441,7 +1445,7 @@
                 }
 
                 // Rocket Info Section
-                document.getElementById("rocket-travel-info").style.display = "";
+                document.getElementById("rocket-travel-info-dist").style.display = "";
                 document.getElementById("rocket-current-travel-location").src =
                     locationImg;
                 document.getElementById("rocket-type-img").src = rocketImg;
@@ -1642,12 +1646,131 @@
 				  margin-left: 20px;
 				  margin-right: 20px;
 				}
+                .raids-option-bar {
+                  width: 90px !important;
+                  height: 25px !important;
+                  margin-right: 5px !important;
+                }
+                .raids-buttons {
+                justify-content: center !important;
+                align-items: center !important;
+                border-radius: 5px !important;
+                }
 				`;
 
                 document.head.appendChild(style);
             }
         };
     };
+
+    const uitRaids = function () {
+        // Global Constants
+        return {
+            initElements: function () {
+                var optionsContainer = document.createElement('div');
+                optionsContainer.id = 'raid-options-container';
+                optionsContainer.style.marginBottom = '10px'
+
+                var raidLocationDropdown = document.createElement('select');
+                raidLocationDropdown.id = 'raid-location-dropdown';
+                raidLocationDropdown.className = 'raids-option-bar';
+                var locations = ['Toybox', 'Mansion'];
+                locations.forEach(function(location) {
+                    var option = document.createElement('option');
+                    option.value = location.toLowerCase();
+                    option.text = location;
+                    raidLocationDropdown.appendChild(option);
+                });
+
+                // Create the second dropdown for raid difficulty
+                var raidDifficultyDropdown = document.createElement('select');
+                raidDifficultyDropdown.id = 'raid-difficulty-dropdown';
+                raidDifficultyDropdown.className = 'raids-option-bar';
+                var difficulties = ['Practice', 'Medium', 'Hard'];
+                difficulties.forEach(function(difficulty) {
+                    var option = document.createElement('option');
+                    option.value = difficulty.toLowerCase();
+                    option.text = difficulty;
+                    raidDifficultyDropdown.appendChild(option);
+                });
+
+                // Create the third dropdown for Public/Private
+                var raidVisibilityDropdown = document.createElement('select');
+                raidVisibilityDropdown.id = 'raid-visibility-dropdown';
+                raidVisibilityDropdown.className = 'raids-option-bar';
+                var visibility = ['Public', 'Private']
+                visibility.forEach(function(vis) {
+                    var option = document.createElement('option');
+                    option.value = vis.toLowerCase();
+                    option.text = vis;
+                    raidVisibilityDropdown.appendChild(option);
+                });
+
+                let advertRaid = document.createElement('button');
+                advertRaid.id = 'raids-advert-button';
+                advertRaid.innerText = 'Advertise';
+                advertRaid.onclick = uitRaids().advertRaid;
+                advertRaid.className = 'button raids-option-bar raids-buttons';
+                advertRaid.style.display = 'none';
+
+                let startRaid = document.createElement('button');
+                startRaid.id = 'raids-start-button';
+                startRaid.innerText = 'Start Raid';
+                startRaid.onclick = uitRaids().startRaid;
+                startRaid.className = 'button raids-option-bar raids-buttons';
+                startRaid.style.display = 'none';
+
+
+                // Find the insertion point in the DOM
+                var insertionPoint = document.getElementById('raids-create-or-join-team-btns');
+
+                // Insert the dropdowns into the DOM before the specified element
+                optionsContainer.appendChild(raidLocationDropdown);
+                optionsContainer.appendChild(raidDifficultyDropdown);
+                optionsContainer.appendChild(raidVisibilityDropdown);
+                optionsContainer.appendChild(advertRaid);
+                optionsContainer.appendChild(startRaid);
+                insertionPoint.parentNode.insertBefore(optionsContainer, insertionPoint);
+
+                document
+                    .getElementById('raids-create-or-join-team-btns')
+                    .innerHTML = document.getElementById('raids-create-or-join-team-btns')
+                    .innerHTML.replace("Modals.raid_create_team_button()", "uitRaids().createRaid()");
+
+                const panel = document.getElementById('raids-team-panel');
+                panel.innerHTML = panel.innerHTML.replace(/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/g, '<br/>');
+            },
+            createRaid: function () {
+                let locationRaids = document.getElementById('raid-location-dropdown').value;
+                let modeRaids = document.getElementById('raid-difficulty-dropdown').value;
+                websocket.send(`CREATE_RAID_TEAM=${locationRaids}-${modeRaids}`);
+                document.getElementById('raids-start-button').style.display = 'inline-flex';
+                document.getElementById('raids-advert-button').style.display = 'inline-flex';
+            },
+            advertRaid: function () {
+                let locationRaids = document.getElementById('raid-location-dropdown').selectedOptions[0].text;
+                let modeRaids = document.getElementById('raid-difficulty-dropdown').selectedOptions[0].text;;
+                let raidPW = document.getElementById('raids-team-panel-uuid').innerText;
+                websocket.send(`CHAT=${raidPW} : [${locationRaids}] || [${modeRaids}]`);
+            },
+            startRaid: function() {
+                let locationRaids = document.getElementById('raid-location-dropdown').value;
+                let modeRaids = document.getElementById('raid-difficulty-dropdown').value;
+                let locationMatch = {
+                    toybox: 2,
+                    mansion: 1,
+                };
+                let modeMatch = {
+                    practice: 0,
+                    medium: 1,
+                    hard: 2
+                };
+                let locationValue = locationMatch[locationRaids];
+                let modeValue = modeMatch[modeRaids];
+                websocket.send(`START_RAID_${locationValue}=${modeValue}`);
+            },
+        }
+    }
 
     // End New Base Code Re-work
     // Window Calls for initializing
@@ -1659,6 +1782,7 @@
     window.uitInvention = uitInvention;
     window.uitRocket = uitRocket;
     window.uitMisc = uitMisc;
+    window.uitRaids = uitRaids;
 
     let onLoginLoaded = false;
 
@@ -2663,6 +2787,7 @@
         //Zlef Code Start
         addChatDisplayWatcher() {
             const chatElement = document.getElementById('game-chat');
+            const panelRaidTeam = document.getElementById('raids-team-panel');
             if (!chatElement) {
                 console.log('Chat element not found.');
                 return;
@@ -2672,11 +2797,15 @@
                 mutations.forEach((mutation) => {
                     if (mutation.attributeName === 'style' && chatElement.style.display === 'none' && IdlePixelPlus.plugins['ui-tweaks'].getConfig("combatChat")) {
                         chatElement.style.display = 'block'; // Force chat to be visible
+                    } else if (mutation.attributeName === 'style' && panelRaidTeam.style.display === 'none') {
+                        document.getElementById('raids-advert-button').style.display = 'none';
+                        document.getElementById('raids-start-button').style.display = 'none';
                     }
                 });
             });
 
             observer.observe(chatElement, { attributes: true, attributeFilter: ['style'] });
+            observer.observe(panelRaidTeam, { attributes: true, attributeFilter: ['style'] });
             //Initiator in onLogin
         }
         //Zlef Code End
@@ -3171,6 +3300,7 @@
             uitPurpleKey().addPurpleKeyNotifications();
             uitCriptoe().initCriptoe();
             uitFishing().initFishing();
+            uitRaids().initElements();
 
             getThis.updateColors();
 
@@ -4427,6 +4557,10 @@
                         uitCriptoe().addCriptoeValues();
                     }
                 }
+                if (key == "in_raids" && valueAfter == 1){
+                    document.getElementById('raids-advert-button').style.display = 'none';
+                    document.getElementById('raids-start-button').style.display = 'none';
+                }
             }
         }
         //////////////////////////////// onVariableSet end ////////////////////////////////
@@ -4477,16 +4611,16 @@
 
     }
 
-    const elementsWithWidth = document.querySelectorAll("[width]");
-    elementsWithWidth.forEach(function (el) {
-        el.setAttribute("original-width", el.getAttribute("width"));
-    });
+const elementsWithWidth = document.querySelectorAll("[width]");
+elementsWithWidth.forEach(function (el) {
+    el.setAttribute("original-width", el.getAttribute("width"));
+});
 
-    const elementsWithHeight = document.querySelectorAll("[height]");
-    elementsWithHeight.forEach(function (el) {
-        el.setAttribute("original-height", el.getAttribute("height"));
-    });
+const elementsWithHeight = document.querySelectorAll("[height]");
+elementsWithHeight.forEach(function (el) {
+    el.setAttribute("original-height", el.getAttribute("height"));
+});
 
-    const plugin = new UITweaksPlugin();
-    IdlePixelPlus.registerPlugin(plugin);
+const plugin = new UITweaksPlugin();
+IdlePixelPlus.registerPlugin(plugin);
 })();
