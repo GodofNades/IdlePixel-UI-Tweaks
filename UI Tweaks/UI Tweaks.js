@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.20
+// @version      2.8.21
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -1917,6 +1917,46 @@
         }
     }
 
+    const uitHoliday = function () {
+        window.uitEaster = [
+            "chocolate_scythe",
+            "chocolate_skeleton_sword",
+            "chocolate_dagger",
+            "chocolate_stinger",
+            "chocolate_fish",
+            "chocolate_logs",
+            "chocolate_mushroom",
+            "chocolate_leaf",
+            "chocolate_bar",
+            "chocolate_ore"
+        ];
+        return {
+            easter2024: function () {
+                let certificateElement = document.querySelector("itembox[data-item=chocolate_certificate");
+                if (certificateElement) {
+                    certificateElement.setAttribute("data-item", "playtime");
+                    uitEaster.forEach((item) => {
+                        let element = document.querySelector(`itembox[data-item=${item}`);
+                        element.setAttribute("data-item", "playtime");
+                        certificateElement.insertAdjacentElement("afterEnd", element);
+                        let numElem = element.querySelector(`item-display[data-key=${item}`);
+                        element.className = "itembox-fight shadow hover";
+                        if (item != "chocolate_scythe") {
+                            element.style.marginRight = "4px";
+                            if(item == "chocolate_ore") {
+                                element.style.marginLeft = "4px";
+                            }
+                        } else {
+                            element.style.marginLeft = "0px";
+                            element.style.marginRight = "0px";
+                        }
+                    });
+                    document.getElementById("panel-keyitems");
+                }
+            }
+        }
+    }
+
     // End New Base Code Re-work
     // Window Calls for initializing
     window.uitLevel = uitLevel;
@@ -1928,6 +1968,7 @@
     window.uitRocket = uitRocket;
     window.uitMisc = uitMisc;
     window.uitRaids = uitRaids;
+    window.uitHoliday = uitHoliday;
 
     let onLoginLoaded = false;
 
@@ -4299,6 +4340,7 @@
             uitTableLabels().disableTableRefreshBrewing();
             uitTableLabels().Crafting_getMaterials();
             uitTableLabels().Invention_getMaterials();
+            uitHoliday().easter2024();
 
             onLoginLoaded = true;
         }
