@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.19
+// @version      2.8.20
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -19,8 +19,8 @@
 
     window.UIT_IMAGE_URL_BASE =
         document
-        .querySelector("itembox[data-item=copper] img")
-        .src.replace(/\/[^/]+.png$/, "") + "/";
+            .querySelector("itembox[data-item=copper] img")
+            .src.replace(/\/[^/]+.png$/, "") + "/";
 
     // Start New Base Code Re-work
     const uitLevel = function () {
@@ -106,7 +106,7 @@
             updateExtendedLevel: function (skill, extendedLevel) {
                 const skillElement = document.querySelector(
                     `#overallLevelExtended-${skill}`
-				);
+                );
                 const colorStyle = extendedLevel >= 100 ? "color:cyan" : "";
                 skillElement.textContent = `(LEVEL ${Math.max(extendedLevel, 1)})`;
                 skillElement.setAttribute("style", colorStyle);
@@ -129,7 +129,7 @@
                 uitSkills.forEach((skill) => {
                     const skillElement = document.querySelector(
                         `#menu-bar-${skill}-level`
-					);
+                    );
                     if (skillElement) {
                         skillElement.style.display = "none";
                     }
@@ -163,7 +163,7 @@
                     uitLevel().addLoadingSpanAfterElement(
                         `#menu-bar-${skill}-level`,
                         `overallLevelExtended-${skill}`
-					);
+                    );
                 });
             },
 
@@ -196,8 +196,8 @@
                     const timeLeft = format_time(timer);
                     const imageSrc = monster;
                     const monsterName = imageSrc
-                    .replace(/_/g, " ")
-                    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+                        .replace(/_/g, " ")
+                        .replace(/\b\w/g, (letter) => letter.toUpperCase());
 
                     const purpleKeyNotification = document.querySelector(
                         "#notification-purple_key"
@@ -218,7 +218,7 @@
                     imageElement.setAttribute(
                         "src",
                         `https://d1xsc8x7nc5q8t.cloudfront.net/images/${imageSrc}_icon.png`
-					);
+                    );
                     imageTextElement.innerText = `${monsterName} `;
                     rarityElement.innerText = ` ${rarity}`;
                     timeElement.innerText = ` ⏲️${timeLeft}`;
@@ -273,7 +273,7 @@
                 elemKey.setAttribute(
                     "src",
                     `${UIT_IMAGE_URL_BASE}purple_gaurdian_key.png`
-				);
+                );
                 const notifDivRarityKey = elemKey;
                 notifDivRarityKey.className = "w20";
                 notifDivRarityKey.id = `notification-purple_key-rarity-img`;
@@ -314,114 +314,114 @@
             addCriptoeValues: function () {
                 fetch('https://idle-pixel.com/criptoe/')
                     .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
                     .then(data => {
-                    let walletPercentages = {};
-                    let seenWallets = new Set();
+                        let walletPercentages = {};
+                        let seenWallets = new Set();
 
-                    const dataArray = data.data;
+                        const dataArray = data.data;
 
-                    for (let i = dataArray.length - 1; i >= 0; i--) {
-                        let entry = dataArray[i];
-                        if (!seenWallets.has(entry.wallet)) {
-                            seenWallets.add(entry.wallet);
-                            walletPercentages[`wallet_${entry.wallet}`] = entry.percentage;
-                        }
-
-                        if (seenWallets.size === 4) break;
-                    }
-
-                    const wallets = ["wallet_1", "wallet_2", "wallet_3", "wallet_4"];
-
-                    wallets.forEach((walletKey) => {
-                        const payoutElementId = `${walletKey}_payout`;
-                        const payoutElement = document.getElementById(payoutElementId);
-                        let percentage = walletPercentages[walletKey];
-                        const investedAmount = getVar(`${walletKey.replace("_", "")}_invested`, 0, "int");
-                        if (investedAmount > 0) {
-                            if (percentage > -100) {
-                                payoutElement.innerText = ` ${uitCriptoe().getPayout(investedAmount, percentage)}`;
-                            } else {
-                                payoutElement.innerText = ` Full Loss`;
+                        for (let i = dataArray.length - 1; i >= 0; i--) {
+                            let entry = dataArray[i];
+                            if (!seenWallets.has(entry.wallet)) {
+                                seenWallets.add(entry.wallet);
+                                walletPercentages[`wallet_${entry.wallet}`] = entry.percentage;
                             }
-                        } else {
-                            payoutElement.innerText = ` No Investment`;
-                        }
-                        const percentageElementId = `criptoe-${walletKey.replace("_", "-")}-percentage`;
-                        const percentageElement = document.getElementById(percentageElementId);
 
-                        let percentageText = "";
-                        let weekday = new Date().getUTCDay();
-                        if (weekday == 0) {
-                            percentage = -20;
-                            percentageText = `${percentage} %`;
-                        } else if (weekday == 1) {
-                            percentage = 0;
-                            percentageText = `Go invest!`;
-
-                        } else {
-                            percentageText = `${percentage} %`;
+                            if (seenWallets.size === 4) break;
                         }
 
-                        percentageElement.innerText = `${percentageText}`;
+                        const wallets = ["wallet_1", "wallet_2", "wallet_3", "wallet_4"];
 
-                        if (percentage < 0) {
-                            percentageElement.style.color = "red";
-                        } else if (percentage > 0) {
-                            percentageElement.style.color = "lime";
-                        } else {
-                            percentageElement.style.color = "white";
-                        }
-                    });
-                })
+                        wallets.forEach((walletKey) => {
+                            const payoutElementId = `${walletKey}_payout`;
+                            const payoutElement = document.getElementById(payoutElementId);
+                            let percentage = walletPercentages[walletKey];
+                            const investedAmount = getVar(`${walletKey.replace("_", "")}_invested`, 0, "int");
+                            if (investedAmount > 0) {
+                                if (percentage > -100) {
+                                    payoutElement.innerText = ` ${uitCriptoe().getPayout(investedAmount, percentage)}`;
+                                } else {
+                                    payoutElement.innerText = ` Full Loss`;
+                                }
+                            } else {
+                                payoutElement.innerText = ` No Investment`;
+                            }
+                            const percentageElementId = `criptoe-${walletKey.replace("_", "-")}-percentage`;
+                            const percentageElement = document.getElementById(percentageElementId);
+
+                            let percentageText = "";
+                            let weekday = new Date().getUTCDay();
+                            if (weekday == 0) {
+                                percentage = -20;
+                                percentageText = `${percentage} %`;
+                            } else if (weekday == 1) {
+                                percentage = 0;
+                                percentageText = `Go invest!`;
+
+                            } else {
+                                percentageText = `${percentage} %`;
+                            }
+
+                            percentageElement.innerText = `${percentageText}`;
+
+                            if (percentage < 0) {
+                                percentageElement.style.color = "red";
+                            } else if (percentage > 0) {
+                                percentageElement.style.color = "lime";
+                            } else {
+                                percentageElement.style.color = "white";
+                            }
+                        });
+                    })
                     .catch(error => {
-                    console.error('There has been a problem with your fetch operation:', error);
-                });
+                        console.error('There has been a problem with your fetch operation:', error);
+                    });
             },
 
             initCriptoe: function () {
                 document
                     .querySelector(
-                    "#panel-criptoe-market > div.charts-content > div > table:nth-child(1) > tbody > tr > td:nth-child(1) > item-display"
-                )
+                        "#panel-criptoe-market > div.charts-content > div > table:nth-child(1) > tbody > tr > td:nth-child(1) > item-display"
+                    )
                     .insertAdjacentHTML(
-                    "afterend",
-                    `<br><b>Current Payout: </b><span id="wallet_1_payout"></span>`
-					);
+                        "afterend",
+                        `<br><b>Current Payout: </b><span id="wallet_1_payout"></span>`
+                    );
                 document
                     .querySelector(
-                    "#panel-criptoe-market > div.charts-content > div > table:nth-child(3) > tbody > tr > td:nth-child(1) > item-display"
-                )
+                        "#panel-criptoe-market > div.charts-content > div > table:nth-child(3) > tbody > tr > td:nth-child(1) > item-display"
+                    )
                     .insertAdjacentHTML(
-                    "afterend",
-                    `<br><b>Current Payout: </b><span id="wallet_2_payout"></span>`
-					);
+                        "afterend",
+                        `<br><b>Current Payout: </b><span id="wallet_2_payout"></span>`
+                    );
                 document
                     .querySelector(
-                    "#panel-criptoe-market > div.charts-content > div > table:nth-child(5) > tbody > tr > td:nth-child(1) > item-display"
-                )
+                        "#panel-criptoe-market > div.charts-content > div > table:nth-child(5) > tbody > tr > td:nth-child(1) > item-display"
+                    )
                     .insertAdjacentHTML(
-                    "afterend",
-                    `<br><b>Current Payout: </b><span id="wallet_3_payout"></span>`
-					);
+                        "afterend",
+                        `<br><b>Current Payout: </b><span id="wallet_3_payout"></span>`
+                    );
                 document
                     .querySelector(
-                    "#panel-criptoe-market > div.charts-content > div > table:nth-child(7) > tbody > tr > td:nth-child(1) > item-display"
-                )
+                        "#panel-criptoe-market > div.charts-content > div > table:nth-child(7) > tbody > tr > td:nth-child(1) > item-display"
+                    )
                     .insertAdjacentHTML(
-                    "afterend",
-                    `<br><b>Current Payout: </b><span id="wallet_4_payout"></span>`
-					);
+                        "afterend",
+                        `<br><b>Current Payout: </b><span id="wallet_4_payout"></span>`
+                    );
 
                 document.getElementById("left-panel-criptoe_market-btn").onclick =
                     function () {
-                    switch_panels('panel-criptoe-market');
-                    uitCriptoe().addCriptoeValues();
-                }
+                        switch_panels('panel-criptoe-market');
+                        uitCriptoe().addCriptoeValues();
+                    }
             },
 
             getPayout: function (wallet, perct) {
@@ -486,7 +486,7 @@
                 }
                 if (criptoeMarketCell) {
                     criptoeMarketCell.innerHTML = `CRIPTOE MARKET <span style="color:cyan;">(${hours + ":" + minutes + ":" + seconds
-                })</span>
+                        })</span>
 					<i class="font-small" style="" id="criptoe_path_selected-left-label"><br>${path} (${rTimerText})</i>`;
                 }
             },
@@ -605,7 +605,7 @@
                             if (brewingXP) {
                                 const potionName = brewingXP.id.replace("_xp", "");
                                 const potionXP =
-                                      UIT_POTION_XP_MAP[potionName].toLocaleString() + " xp";
+                                    UIT_POTION_XP_MAP[potionName].toLocaleString() + " xp";
                                 const potionOrig = document.createElement("span");
                                 potionOrig.classList.add("font-small", "color-grey");
                                 potionOrig.textContent = potionXP;
@@ -618,7 +618,7 @@
             },
 
             disableTableRefreshBrewing: function () {
-                Brewing.refresh_table = function() {
+                Brewing.refresh_table = function () {
                     Brewing._refresh_click_events();
                     Brewing._refresh_materials();
                     Brewing._refresh_timers();
@@ -628,14 +628,12 @@
             },
 
             Crafting_getMaterials: function () {
-                Crafting._refresh_materials_and_level = function()
-                {
+                Crafting._refresh_materials_and_level = function () {
                     var crafting_table = document.getElementById("crafting-table");
                     var materials_req_array = crafting_table.getElementsByTagName("item-crafting-table");
                     var levels_req_array = crafting_table.getElementsByTagName("item-crafting-table-level");
 
-                    for(var i = 0; i < materials_req_array.length; i++)
-                    {
+                    for (var i = 0; i < materials_req_array.length; i++) {
                         var materials_req = materials_req_array[i];
                         var item = materials_req.getAttribute("data-materials-item");
                         var originalAmount = materials_req.innerHTML;
@@ -643,17 +641,16 @@
                         var cleanedAmountText = amountText.replace(/[,.\s]/g, '');
                         var amount = parseInt(cleanedAmountText, 10);
 
-                        if(Items.getItem(item) >= amount)
+                        if (Items.getItem(item) >= amount)
                             materials_req_array[i].style.color = "#00a200";
                         else
                             materials_req_array[i].style.color = "red";
                     }
 
-                    for(var ix = 0; ix < levels_req_array.length; ix++)
-                    {
+                    for (var ix = 0; ix < levels_req_array.length; ix++) {
                         var levels_req = levels_req_array[ix];
                         var level_found = parseInt(levels_req.innerHTML);
-                        if(get_level(Items.getItem("crafting_xp")) >= level_found)
+                        if (get_level(Items.getItem("crafting_xp")) >= level_found)
                             levels_req.style.color = "green";
                         else
                             levels_req.style.color = "red";
@@ -661,33 +658,28 @@
                 }
                 Crafting._refresh_click_events()
                 {
-                    if(!Crafting._click_events_loaded)
-                    {
+                    if (!Crafting._click_events_loaded) {
                         var crafting_table = document.getElementById("crafting-table");
                         var crafting_row_array = crafting_table.getElementsByTagName("tr");
 
-                        for(var i = 0; i < crafting_row_array.length; i++)
-                        {
+                        for (var i = 0; i < crafting_row_array.length; i++) {
                             var crafting_row = crafting_row_array[i];
-                            if(!crafting_row.hasAttribute("data-crafting-item"))
+                            if (!crafting_row.hasAttribute("data-crafting-item"))
                                 continue;
 
-                            crafting_row.addEventListener('click', (e) =>
-                                                          {
+                            crafting_row.addEventListener('click', (e) => {
                                 var target_clicked = e.target;
                                 var tr = target_clicked.closest("tr");
                                 var crafting_row_item = tr.getAttribute("data-crafting-item");
                                 var can_use_crafting_input_multiple = tr.getAttribute("data-crafting-item-multiple") === "true";
 
-                                if(can_use_crafting_input_multiple)
+                                if (can_use_crafting_input_multiple)
                                     Modals.open_input_dialogue(crafting_row_item, "Crafting", "How many do you want to craft?", "CRAFT");
-                                else
-                                {
+                                else {
                                     var materials = Crafting.get_materials(crafting_row_item);
                                     var html = "<div class='modal-crafting-ingredients shadow'>";
                                     html += "<b>MATERIALS</b><hr />";
-                                    for(var i = 0; i < materials.length; i++)
-                                    {
+                                    for (var i = 0; i < materials.length; i++) {
                                         var name = materials[i];
                                         i++;
                                         var amount = materials[i];
@@ -699,10 +691,10 @@
 
                                         var img = '<img width="15px" height="15px" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/x.png">';
 
-                                        if(Items.getItem(name) >= amountClick)
+                                        if (Items.getItem(name) >= amountClick)
                                             img = '<img width="15px" height="15px" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/check.png">';
 
-                                        html += "<img class='w40' src='https://d1xsc8x7nc5q8t.cloudfront.net/images/"+name+".png' /> " + originalAmount + " " + img;
+                                        html += "<img class='w40' src='https://d1xsc8x7nc5q8t.cloudfront.net/images/" + name + ".png' /> " + originalAmount + " " + img;
                                         html += "<br />";
                                     }
                                     html += "</div><br /><br />Craft Item?";
@@ -720,13 +712,11 @@
             },
 
             Invention_getMaterials: function () {
-                Invention._refresh_materials = function()
-                {
+                Invention._refresh_materials = function () {
                     var invention_table = document.getElementById("invention-table");
                     var materials_req_array = invention_table.getElementsByTagName("item-invention-table");
 
-                    for(var i = 0; i < materials_req_array.length; i++)
-                    {
+                    for (var i = 0; i < materials_req_array.length; i++) {
                         var materials_req = materials_req_array[i];
                         var item = materials_req.getAttribute("data-materials-item");
                         var originalAmount = materials_req.innerHTML;
@@ -734,7 +724,7 @@
                         var cleanedAmountText = amountText.replace(/[,.\s]/g, '');
                         var amount = parseInt(cleanedAmountText, 10);
 
-                        if(Items.getItem(item) >= amount)
+                        if (Items.getItem(item) >= amount)
                             materials_req_array[i].style.color = "#00a200";
                         else
                             materials_req_array[i].style.color = "red";
@@ -988,7 +978,7 @@
                     const currentRawEnergy = currentRawFish * UIT_FISH_ENERGY_MAP[fish];
                     const currentHeat = currentRawFish * UIT_FISH_HEAT_MAP[fish];
                     const currentCookedEnergy =
-                          currentCookedFish * UIT_FISH_ENERGY_MAP[fish];
+                        currentCookedFish * UIT_FISH_ENERGY_MAP[fish];
                     totalRawEnergy += currentRawEnergy;
                     totalHeat += currentHeat;
                     totalCookedEnergy += currentCookedEnergy;
@@ -1035,15 +1025,15 @@
 
                     const selectors = {
                         masterRing:
-                        "#invention-table > tbody [data-invention-item=master_ring]",
+                            "#invention-table > tbody [data-invention-item=master_ring]",
                         fishingOrb:
-                        "#invention-table > tbody [data-invention-item=mega_shiny_glass_ball_fish]",
+                            "#invention-table > tbody [data-invention-item=mega_shiny_glass_ball_fish]",
                         leafOrb:
-                        "#invention-table > tbody [data-invention-item=mega_shiny_glass_ball_leaf]",
+                            "#invention-table > tbody [data-invention-item=mega_shiny_glass_ball_leaf]",
                         logsOrb:
-                        "#invention-table > tbody [data-invention-item=mega_shiny_glass_ball_logs]",
+                            "#invention-table > tbody [data-invention-item=mega_shiny_glass_ball_logs]",
                         monstersOrb:
-                        "#invention-table > tbody [data-invention-item=mega_shiny_glass_ball_monsters]",
+                            "#invention-table > tbody [data-invention-item=mega_shiny_glass_ball_monsters]",
                     };
 
                     const uiTweaksConfig = getThis.getConfig("hideOrbRing");
@@ -1243,11 +1233,11 @@
                 currentRocketInfo.style.paddingTop = "10px";
                 currentRocketInfo.style.paddingBottom = "10px";
                 /*
-					Commented out code
-					<img id="rocket-current-travel-location-sun" class="img-20" src="${sunImg}">
-					<img id="rocket-type-img-mega" class="img-20" src="${megaRocketImg}">
-					<img id="rocket-type-img-reg" class="img-20" src="${rocketImg}">
-				*/
+                    Commented out code
+                    <img id="rocket-current-travel-location-sun" class="img-20" src="${sunImg}">
+                    <img id="rocket-type-img-mega" class="img-20" src="${megaRocketImg}">
+                    <img id="rocket-type-img-reg" class="img-20" src="${rocketImg}">
+                */
                 currentRocketInfo.innerHTML = `
 		<div style="padding-left: 20px;">
 			<span id="current-rocket-info-label" style:>CURRENT ROCKET INFO</span>
@@ -1394,7 +1384,7 @@
                 let label_side_car_eta = "";
                 if (status == "to_moon" || status == "from_moon") {
                     const remaining =
-                          status == "to_moon" ? (total - km) / rQComp : km / rQComp;
+                        status == "to_moon" ? (total - km) / rQComp : km / rQComp;
                     pot_diff = Math.round(remaining / 1.5) - rocket_pot * 8;
                     let eta = "";
                     if (rocket_pot > 0) {
@@ -1419,7 +1409,7 @@
                     }
                 } else if (status == "to_sun" || status == "from_sun") {
                     const remaining =
-                          status == "to_sun" ? (total - km) / rQComp : km / rQComp;
+                        status == "to_sun" ? (total - km) / rQComp : km / rQComp;
                     pot_diff_mega = Math.round(remaining / 300) - rocket_pot * 8;
                     let eta = "";
                     if (rocket_pot > 0) {
@@ -1470,8 +1460,8 @@
                         distanceMoon.toLocaleString();
                     var goodMoon = Number(getThis.getConfig("goodMoon"));
                     var rocketDistMoonSymbol = document
-                    .getElementById("menu-bar-rocket_moon")
-                    .querySelector(".rocket-dist_moon-symbol");
+                        .getElementById("menu-bar-rocket_moon")
+                        .querySelector(".rocket-dist_moon-symbol");
                     rocketDistMoonSymbol.textContent =
                         goodMoon >= distanceMoon ? "🟢" : "🔴";
                 } else if (variable == "sun_distance") {
@@ -1482,8 +1472,8 @@
                         distanceSun.toLocaleString();
                     var goodSun = Number(getThis.getConfig("goodSun"));
                     var rocketDistSunSymbol = document
-                    .getElementById("menu-bar-rocket_sun")
-                    .querySelector(".rocket-dist_sun-symbol");
+                        .getElementById("menu-bar-rocket_sun")
+                        .querySelector(".rocket-dist_sun-symbol");
                     rocketDistSunSymbol.textContent =
                         goodSun >= distanceSun ? "🟢" : "🔴";
                 }
@@ -1799,7 +1789,7 @@
                 var raidLocationDropdown = document.createElement('select');
                 raidLocationDropdown.id = 'raid-location-dropdown';
                 raidLocationDropdown.className = 'raids-option-bar';
-                var locations = ['Toybox', 'Mansion'];
+                var locations = ['Toybox', 'Mansion', 'Easter'];
                 locations.forEach(function (location) {
                     var option = document.createElement('option');
                     option.value = location.toLowerCase();
@@ -1872,7 +1862,7 @@
                 document
                     .getElementById('raids-create-or-join-team-btns')
                     .innerHTML = document.getElementById('raids-create-or-join-team-btns')
-                    .innerHTML.replace("Modals.raid_create_team_button()", "uitRaids().createRaid()");
+                        .innerHTML.replace("Modals.raid_create_team_button()", "uitRaids().createRaid()");
 
                 const panel = document.getElementById('raids-team-panel');
                 panel.innerHTML = panel.innerHTML.replace(/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/g, '<br/>');
@@ -1891,13 +1881,16 @@
                 let users = ['user1', 'user2', 'user3', 'user4'];
                 let userCount = 0;
                 users.forEach((user) => {
-                    if(!document.getElementById(`raids-team-panel-${user}`).innerHTML.includes('(none)')) {
+                    if (!document.getElementById(`raids-team-panel-${user}`).innerHTML.includes('(none)')) {
                         userCount++;
                     }
                 })
                 let neededCount = 4 - userCount;
-
-                websocket.send(`CHAT=${raidPW} : [${locationRaids}] || [${modeRaids}] || [${neededCount} Open Spots]`);
+                if (locationRaids != "Easter") {
+                    websocket.send(`CHAT=${raidPW} : [${locationRaids}] || [${modeRaids}] || [${neededCount} Open Spots]`);
+                } else {
+                    websocket.send(`CHAT=${raidPW} : [${locationRaids}] || [Have Certificate] || [${neededCount} Open Spots]`);
+                }
                 //console.log(`${raidPW} : [${locationRaids}] || [${modeRaids}] || [${neededCount} Open Spots]`)
             },
             startRaid: function () {
@@ -1906,6 +1899,7 @@
                 let locationMatch = {
                     toybox: 2,
                     mansion: 1,
+                    easter: 3,
                 };
                 let modeMatch = {
                     practice: 0,
@@ -1914,7 +1908,11 @@
                 };
                 let locationValue = locationMatch[locationRaids];
                 let modeValue = modeMatch[modeRaids];
-                websocket.send(`START_RAID_${locationValue}=${modeValue}`);
+                if (locationRaids != "easter") {
+                    websocket.send(`START_RAID_${locationValue}=${modeValue}`);
+                } else {
+                    websocket.send(`START_RAID_${locationValue}=1`);
+                }
             },
         }
     }
@@ -2093,49 +2091,49 @@
         "#chat-area .server_message": "",
         body: "rgb(200, 247, 248)",
         ".top-bar": getComputedStyle(document.querySelector(".top-bar"))
-        .backgroundColor,
+            .backgroundColor,
         "#menu-bar": getComputedStyle(document.querySelector("#menu-bar"))
-        .backgroundColor,
+            .backgroundColor,
         "#chat-area": getComputedStyle(document.querySelector("#chat-area"))
-        .backgroundColor,
+            .backgroundColor,
         "#game-chat": getComputedStyle(document.querySelector("#game-chat"))
-        .backgroundColor,
+            .backgroundColor,
         "#panels": getComputedStyle(document.querySelector("#panels"))
-        .backgroundColor,
+            .backgroundColor,
     };
 
     const FONT_COLORS = {
         "#chat-area .server_message": "",
         "#chat-area": document.querySelector("#chat-area")
-        ? getComputedStyle(document.querySelector("#chat-area")).color
-        : "",
+            ? getComputedStyle(document.querySelector("#chat-area")).color
+            : "",
         "#chat-area .color-green": document.querySelector("#chat-area .color-green")
-        ? getComputedStyle(document.querySelector("#chat-area .color-green"))
-        .color
-        : "",
+            ? getComputedStyle(document.querySelector("#chat-area .color-green"))
+                .color
+            : "",
         "#chat-area .color-grey": document.querySelector("#chat-area .color-grey")
-        ? getComputedStyle(document.querySelector("#chat-area .color-grey")).color
-        : "",
+            ? getComputedStyle(document.querySelector("#chat-area .color-grey")).color
+            : "",
         "#chat-area .chat-username": document.querySelector(
             "#chat-area .chat-username"
         )
-        ? getComputedStyle(document.querySelector("#chat-area .chat-username"))
-        .color
-        : "",
+            ? getComputedStyle(document.querySelector("#chat-area .chat-username"))
+                .color
+            : "",
         "#panels": document.querySelector("#panels")
-        ? getComputedStyle(document.querySelector("#panels")).color
-        : "",
+            ? getComputedStyle(document.querySelector("#panels")).color
+            : "",
         "#panels .color-grey": document.querySelector("#panels .color-grey")
-        ? getComputedStyle(document.querySelector("#panels .color-grey")).color
-        : "",
+            ? getComputedStyle(document.querySelector("#panels .color-grey")).color
+            : "",
         "#panels .font-large": document.querySelector("#panels .font-large")
-        ? getComputedStyle(document.querySelector("#panels .font-large")).color
-        : "",
+            ? getComputedStyle(document.querySelector("#panels .font-large")).color
+            : "",
         "#menu-bar-button .color-grey": document.querySelector(
             "#panels .color-grey"
         )
-        ? getComputedStyle(document.querySelector("#panels .color-grey")).color
-        : "",
+            ? getComputedStyle(document.querySelector("#panels .color-grey")).color
+            : "",
     };
 
     const CHAT_UPDATE_FILTER = [
@@ -2162,7 +2160,7 @@
                 config: [
                     {
                         label:
-                        "------------------------------------------------<br/>Chat/Images<br/>------------------------------------------------",
+                            "------------------------------------------------<br/>Chat/Images<br/>------------------------------------------------",
                         type: "label",
                     },
                     {
@@ -2185,11 +2183,11 @@
                         default: true,
                     },
                     /*{
-						id: "pinChat",
-						label: "Pin Chat on Side (Only works if Side Chat is active. Thanks BanBan)",
-						type: "boolean",
-						default: false
-					},*/
+                        id: "pinChat",
+                        label: "Pin Chat on Side (Only works if Side Chat is active. Thanks BanBan)",
+                        type: "boolean",
+                        default: false
+                    },*/
                     {
                         id: "chatLimit",
                         label: "Chat Message Limit (&leq; 0 means no limit)",
@@ -2213,7 +2211,7 @@
                     {
                         id: "tableLabels",
                         label:
-                        "Turn on item component labels for crafting/brewing/invention<br/>May require restart to disable",
+                            "Turn on item component labels for crafting/brewing/invention<br/>May require restart to disable",
                         type: "boolean",
                         default: true,
                     },
@@ -2225,7 +2223,7 @@
                     },
                     {
                         label:
-                        "------------------------------------------------<br/>Combat<br/>------------------------------------------------",
+                            "------------------------------------------------<br/>Combat<br/>------------------------------------------------",
                         type: "label",
                     },
                     {
@@ -2237,7 +2235,7 @@
                     {
                         id: "combatInfoSideSelect",
                         label:
-                        "Choose which side you want to see the<br/>Fight Points / Rare Pot Duration / Loot Pot info on.<br/>Left (Player info) || Right (Enemy Info)",
+                            "Choose which side you want to see the<br/>Fight Points / Rare Pot Duration / Loot Pot info on.<br/>Left (Player info) || Right (Enemy Info)",
                         type: "select",
                         default: "left",
                         options: [
@@ -2247,7 +2245,7 @@
                     },
                     {
                         label:
-                        "------------------------------------------------<br/>Condensed Information<br/>------------------------------------------------",
+                            "------------------------------------------------<br/>Condensed Information<br/>------------------------------------------------",
                         type: "label",
                     },
                     {
@@ -2270,7 +2268,7 @@
                     },
                     {
                         label:
-                        "------------------------------------------------<br/>Fishing<br/>------------------------------------------------",
+                            "------------------------------------------------<br/>Fishing<br/>------------------------------------------------",
                         type: "label",
                     },
                     {
@@ -2299,7 +2297,7 @@
                     },
                     {
                         label:
-                        "------------------------------------------------<br/>Invention<br/>------------------------------------------------",
+                            "------------------------------------------------<br/>Invention<br/>------------------------------------------------",
                         type: "label",
                     },
                     {
@@ -2310,7 +2308,7 @@
                     },
                     {
                         label:
-                        "------------------------------------------------<br/>Misc<br/>------------------------------------------------",
+                            "------------------------------------------------<br/>Misc<br/>------------------------------------------------",
                         type: "label",
                     },
                     {
@@ -2357,7 +2355,7 @@
                     },
                     {
                         label:
-                        "------------------------------------------------<br/>Oil<br/>------------------------------------------------",
+                            "------------------------------------------------<br/>Oil<br/>------------------------------------------------",
                         type: "label",
                     },
                     {
@@ -2386,7 +2384,7 @@
                     },
                     {
                         label:
-                        "------------------------------------------------<br/>Rocket<br/>------------------------------------------------",
+                            "------------------------------------------------<br/>Rocket<br/>------------------------------------------------",
                         type: "label",
                     },
                     {
@@ -2398,14 +2396,14 @@
                     {
                         id: "leftSideRocketInfoSection",
                         label:
-                        "Enable moving of rocket information to left side (hides notifications)",
+                            "Enable moving of rocket information to left side (hides notifications)",
                         type: "boolean",
                         default: true,
                     },
                     {
                         id: "leftSideRocketInfo",
                         label:
-                        "Enable Rocket Distance/Travel Time on left side (hides rocket notification)",
+                            "Enable Rocket Distance/Travel Time on left side (hides rocket notification)",
                         type: "boolean",
                         default: true,
                     },
@@ -2418,7 +2416,7 @@
                     {
                         id: "leftSideRocketPot",
                         label:
-                        "Enable Rocket Pot Info on left side. (hides rocket pot notification)",
+                            "Enable Rocket Pot Info on left side. (hides rocket pot notification)",
                         type: "boolean",
                         default: true,
                     },
@@ -2431,20 +2429,20 @@
                     {
                         id: "goodMoon",
                         label:
-                        "Good moon distance<br/>(Range: 250,000 - 450,000)<br/>Type entire number without ','",
+                            "Good moon distance<br/>(Range: 250,000 - 450,000)<br/>Type entire number without ','",
                         type: "int",
                         default: 300000,
                     },
                     {
                         id: "goodSun",
                         label:
-                        "Good sun distance<br/>(Range: 100,000,000 - 200,000,000)<br/>Type entire number without ','",
+                            "Good sun distance<br/>(Range: 100,000,000 - 200,000,000)<br/>Type entire number without ','",
                         type: "int",
                         default: 130000000,
                     },
                     {
                         label:
-                        "------------------------------------------------<br/>Smelting/Mining<br/>------------------------------------------------",
+                            "------------------------------------------------<br/>Smelting/Mining<br/>------------------------------------------------",
                         type: "label",
                     },
                     {
@@ -2473,13 +2471,13 @@
                     },
                     {
                         label:
-                        "------------------------------------------------<br/>BG Color Overrides<br/>------------------------------------------------",
+                            "------------------------------------------------<br/>BG Color Overrides<br/>------------------------------------------------",
                         type: "label",
                     },
                     {
                         id: "disableBGColorOverrides",
                         label:
-                        "Disable background color overrides (Check = disabled)<br/>Disable the BG Color Overrides if you are wanting to use<br/>the built in settings for the game for your colors<br/>REFRESH REQUIRED WHEN DISABLING THE BG COLORS<br/>",
+                            "Disable background color overrides (Check = disabled)<br/>Disable the BG Color Overrides if you are wanting to use<br/>the built in settings for the game for your colors<br/>REFRESH REQUIRED WHEN DISABLING THE BG COLORS<br/>",
                         type: "boolean",
                         default: false,
                     },
@@ -2722,12 +2720,12 @@
                 .getElementById("menu-bar-buttons")
                 .querySelectorAll(".font-small")
                 .forEach(function (smallFont) {
-                let classInfo = smallFont.className.replaceAll(
-                    "font-small",
-                    "font-medium"
-                );
-                smallFont.className = classInfo;
-            });
+                    let classInfo = smallFont.className.replaceAll(
+                        "font-small",
+                        "font-medium"
+                    );
+                    smallFont.className = classInfo;
+                });
 
             var spans = document.querySelectorAll(
                 "#menu-bar-cooking-table-btn-wrapper span"
@@ -2967,8 +2965,8 @@
                         const key = selector.replace(/[#\.]/g, "").replace(/-?\s+-?/, "-");
                         const enabled = getThis.getConfig(`color-enabled-${key}`);
                         const color = enabled
-                        ? getThis.getConfig(`color-${key}`)
-                        : BG_COLORS[selector];
+                            ? getThis.getConfig(`color-${key}`)
+                            : BG_COLORS[selector];
                         const selected = document.querySelectorAll(selector);
 
                         for (const element of selected) {
@@ -2982,8 +2980,8 @@
                         const key = selector.replace(/[#\.]/g, "").replace(/-?\s+-?/, "-");
                         const enabled = getThis.getConfig(`font-color-enabled-${key}`);
                         const color = enabled
-                        ? getThis.getConfig(`font-color-${key}`)
-                        : FONT_COLORS[selector];
+                            ? getThis.getConfig(`font-color-${key}`)
+                            : FONT_COLORS[selector];
                         const selected = document.querySelectorAll(selector);
 
                         for (const element of selected) {
@@ -3009,8 +3007,8 @@
                     "serverMessageTextOverrideEnabled"
                 );
                 const serverMessageTextOverrideColor = serverMessageTextOverrideEnabled
-                ? getThis.getConfig("serverMessageTextOverrideColor")
-                : "blue";
+                    ? getThis.getConfig("serverMessageTextOverrideColor")
+                    : "blue";
                 const serverMessageElements = document.querySelectorAll(
                     "#chat-area .server_message"
                 );
@@ -3019,8 +3017,8 @@
                 }
             }
             const bodyClassUpdate = document
-            .getElementById("body")
-            .className.replaceAll("background-primary-gradient ", "");
+                .getElementById("body")
+                .className.replaceAll("background-primary-gradient ", "");
             document.getElementById("body").className = bodyClassUpdate;
         }
 
@@ -3040,7 +3038,7 @@
                     document.body.setAttribute(
                         "style",
                         `${bodyStyle}; font-family: ${font} !important`
-					);
+                    );
                 }
 
                 const sideChat = getThis.getConfig("sideChat");
@@ -3077,12 +3075,12 @@
                     farmingPatchesArea.classList.add("condensed");
                     document
                         .querySelectorAll(
-                        "#panel-woodcutting .farming-patches-area img[id^='img-tree_shiny']"
-                    )
+                            "#panel-woodcutting .farming-patches-area img[id^='img-tree_shiny']"
+                        )
                         .forEach(function (el) {
-                        el.removeAttribute("width");
-                        el.removeAttribute("height");
-                    });
+                            el.removeAttribute("width");
+                            el.removeAttribute("height");
+                        });
                 } else {
                     const farmingPatchesArea = document.querySelector(
                         "#panel-woodcutting .farming-patches-area"
@@ -3090,12 +3088,12 @@
                     farmingPatchesArea.classList.remove("condensed");
                     document
                         .querySelectorAll(
-                        "#panel-woodcutting .farming-patches-area img[id^='img-tree_shiny']"
-                    )
+                            "#panel-woodcutting .farming-patches-area img[id^='img-tree_shiny']"
+                        )
                         .forEach(function (el) {
-                        el.setAttribute("width", el.getAttribute("original-width"));
-                        el.setAttribute("height", el.getAttribute("original-height"));
-                    });
+                            el.setAttribute("width", el.getAttribute("original-width"));
+                            el.setAttribute("height", el.getAttribute("original-height"));
+                        });
                 }
 
                 const condenseFarmingPatches = getThis.getConfig(
@@ -3108,12 +3106,12 @@
                     farmingPatchesArea.classList.add("condensed");
                     document
                         .querySelectorAll(
-                        "#panel-farming .farming-patches-area img[id^='img-farm_shiny']"
-                    )
+                            "#panel-farming .farming-patches-area img[id^='img-farm_shiny']"
+                        )
                         .forEach(function (el) {
-                        el.removeAttribute("width");
-                        el.removeAttribute("height");
-                    });
+                            el.removeAttribute("width");
+                            el.removeAttribute("height");
+                        });
                 } else {
                     const farmingPatchesArea = document.querySelector(
                         "#panel-farming .farming-patches-area"
@@ -3121,12 +3119,12 @@
                     farmingPatchesArea.classList.remove("condensed");
                     document
                         .querySelectorAll(
-                        "#panel-farming .farming-patches-area img[id^='img-farm_shiny']"
-                    )
+                            "#panel-farming .farming-patches-area img[id^='img-farm_shiny']"
+                        )
                         .forEach(function (el) {
-                        el.setAttribute("width", el.getAttribute("original-width"));
-                        el.setAttribute("height", el.getAttribute("original-height"));
-                    });
+                            el.setAttribute("width", el.getAttribute("original-width"));
+                            el.setAttribute("height", el.getAttribute("original-height"));
+                        });
                 }
 
                 const condenseGatheringBoxes = getThis.getConfig(
@@ -3406,11 +3404,11 @@
 
         restructureTopBar() {
             let topRow = document
-            .getElementById("top-menu-bar-labels")
-            .querySelector("tr");
+                .getElementById("top-menu-bar-labels")
+                .querySelector("tr");
             let topCell = document
-            .getElementById("top-menu-bar-labels")
-            .querySelectorAll("td");
+                .getElementById("top-menu-bar-labels")
+                .querySelectorAll("td");
             let gearIcon = topCell[topCell.length - 1];
 
             topRow.style.justifyContent = "center";
@@ -4008,21 +4006,21 @@
             document
                 .querySelector("#notification-furnace-label")
                 .insertAdjacentHTML(
-                "afterend",
-                '<span id="notification-furnace-timer" class="font-small color-white"></span>'
-            );
+                    "afterend",
+                    '<span id="notification-furnace-timer" class="font-small color-white"></span>'
+                );
             document
                 .querySelector("#notification-rocket-label")
                 .insertAdjacentHTML(
-                "afterend",
-                '<span id="notification-rocket-timer" class="font-small color-white"></span>'
-            );
+                    "afterend",
+                    '<span id="notification-rocket-timer" class="font-small color-white"></span>'
+                );
             document
                 .querySelector("#notification-mega_rocket-label")
                 .insertAdjacentHTML(
-                "afterend",
-                '<span id="notification-mega_rocket-timer" class="font-small color-white"></span>'
-            );
+                    "afterend",
+                    '<span id="notification-mega_rocket-timer" class="font-small color-white"></span>'
+                );
 
             // clear chat button
             var chatAutoScrollButton = document.getElementById(
@@ -4353,7 +4351,7 @@
 
         onPanelChanged(panelBefore, panelAfter) {
             if (onLoginLoaded) {
-                if(panelAfter = "brewing") {
+                if (panelAfter = "brewing") {
                     uitTableLabels().updateTableCraftLabels();
                 }
                 uitInvention().hideOrbsAndRing();
