@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.21
+// @version      2.8.22
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -1939,20 +1939,55 @@
                         let element = document.querySelector(`itembox[data-item=${item}`);
                         element.setAttribute("data-item", "playtime");
                         certificateElement.insertAdjacentElement("afterEnd", element);
+                        element.insertAdjacentHTML("beforebegin", `\n\n`)
                         let numElem = element.querySelector(`item-display[data-key=${item}`);
                         element.className = "itembox-fight shadow hover";
-                        if (item != "chocolate_scythe") {
-                            element.style.marginRight = "4px";
-                            if(item == "chocolate_ore") {
-                                element.style.marginLeft = "4px";
-                            }
-                        } else {
-                            element.style.marginLeft = "0px";
-                            element.style.marginRight = "0px";
-                        }
                     });
                     document.getElementById("panel-keyitems");
                 }
+            }
+        }
+    }
+
+    const uitDustPotions = function() {
+        window.dustPots = [
+            "cooks_dust",
+            "cooks_dust_potion",
+            "fighting_dust_potion",
+            "fighting_dust",
+            "tree_dust",
+            "tree_dust_potion",
+            "farm_dust",
+            "farm_dust_potion",
+        ];
+        return {
+            cloneDust: function () {
+                const brewing = document.getElementById("panel-brewing");
+                const cooking = document.getElementById("panel-cooking").querySelector("itembox[data-item=maggots]");
+                const fighting = document.getElementById("game-panels-combat-items-area").querySelectorAll('div[data-tooltip="fight"]')[1];
+                const woodcut = document.getElementById("panel-woodcutting").querySelector("itembox[data-item=flexible_logs]");
+                const farming = document.getElementById("panel-farming").querySelector("itembox[data-item=bonemeal_bin]");
+                
+                dustPots.forEach((item) => {
+                    let moveMe = brewing.querySelector(`itembox[data-item=${item}]`).cloneNode(true);
+                    if(item.startsWith("cooks")) {
+                        cooking.insertAdjacentElement("beforebegin", moveMe);
+                        moveMe.insertAdjacentHTML("afterend", `\n\n`);
+                    }
+                    if(item.startsWith("fighting")) {
+                        fighting.insertAdjacentElement("afterend", moveMe);
+                        moveMe.insertAdjacentHTML("beforebegin", `\n\n`);
+                    }
+                    if(item.startsWith("tree")) {
+                        woodcut.insertAdjacentElement("beforebegin", moveMe);
+                        moveMe.insertAdjacentHTML("afterend", `\n\n`);
+                    }
+                    if(item.startsWith("farm")) {
+                        farming.insertAdjacentElement("beforebegin", moveMe);
+                        moveMe.insertAdjacentHTML("afterend", `\n\n`);
+                    }
+                });
+
             }
         }
     }
@@ -4341,6 +4376,7 @@
             uitTableLabels().Crafting_getMaterials();
             uitTableLabels().Invention_getMaterials();
             uitHoliday().easter2024();
+            uitDustPotions().cloneDust();
 
             onLoginLoaded = true;
         }
