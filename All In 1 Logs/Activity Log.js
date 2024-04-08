@@ -260,7 +260,7 @@
 			contentDiv.appendChild(modalContainer);
 
 			const onlineCount = document.querySelector(
-				".top-bar .gold:not(#top-bar-admin-link)"
+				".game-top-bar .gold:not(#game-top-bar-admin-link)"
 			);
 			const linkElement = document.createElement("a");
 			linkElement.href = "#";
