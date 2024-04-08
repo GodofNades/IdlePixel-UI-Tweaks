@@ -14,12 +14,12 @@
 
 (function () {
     "use strict";
-
+    let refreshPending = false;
     let playername = "";
     window.TCG_IMAGE_URL_BASE =
         document
-        .querySelector("itembox[data-item=copper] img")
-        .src.replace(/\/[^/]+.png$/, "") + "/";
+            .querySelector("itembox[data-item=copper] img")
+            .src.replace(/\/[^/]+.png$/, "") + "/";
     let onLoginLoaded = false;
 
     let categoriesTCG = [];
@@ -39,20 +39,20 @@
                 config: [
                     {
                         label:
-                        "------------------------------------------------<br/>Notification<br/>------------------------------------------------",
+                            "------------------------------------------------<br/>Notification<br/>------------------------------------------------",
                         type: "label",
                     },
                     {
                         id: "tcgNotification",
                         label:
-                        "Enable TCG Card Buying Available Notification<br/>(Default: Enabled)",
+                            "Enable TCG Card Buying Available Notification<br/>(Default: Enabled)",
                         type: "boolean",
                         default: true,
                     },
                     {
                         id: "newCardTimer",
                         label:
-                        "New Card Timer<br/>(How long do you want a card to show as new, in minutes.)",
+                            "New Card Timer<br/>(How long do you want a card to show as new, in minutes.)",
                         type: "int",
                         default: 15,
                     },
@@ -80,8 +80,8 @@
             Object.values(CardData.data).forEach((card) => {
                 const descriptionTitle = card["description_title"];
                 const properTitles =
-                      descriptionTitle.charAt(0).toUpperCase() +
-                      descriptionTitle.slice(1).toLowerCase();
+                    descriptionTitle.charAt(0).toUpperCase() +
+                    descriptionTitle.slice(1).toLowerCase();
 
                 if (!descriptionTitlesSet.has(descriptionTitle)) {
                     descriptionTitlesSet.add(descriptionTitle);
@@ -138,7 +138,7 @@
             Object.values(CardData.data).forEach((card) => {
                 const category = categoriesTCG.find(
                     (c) => c.id === `[${card.description_title}]`
-				);
+                );
                 if (category) {
                     cardCounts[category.desc].uniHolo++;
                     cardCounts[category.desc].uniNormal++;
@@ -238,8 +238,8 @@
                 (dbCards) => {
                     const currentCardsKeySet = new Set(
                         currentCards.map((card) =>
-                                         JSON.stringify([card.id, card.cardNum, card.holo.toString()])
-                                        )
+                            JSON.stringify([card.id, card.cardNum, card.holo.toString()])
+                        )
                     );
 
                     dbCards.forEach((dbCard) => {
@@ -268,7 +268,7 @@
                 console.error("Error removing card from DB:", event.target.error);
             };
             request.onsuccess = () => {
-                console.log(`Card removed from DB: ${cardKey}`);
+                //console.log(`Card removed from DB: ${cardKey}`);
             };
         }
 
@@ -344,38 +344,56 @@
         }
 
         checkForAndHandleDuplicates() {
-            const sendTo = IdlePixelPlus.plugins.tcgDex.getConfig("sendTo");
-            const enableSend = IdlePixelPlus.plugins.tcgDex.getConfig("enableSend");
-            this.fetchAllCardsFromDB(this.db, 'current_cards', (cards) => {
-                const cardOccurrences = new Map();
-                cards.forEach((card) => {
-                    const key = `${card.id}-${card.holo}`;
-                    if (cardOccurrences.has(key)) {
-                        cardOccurrences.get(key).push(card);
-                    } else {
-                        cardOccurrences.set(key, [card]);
-                    }
-                });
+            return new Promise((resolve, reject) => {
+                const sendTo = IdlePixelPlus.plugins.tcgDex.getConfig("sendTo");
+                const enableSend = IdlePixelPlus.plugins.tcgDex.getConfig("enableSend");
+                if (!enableSend || !sendTo) {
+                    resolve(); // Nothing to do, resolve immediately
+                    return;
+                }
 
-                cardOccurrences.forEach((occurrences, key) => {
-                    if (occurrences.length > 1) {
-                        occurrences.sort((a, b) => b.cardNum - a.cardNum);
+                this.fetchAllCardsFromDB(this.db, 'current_cards', (cards) => {
+                    const cardOccurrences = new Map();
+                    cards.forEach((card) => {
+                        const key = `${card.id}-${card.holo}`;
+                        if (cardOccurrences.has(key)) {
+                            cardOccurrences.get(key).push(card);
+                        } else {
+                            cardOccurrences.set(key, [card]);
+                        }
+                    });
 
-                        for (let i = 0; i < (occurrences.length - 1); i++) {
-                            const duplicate = occurrences[i];
-                            console.log(`Handling duplicate for ${key}:`, duplicate);
+                    const sendPromises = [];
+                    cardOccurrences.forEach((occurrences, key) => {
+                        if (occurrences.length > 1) {
+                            occurrences.sort((a, b) => b.cardNum - a.cardNum);
 
-                            if (enableSend && sendTo) {
-                                websocket.send(`GIVE_TCG_CARD=${sendTo}~${duplicate.cardNum}`);
+                            for (let i = 0; i < (occurrences.length - 1); i++) {
+                                const duplicate = occurrences[i];
+                                //console.log(`Handling duplicate for ${key}:`, duplicate);
+
+                                if (enableSend && sendTo && sendTo != window['var_username']) {
+                                    const sendPromise = new Promise((resolveSend) => {
+                                        websocket.send(`GIVE_TCG_CARD=${sendTo}~${duplicate.cardNum}`);
+                                        resolveSend(); // Consider adding an event listener for confirmation from the server before resolving
+                                    });
+                                    sendPromises.push(sendPromise);
+                                }
                             }
                         }
-                    }
+                    });
+
+                    Promise.all(sendPromises).then(() => {
+                        resolve(); // All duplicates have been sent
+                    }).catch((error) => {
+                        reject(error); // Handle any errors
+                    });
                 });
             });
         }
 
         onLogin() {
-            CToe.loadCards = function () {};
+            CToe.loadCards = function () { };
             if (!CardData.data) {
                 CardData.fetchData();
             }
@@ -417,7 +435,8 @@
         }
 
         onMessageReceived(data) {
-            if (data.startsWith("REFRESH_TCG")) {
+            if (data.startsWith("REFRESH_TCG") && !refreshPending) {
+                refreshPending = true;
                 const parts = data.replace("REFRESH_TCG=", "").split("~");
 
                 let cardSort = [];
@@ -484,7 +503,7 @@
                             addRequest.onerror = (event) => {
                                 console.error("Error adding new card:", event.target.error);
                             };
-                            addRequest.onsuccess = (event) => {};
+                            addRequest.onsuccess = (event) => { };
                             newCards.push({
                                 cardNum: card.cardNum.toString(),
                                 id: card.id.toString(),
@@ -499,8 +518,8 @@
                 });
 
                 const joinedString = currentCards
-                .map((card) => `${card.cardNum}~${card.id}~${card.holo}`)
-                .join("~");
+                    .map((card) => `${card.cardNum}~${card.id}~${card.holo}`)
+                    .join("~");
 
                 IdlePixelPlus.plugins.tcgDex.identifyAndRemoveAbsentCards(
                     this.db,
@@ -508,11 +527,12 @@
                     currentCards
                 );
 
+
                 document.getElementById("tcg-area-context").innerHTML = "";
                 if (joinedString == "NONE") return;
                 var dataArray = joinedString.split("~");
                 var html = "";
-                for (var i = 0; i < dataArray.length; ) {
+                for (var i = 0; i < dataArray.length;) {
                     var id = dataArray[i++];
                     var var_name = dataArray[i++];
                     var holo = dataArray[i++] == "true";
@@ -564,7 +584,7 @@
                 });
 
                 const newCardTimer =
-                      IdlePixelPlus.plugins.tcgDex.getConfig("newCardTimer");
+                    IdlePixelPlus.plugins.tcgDex.getConfig("newCardTimer");
 
                 const labelSpanNew = document.createElement("span");
                 labelSpanNew.textContent = `New Cards (Last ${newCardTimer} Mins)`;
@@ -584,15 +604,15 @@
                     categoryDivInner.id = `pending${category.desc}ContainerInner`;
                     categoryDivInner.style.display =
                         IdlePixelPlus.plugins.tcgDex.getTcgSetting(category.desc)
-                        ? ""
-                    : "none";
+                            ? ""
+                            : "none";
 
                     const toggleButton = document.createElement("button");
                     toggleButton.textContent = IdlePixelPlus.plugins.tcgDex.getTcgSetting(
                         category.desc
                     )
                         ? " ↥ "
-                    : " ↧ ";
+                        : " ↧ ";
                     toggleButton.style.width = "50px";
                     toggleButton.style.marginRight = "10px";
                     toggleButton.addEventListener("click", () => {
@@ -645,40 +665,38 @@
                     const counts = cardCounts[category.desc];
                     document.querySelector(
                         `#pending${category.desc}Container #ttl-cards-label`
-					).textContent = `Total Cards (${
-						counts.possHolo + counts.possNormal
-                })`;
+                    ).textContent = `Total Cards (${counts.possHolo + counts.possNormal
+                    })`;
                     document.querySelector(
                         `#pending${category.desc}Container #uni-holo-label`
-					).textContent = ` => Holo: [ Unique: (${counts.possUniHolo}/${counts.uniHolo})`;
+                    ).textContent = ` => Holo: [ Unique: (${counts.possUniHolo}/${counts.uniHolo})`;
                     document.querySelector(
                         `#pending${category.desc}Container #ttl-holo-label`
-					).textContent = ` || Total: (${counts.ttlHolo}) ]`;
+                    ).textContent = ` || Total: (${counts.ttlHolo}) ]`;
                     document.querySelector(
                         `#pending${category.desc}Container #uni-normal-label`
-					).textContent = ` Normal: [ Unique: (${counts.possUniNormal}/${counts.uniNormal})`;
+                    ).textContent = ` Normal: [ Unique: (${counts.possUniNormal}/${counts.uniNormal})`;
                     document.querySelector(
                         `#pending${category.desc}Container #ttl-normal-label`
-					).textContent = ` || Total: (${counts.ttlNormal}) ]`;
+                    ).textContent = ` || Total: (${counts.ttlNormal}) ]`;
                 });
 
                 document.getElementById(
                     `ttl-overall-cards-label`
-				).textContent = `Total Cards (${
-					overallCardCounts.overallHolo + overallCardCounts.overallNormal
-            })`;
+                ).textContent = `Total Cards (${overallCardCounts.overallHolo + overallCardCounts.overallNormal
+                })`;
                 document.getElementById(
                     `uni-overall-holo-label`
-				).textContent = ` => Holo: [ Unique: (${overallCardCounts.overallUniHolo}/${overallCardCounts.overallTTL})`;
+                ).textContent = ` => Holo: [ Unique: (${overallCardCounts.overallUniHolo}/${overallCardCounts.overallTTL})`;
                 document.getElementById(
                     `ttl-overall-holo-label`
-				).textContent = ` || Total: (${overallCardCounts.overallHolo}) ]`;
+                ).textContent = ` || Total: (${overallCardCounts.overallHolo}) ]`;
                 document.getElementById(
                     `uni-overall-normal-label`
-				).textContent = ` Normal: [ Unique: (${overallCardCounts.overallUniNormal}/${overallCardCounts.overallTTL})`;
+                ).textContent = ` Normal: [ Unique: (${overallCardCounts.overallUniNormal}/${overallCardCounts.overallTTL})`;
                 document.getElementById(
                     `ttl-overall-normal-label`
-				).textContent = ` || Total: (${overallCardCounts.overallNormal}) ]`;
+                ).textContent = ` || Total: (${overallCardCounts.overallNormal}) ]`;
 
                 document.querySelectorAll(".tcg-card").forEach((card) => {
                     categoriesTCG.forEach((category) => {
@@ -690,18 +708,25 @@
                     });
                 });
 
-                setTimeout(() => {
+
+
+                IdlePixelPlus.plugins.tcgDex.checkForAndHandleDuplicates().then(() => {
+                    IdlePixelPlus.plugins.tcgDex.identifyAndRemoveAbsentCards(
+                        this.db,
+                        `current_cards`,
+                        currentCards
+                    );
                     newCards.sort((a, b) => b.received_datetime - a.received_datetime);
 
                     const newCardsJoinedString = newCards
-                    .map((card) => `${card.cardNum}~${card.id}~${card.holo}`)
-                    .join("~");
+                        .map((card) => `${card.cardNum}~${card.id}~${card.holo}`)
+                        .join("~");
 
                     document.getElementById("pendingNewContainerInner").innerHTML = "";
                     if (newCardsJoinedString == "") return;
                     var dataArrayNew = newCardsJoinedString.split("~");
                     var htmlNew = "";
-                    for (var ix = 0; ix < dataArrayNew.length; ) {
+                    for (var ix = 0; ix < dataArrayNew.length;) {
                         var idNew = dataArrayNew[ix++];
                         var var_nameNew = dataArrayNew[ix++];
                         var holoNew = dataArrayNew[ix++] == "true";
@@ -710,9 +735,17 @@
                     }
                     document.getElementById("pendingNewContainerInner").innerHTML =
                         htmlNew;
-                }, 2000);
 
-                this.checkForAndHandleDuplicates();
+                    setTimeout(() => {
+                        refreshPending = false;
+                        console.log(`refreshPending is now ${refreshPending}`)
+                    }, 2000)
+
+
+                }).catch((error) => {
+                    console.error("An error occurred while handling duplicates:", error);
+                });
+
             }
         }
     }

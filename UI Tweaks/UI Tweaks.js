@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.22
+// @version      2.8.23
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -147,15 +147,15 @@
 
             initExtendedLevels: function () {
                 if (
-                    document.querySelector("#top-bar > a:nth-child(4) > item-display")
+                    document.querySelector(".game-top-bar-upper > a:nth-child(4) > item-display")
                 ) {
                     uitLevel().addLoadingSpanAfterElement(
-                        "#top-bar > a:nth-child(4) > item-display",
+                        ".game-top-bar-upper > a:nth-child(4) > item-display",
                         "overallLevelExtended-total"
                     );
                 } else {
                     uitLevel().addLoadingSpanAfterElement(
-                        "#top-bar > a:nth-child(5) > item-display",
+                        ".game-top-bar-upper > a:nth-child(5) > item-display",
                         "overallLevelExtended-total"
                     );
                 }
@@ -417,7 +417,7 @@
                         `<br><b>Current Payout: </b><span id="wallet_4_payout"></span>`
                     );
 
-                document.getElementById("left-panel-criptoe_market-btn").onclick =
+                document.getElementById("left-panel-item_panel-criptoe-market").onclick =
                     function () {
                         switch_panels('panel-criptoe-market');
                         uitCriptoe().addCriptoeValues();
@@ -463,7 +463,7 @@
 
                 }
                 const menuBarCrippledtoeRow = document.querySelector(
-                    "#left-panel-criptoe_market-btn table tbody tr"
+                    "#left-panel-item_panel-criptoe-market table tbody tr"
                 );
 
                 let researchTimer = IdlePixelPlus.getVarOrDefault("criptoe_path_timer", 0, "int");
@@ -1750,6 +1750,30 @@
 				  margin:0px;
 				  font-size:medium;
 				}
+
+                .game-menu-bar-left-table-btn div td{
+				  padding-left:20px !important;
+				  padding:unset;
+				  margin:0px;
+				  font-size:medium;
+				  background-color: transparent !important;
+				}
+
+                #menu-bar-archery-table-btn-wrapper {
+                  padding-left:20px !important;
+				  padding:unset;
+				  margin:0px;
+				  font-size:medium;
+				  background-color: transparent !important;
+                }
+
+                #menu-bar-magic-table-btn-wrapper {
+                  padding-left:20px !important;
+				  padding:unset;
+				  margin:0px;
+				  font-size:medium;
+                }
+
 				.game-menu-bar-left-table-btn {
 				  background-color: transparent !important;
 				}
@@ -1949,7 +1973,7 @@
         }
     }
 
-    const uitDustPotions = function() {
+    const uitDustPotions = function () {
         window.dustPots = [
             "cooks_dust",
             "cooks_dust_potion",
@@ -1967,22 +1991,22 @@
                 const fighting = document.getElementById("game-panels-combat-items-area").querySelectorAll('div[data-tooltip="fight"]')[1];
                 const woodcut = document.getElementById("panel-woodcutting").querySelector("itembox[data-item=flexible_logs]");
                 const farming = document.getElementById("panel-farming").querySelector("itembox[data-item=bonemeal_bin]");
-                
+
                 dustPots.forEach((item) => {
                     let moveMe = brewing.querySelector(`itembox[data-item=${item}]`).cloneNode(true);
-                    if(item.startsWith("cooks")) {
+                    if (item.startsWith("cooks")) {
                         cooking.insertAdjacentElement("beforebegin", moveMe);
                         moveMe.insertAdjacentHTML("afterend", `\n\n`);
                     }
-                    if(item.startsWith("fighting")) {
+                    if (item.startsWith("fighting")) {
                         fighting.insertAdjacentElement("afterend", moveMe);
                         moveMe.insertAdjacentHTML("beforebegin", `\n\n`);
                     }
-                    if(item.startsWith("tree")) {
+                    if (item.startsWith("tree")) {
                         woodcut.insertAdjacentElement("beforebegin", moveMe);
                         moveMe.insertAdjacentHTML("afterend", `\n\n`);
                     }
-                    if(item.startsWith("farm")) {
+                    if (item.startsWith("farm")) {
                         farming.insertAdjacentElement("beforebegin", moveMe);
                         moveMe.insertAdjacentHTML("afterend", `\n\n`);
                     }
@@ -2166,7 +2190,7 @@
     const BG_COLORS = {
         "#chat-area .server_message": "",
         body: "rgb(200, 247, 248)",
-        ".top-bar": getComputedStyle(document.querySelector(".top-bar"))
+        ".top-bar": getComputedStyle(document.querySelector(".game-top-bar-upper"))
             .backgroundColor,
         "#menu-bar": getComputedStyle(document.querySelector("#menu-bar"))
             .backgroundColor,
@@ -3478,7 +3502,7 @@
         }
         //////////////////////////////// onConfigsChanged End ////////////////////////////////
 
-        restructureTopBar() {
+        /*restructureTopBar() {
             let topRow = document
                 .getElementById("top-menu-bar-labels")
                 .querySelector("tr");
@@ -3494,367 +3518,368 @@
                     "padding-right:20px; padding-left: 20px; border:1px solid white";
             });
             gearIcon.style = "";
-        }
+        }*/
 
         //////////////////////////////// onLogin Start ////////////////////////////////
         onLogin() {
-            currUTCDate = new Date().getUTCDate();
-            IPP = IdlePixelPlus;
-            getVar = IdlePixelPlus.getVarOrDefault;
-            getThis = IdlePixelPlus.plugins["ui-tweaks"];
-            document.getElementById("menu-bar").style.borderTop = "1px solid grey";
-            document.getElementById("menu-bar").style.paddingTop = "10px";
-            document.getElementById("left-menu-bar-labels").style.borderBottom =
-                "1px solid rgba(66,66,66,1)";
-            uitMisc().initStyles();
-            uitLevel().initExtendedLevels();
-            uitRocket().onLogin();
-            uitSkills.forEach((skill) => {
-                let xpVar = `var_ipp_${skill}_xp_next`;
-                let xp = getVar(`${skill}_xp`, 0, "int");
-                let level = uitLevel().xpToLevel(xp);
-                const xpAtNext = uitLevel().LEVELS()[level + 1];
-                const next = xpAtNext - xp;
-                window[xpVar] = `${next}`;
-            });
+            if (window["var_username"] != "kautos" && window["var_username"] != "stoic green") {
+                currUTCDate = new Date().getUTCDate();
+                IPP = IdlePixelPlus;
+                getVar = IdlePixelPlus.getVarOrDefault;
+                getThis = IdlePixelPlus.plugins["ui-tweaks"];
+                document.getElementById("menu-bar").style.borderTop = "1px solid grey";
+                document.getElementById("menu-bar").style.paddingTop = "10px";
+                document.getElementById("left-menu-bar-labels").style.borderBottom =
+                    "1px solid rgba(66,66,66,1)";
+                uitMisc().initStyles();
+                uitLevel().initExtendedLevels();
+                uitRocket().onLogin();
+                uitSkills.forEach((skill) => {
+                    let xpVar = `var_ipp_${skill}_xp_next`;
+                    let xp = getVar(`${skill}_xp`, 0, "int");
+                    let level = uitLevel().xpToLevel(xp);
+                    const xpAtNext = uitLevel().LEVELS()[level + 1];
+                    const next = xpAtNext - xp;
+                    window[xpVar] = `${next}`;
+                });
 
-            uitPurpleKey().addPurpleKeyNotifications();
-            uitCriptoe().initCriptoe();
-            uitFishing().initFishing();
-            uitRaids().initElements();
+                uitPurpleKey().addPurpleKeyNotifications();
+                uitCriptoe().initCriptoe();
+                uitFishing().initFishing();
+                uitRaids().initElements();
 
-            getThis.updateColors();
+                getThis.updateColors();
 
-            var loot_pot = getVar("combat_loot_potion_active", 0, "int");
-            var merchantTiming = getVar("merchant_timer", 0, "int");
-            var merchantUnlocked = getVar("merchant", 0, "int");
-            let robotTiming = getVar("robot_wave_timer", 0, "int");
-            var robotUnlocked = getVar("robot_crafted", 0, "int");
-            const tableLabel = getThis.getConfig("tableLabels");
-            getThis.loot_pot_avail();
-            if (tableLabel) {
-                uitTableLabels().addTableCraftLabels();
-            }
-
-            const addBrewerNotifications = (timer, charges) => {
-                var mixerUnlocked = getVar("brewing_xp_mixer_crafted");
-                const notifDiv = document.createElement("div");
-                notifDiv.id = `notification-brewing_mixer_timer`;
-                notifDiv.onclick = function () {
-                    websocket.send(switch_panels("panel-brewing"));
-                    websocket.send(Modals.clicks_brewing_xp_mixer());
-                };
-                notifDiv.className = "notification hover";
-                notifDiv.style = "margin-bottom: 4px; display: none";
-                notifDiv.style.display = "inline-block";
-
-                var elem = document.createElement("img");
-                elem.setAttribute("src", `${UIT_IMAGE_URL_BASE}brewing_xp_mixer.png`);
-                const notifIcon = elem;
-                notifIcon.className = "w20";
-
-                const notifDivLabel = document.createElement("span");
-                notifDivLabel.id = `notification-brewing_mixer_timer-label`;
-                notifDivLabel.innerText = " " + timer + " (" + charges + "/5)";
-                notifDivLabel.className = "color-white";
-
-                notifDiv.append(notifIcon, notifDivLabel);
-                document.querySelector("#notifications-area").prepend(notifDiv);
-                if (mixerUnlocked == 0) {
-                    document.querySelector("#brewing_mixer_timer").style.display = "none";
-                }
-            };
-
-            const brewingTimer = () => {
-                var mixerUnlocked = getVar("brewing_xp_mixer_crafted");
-                if (mixerUnlocked == 1) {
-                    let playerTimer = getVar("playtime", 0, "int");
-                    let chargesUsed = getVar("brewing_xp_mixer_used", 0, "int");
-                    let chargesLeft = 5 - chargesUsed;
-                    let playTimeMod =
-                        1 - (playerTimer / 86400 - Math.floor(playerTimer / 86400));
-                    let etaTimerBrew = format_time(playTimeMod * 86400);
-
-                    const runBrewingTimer = setInterval(function () {
-                        playerTimer = getVar("playtime", 0, "int");
-                        chargesUsed = getVar("brewing_xp_mixer_used", 0, "int");
-                        chargesLeft = 5 - chargesUsed;
-                        playTimeMod =
-                            1 - (playerTimer / 86400 - Math.floor(playerTimer / 86400));
-                        etaTimerBrew = format_time(playTimeMod * 86400);
-                        const brewingLabel = document.querySelector(
-                            "#notification-brewing_mixer_timer-label"
-                        );
-                        brewingLabel.innerText = ` ${etaTimerBrew} (${chargesLeft}/5)`;
-                    }, 1000);
-
-                    addBrewerNotifications(etaTimerBrew, chargesLeft);
-                }
-            };
-
-            const addMerchantNotifications = () => {
-                var merchantTimerCheck = getVar("merchant_timer", 0, "int");
+                var loot_pot = getVar("combat_loot_potion_active", 0, "int");
+                var merchantTiming = getVar("merchant_timer", 0, "int");
                 var merchantUnlocked = getVar("merchant", 0, "int");
-                const notifDiv = document.createElement("div");
-                notifDiv.id = `notification-merchant_avail`;
-                notifDiv.onclick = function () {
-                    websocket.send(switch_panels("panel-shop"));
-                };
-                notifDiv.className = "notification hover";
-                notifDiv.style = "margin-right: 4px; margin-bottom: 4px; display: none";
-                notifDiv.style.display = "inline-block";
-
-                var elem = document.createElement("img");
-                elem.setAttribute("src", `${UIT_IMAGE_URL_BASE}merchant.png`);
-                const notifIcon = elem;
-                notifIcon.className = "w20";
-
-                const notifDivLabel = document.createElement("span");
-                notifDivLabel.id = `notification-merchant_avail-label`;
-                notifDivLabel.innerText = " Merchant Ready";
-                notifDivLabel.className = "color-white";
-
-                notifDiv.append(notifIcon, notifDivLabel);
-                document.querySelector("#notifications-area").prepend(notifDiv);
-                if (merchantTimerCheck > 0 || merchantUnlocked == 0) {
-                    document.querySelector("#notification-merchant_avail").style.display =
-                        "none";
+                let robotTiming = getVar("robot_wave_timer", 0, "int");
+                var robotUnlocked = getVar("robot_crafted", 0, "int");
+                const tableLabel = getThis.getConfig("tableLabels");
+                getThis.loot_pot_avail();
+                if (tableLabel) {
+                    uitTableLabels().addTableCraftLabels();
                 }
-            };
 
-            const merchantTimer = () => {
-                var merchantUnlocked = getVar("merchant", 0, "int");
-                if (merchantUnlocked == 1) {
-                    let merchantTiming = getVar("merchant_timer", 0, "int");
-                    let etaTimerMerch = format_time(merchantTiming);
-                    const runMerchantTimer = setInterval(function () {
-                        merchantTiming = getVar("merchant_timer", 0, "int");
-                        etaTimerMerch = format_time(merchantTiming);
-                        const merchantLabel = document.querySelector(
-                            "#notification-merchant_avail-label"
-                        );
-                        if (merchantTiming == 0) {
-                            merchantLabel.innerText = ` Merchant Ready`;
-                            document.querySelector(
-                                "#notification-merchant_avail"
-                            ).style.display = "inline-block";
-                        } else {
-                            document.querySelector(
-                                "#notification-merchant_avail"
-                            ).style.display = "none";
-                        }
-                    }, 1000);
-
-                    addMerchantNotifications(etaTimerMerch);
-                }
-            };
-
-            const addFurnaceNotification = () => {
-                if (getVar("stone_furnace_crafted", 0, "int") == 1) {
-                    var furnaceOreType = getVar("furnace_ore_type", "none", "string");
-                    var dragFur = getVar("dragon_furnace", 0, "int");
-                    var ancFur = getVar("ancient_furnace_crafted", 0, "int");
-                    var titFur = getVar("titanium_furnace_crafted", 0, "int");
-                    var promFur = getVar("promethium_furnace_crafted", 0, "int");
-                    var goldFur = getVar("gold_furnace_crafted", 0, "int");
-                    var silvFur = getVar("silver_furnace_crafted", 0, "int");
-                    var ironFur = getVar("iron_furnace_crafted", 0, "int");
-                    var bronzeFur = getVar("bronze_furnace_crafted", 0, "int");
-                    var stoneFur = getVar("stone_furnace_crafted", 0, "int");
-                    var furnImg;
-
-                    if (dragFur == 1) {
-                        furnImg = `${UIT_IMAGE_URL_BASE}dragon_furnace.png`;
-                    } else if (ancFur == 1) {
-                        furnImg = `${UIT_IMAGE_URL_BASE}ancient_furnace.png`;
-                    } else if (titFur == 1) {
-                        furnImg = `${UIT_IMAGE_URL_BASE}titanium_furnace.png`;
-                    } else if (promFur == 1) {
-                        furnImg = `${UIT_IMAGE_URL_BASE}promethium_furnace.png`;
-                    } else if (goldFur == 1) {
-                        furnImg = `${UIT_IMAGE_URL_BASE}gold_furnace.png`;
-                    } else if (silvFur == 1) {
-                        furnImg = `${UIT_IMAGE_URL_BASE}silver_furnace.png`;
-                    } else if (ironFur == 1) {
-                        furnImg = `${UIT_IMAGE_URL_BASE}iron_furnace.png`;
-                    } else if (bronzeFur == 1) {
-                        furnImg = `${UIT_IMAGE_URL_BASE}bronze_furnace.png`;
-                    } else if (stoneFur == 1) {
-                        furnImg = `${UIT_IMAGE_URL_BASE}stone_furnace.png`;
-                    } else {
-                        document.querySelector(
-                            "#notification-furnace_avail"
-                        ).style.display = "none";
-                    }
-
+                const addBrewerNotifications = (timer, charges) => {
+                    var mixerUnlocked = getVar("brewing_xp_mixer_crafted");
                     const notifDiv = document.createElement("div");
-                    notifDiv.id = `notification-furnace_avail`;
+                    notifDiv.id = `notification-brewing_mixer_timer`;
                     notifDiv.onclick = function () {
-                        websocket.send(switch_panels("panel-crafting"));
+                        websocket.send(switch_panels("panel-brewing"));
+                        websocket.send(Modals.clicks_brewing_xp_mixer());
                     };
                     notifDiv.className = "notification hover";
-                    notifDiv.style =
-                        "margin-right: 4px; margin-bottom: 4px; display: none";
+                    notifDiv.style = "margin-bottom: 4px; display: none";
                     notifDiv.style.display = "inline-block";
 
                     var elem = document.createElement("img");
-                    elem.setAttribute("src", furnImg);
+                    elem.setAttribute("src", `${UIT_IMAGE_URL_BASE}brewing_xp_mixer.png`);
                     const notifIcon = elem;
                     notifIcon.className = "w20";
 
                     const notifDivLabel = document.createElement("span");
-                    notifDivLabel.id = `notification-furnace_avail-label`;
-                    notifDivLabel.innerText = " Furnace Empty";
+                    notifDivLabel.id = `notification-brewing_mixer_timer-label`;
+                    notifDivLabel.innerText = " " + timer + " (" + charges + "/5)";
                     notifDivLabel.className = "color-white";
 
                     notifDiv.append(notifIcon, notifDivLabel);
                     document.querySelector("#notifications-area").prepend(notifDiv);
-                    var furnaceNotif = getThis.getConfig("furnaceEmptyNotification");
-                    if (furnaceOreType != "none" || !furnaceNotif) {
-                        document.querySelector(
-                            "#notification-furnace_avail"
-                        ).style.display = "none";
+                    if (mixerUnlocked == 0) {
+                        document.querySelector("#brewing_mixer_timer").style.display = "none";
                     }
-                }
-            };
-
-            const addRobotNotifications = () => {
-                var robotTimerCheck = getVar("robot_wave_timer", 0, "int");
-                var robotUnlocked = getVar("robot_crafted", 0, "int");
-                const notifDiv = document.createElement("div");
-                notifDiv.id = `notification-robot_avail`;
-                notifDiv.onclick = function () {
-                    websocket.send(Modals.open_robot_waves());
                 };
-                notifDiv.className = "notification hover";
-                notifDiv.style = "margin-right: 4px; margin-bottom: 4px; display: none";
-                notifDiv.style.display = "inline-block";
 
-                var elem = document.createElement("img");
-                elem.setAttribute("src", `${UIT_IMAGE_URL_BASE}robot.png`);
-                const notifIcon = elem;
-                notifIcon.className = "w20";
+                const brewingTimer = () => {
+                    var mixerUnlocked = getVar("brewing_xp_mixer_crafted");
+                    if (mixerUnlocked == 1) {
+                        let playerTimer = getVar("playtime", 0, "int");
+                        let chargesUsed = getVar("brewing_xp_mixer_used", 0, "int");
+                        let chargesLeft = 5 - chargesUsed;
+                        let playTimeMod =
+                            1 - (playerTimer / 86400 - Math.floor(playerTimer / 86400));
+                        let etaTimerBrew = format_time(playTimeMod * 86400);
 
-                const notifDivLabel = document.createElement("span");
-                notifDivLabel.id = `notification-robot_avail-label`;
-                notifDivLabel.innerText = " Waves Ready";
-                notifDivLabel.className = "color-white";
+                        const runBrewingTimer = setInterval(function () {
+                            playerTimer = getVar("playtime", 0, "int");
+                            chargesUsed = getVar("brewing_xp_mixer_used", 0, "int");
+                            chargesLeft = 5 - chargesUsed;
+                            playTimeMod =
+                                1 - (playerTimer / 86400 - Math.floor(playerTimer / 86400));
+                            etaTimerBrew = format_time(playTimeMod * 86400);
+                            const brewingLabel = document.querySelector(
+                                "#notification-brewing_mixer_timer-label"
+                            );
+                            brewingLabel.innerText = ` ${etaTimerBrew} (${chargesLeft}/5)`;
+                        }, 1000);
 
-                notifDiv.append(notifIcon, notifDivLabel);
-                document.querySelector("#notifications-area").prepend(notifDiv);
-                if (robotTimerCheck > 0 || robotUnlocked == 0) {
-                    document.querySelector("#notification-robot_avail").style.display =
-                        "none";
-                }
-            };
+                        addBrewerNotifications(etaTimerBrew, chargesLeft);
+                    }
+                };
 
-            const robotTimer = () => {
-                let robotNotification = false;
-                var robotUnlocked = getVar("robot_crafted", 0, "int");
-                var thisScript = "";
-                if (robotUnlocked == 1) {
-                    let robotTiming = getVar("robot_wave_timer", 0, "int");
-                    let etaTimerRobot = format_time(robotTiming);
-                    const runRobotTimer = setInterval(function () {
-                        robotNotification =
-                            IdlePixelPlus.plugins["ui-tweaks"].getConfig("robotReady");
-                        robotTiming = getVar("robot_wave_timer", 0, "int");
-                        etaTimerRobot = format_time(robotTiming);
-                        const robotLabel = document.querySelector(
-                            "#notification-robot_avail-label"
-                        );
-                        if (robotTiming == 0 && robotNotification) {
-                            //console.log(robotNotification);
-                            robotLabel.innerText = ` Waves Ready`;
-                            document.querySelector(
-                                "#notification-robot_avail"
-                            ).style.display = "inline-block";
+                const addMerchantNotifications = () => {
+                    var merchantTimerCheck = getVar("merchant_timer", 0, "int");
+                    var merchantUnlocked = getVar("merchant", 0, "int");
+                    const notifDiv = document.createElement("div");
+                    notifDiv.id = `notification-merchant_avail`;
+                    notifDiv.onclick = function () {
+                        websocket.send(switch_panels("panel-shop"));
+                    };
+                    notifDiv.className = "notification hover";
+                    notifDiv.style = "margin-right: 4px; margin-bottom: 4px; display: none";
+                    notifDiv.style.display = "inline-block";
+
+                    var elem = document.createElement("img");
+                    elem.setAttribute("src", `${UIT_IMAGE_URL_BASE}merchant.png`);
+                    const notifIcon = elem;
+                    notifIcon.className = "w20";
+
+                    const notifDivLabel = document.createElement("span");
+                    notifDivLabel.id = `notification-merchant_avail-label`;
+                    notifDivLabel.innerText = " Merchant Ready";
+                    notifDivLabel.className = "color-white";
+
+                    notifDiv.append(notifIcon, notifDivLabel);
+                    document.querySelector("#notifications-area").prepend(notifDiv);
+                    if (merchantTimerCheck > 0 || merchantUnlocked == 0) {
+                        document.querySelector("#notification-merchant_avail").style.display =
+                            "none";
+                    }
+                };
+
+                const merchantTimer = () => {
+                    var merchantUnlocked = getVar("merchant", 0, "int");
+                    if (merchantUnlocked == 1) {
+                        let merchantTiming = getVar("merchant_timer", 0, "int");
+                        let etaTimerMerch = format_time(merchantTiming);
+                        const runMerchantTimer = setInterval(function () {
+                            merchantTiming = getVar("merchant_timer", 0, "int");
+                            etaTimerMerch = format_time(merchantTiming);
+                            const merchantLabel = document.querySelector(
+                                "#notification-merchant_avail-label"
+                            );
+                            if (merchantTiming == 0) {
+                                merchantLabel.innerText = ` Merchant Ready`;
+                                document.querySelector(
+                                    "#notification-merchant_avail"
+                                ).style.display = "inline-block";
+                            } else {
+                                document.querySelector(
+                                    "#notification-merchant_avail"
+                                ).style.display = "none";
+                            }
+                        }, 1000);
+
+                        addMerchantNotifications(etaTimerMerch);
+                    }
+                };
+
+                const addFurnaceNotification = () => {
+                    if (getVar("stone_furnace_crafted", 0, "int") == 1) {
+                        var furnaceOreType = getVar("furnace_ore_type", "none", "string");
+                        var dragFur = getVar("dragon_furnace", 0, "int");
+                        var ancFur = getVar("ancient_furnace_crafted", 0, "int");
+                        var titFur = getVar("titanium_furnace_crafted", 0, "int");
+                        var promFur = getVar("promethium_furnace_crafted", 0, "int");
+                        var goldFur = getVar("gold_furnace_crafted", 0, "int");
+                        var silvFur = getVar("silver_furnace_crafted", 0, "int");
+                        var ironFur = getVar("iron_furnace_crafted", 0, "int");
+                        var bronzeFur = getVar("bronze_furnace_crafted", 0, "int");
+                        var stoneFur = getVar("stone_furnace_crafted", 0, "int");
+                        var furnImg;
+
+                        if (dragFur == 1) {
+                            furnImg = `${UIT_IMAGE_URL_BASE}dragon_furnace.png`;
+                        } else if (ancFur == 1) {
+                            furnImg = `${UIT_IMAGE_URL_BASE}ancient_furnace.png`;
+                        } else if (titFur == 1) {
+                            furnImg = `${UIT_IMAGE_URL_BASE}titanium_furnace.png`;
+                        } else if (promFur == 1) {
+                            furnImg = `${UIT_IMAGE_URL_BASE}promethium_furnace.png`;
+                        } else if (goldFur == 1) {
+                            furnImg = `${UIT_IMAGE_URL_BASE}gold_furnace.png`;
+                        } else if (silvFur == 1) {
+                            furnImg = `${UIT_IMAGE_URL_BASE}silver_furnace.png`;
+                        } else if (ironFur == 1) {
+                            furnImg = `${UIT_IMAGE_URL_BASE}iron_furnace.png`;
+                        } else if (bronzeFur == 1) {
+                            furnImg = `${UIT_IMAGE_URL_BASE}bronze_furnace.png`;
+                        } else if (stoneFur == 1) {
+                            furnImg = `${UIT_IMAGE_URL_BASE}stone_furnace.png`;
                         } else {
                             document.querySelector(
-                                "#notification-robot_avail"
+                                "#notification-furnace_avail"
                             ).style.display = "none";
                         }
-                    }, 1000);
 
-                    addRobotNotifications(etaTimerRobot);
-                }
-            };
+                        const notifDiv = document.createElement("div");
+                        notifDiv.id = `notification-furnace_avail`;
+                        notifDiv.onclick = function () {
+                            websocket.send(switch_panels("panel-crafting"));
+                        };
+                        notifDiv.className = "notification hover";
+                        notifDiv.style =
+                            "margin-right: 4px; margin-bottom: 4px; display: none";
+                        notifDiv.style.display = "inline-block";
 
-            brewingTimer();
-            merchantTimer();
-            robotTimer();
-            addFurnaceNotification();
+                        var elem = document.createElement("img");
+                        elem.setAttribute("src", furnImg);
+                        const notifIcon = elem;
+                        notifIcon.className = "w20";
 
-            const lootPotAvail = document.querySelector(
-                "#notification-loot_pot_avail"
-            );
-            if (loot_pot == 0) {
-                lootPotAvail.style.display = "none";
-            } else {
-                lootPotAvail.style.display = "inline-block";
-            }
+                        const notifDivLabel = document.createElement("span");
+                        notifDivLabel.id = `notification-furnace_avail-label`;
+                        notifDivLabel.innerText = " Furnace Empty";
+                        notifDivLabel.className = "color-white";
 
-            const merchantAvail = document.querySelector(
-                "#notification-merchant_avail"
-            );
-            if (merchantAvail) {
-                if (merchantTiming > 0 || merchantUnlocked == 0) {
-                    merchantAvail.style.display = "none";
+                        notifDiv.append(notifIcon, notifDivLabel);
+                        document.querySelector("#notifications-area").prepend(notifDiv);
+                        var furnaceNotif = getThis.getConfig("furnaceEmptyNotification");
+                        if (furnaceOreType != "none" || !furnaceNotif) {
+                            document.querySelector(
+                                "#notification-furnace_avail"
+                            ).style.display = "none";
+                        }
+                    }
+                };
+
+                const addRobotNotifications = () => {
+                    var robotTimerCheck = getVar("robot_wave_timer", 0, "int");
+                    var robotUnlocked = getVar("robot_crafted", 0, "int");
+                    const notifDiv = document.createElement("div");
+                    notifDiv.id = `notification-robot_avail`;
+                    notifDiv.onclick = function () {
+                        websocket.send(Modals.open_robot_waves());
+                    };
+                    notifDiv.className = "notification hover";
+                    notifDiv.style = "margin-right: 4px; margin-bottom: 4px; display: none";
+                    notifDiv.style.display = "inline-block";
+
+                    var elem = document.createElement("img");
+                    elem.setAttribute("src", `${UIT_IMAGE_URL_BASE}robot.png`);
+                    const notifIcon = elem;
+                    notifIcon.className = "w20";
+
+                    const notifDivLabel = document.createElement("span");
+                    notifDivLabel.id = `notification-robot_avail-label`;
+                    notifDivLabel.innerText = " Waves Ready";
+                    notifDivLabel.className = "color-white";
+
+                    notifDiv.append(notifIcon, notifDivLabel);
+                    document.querySelector("#notifications-area").prepend(notifDiv);
+                    if (robotTimerCheck > 0 || robotUnlocked == 0) {
+                        document.querySelector("#notification-robot_avail").style.display =
+                            "none";
+                    }
+                };
+
+                const robotTimer = () => {
+                    let robotNotification = false;
+                    var robotUnlocked = getVar("robot_crafted", 0, "int");
+                    var thisScript = "";
+                    if (robotUnlocked == 1) {
+                        let robotTiming = getVar("robot_wave_timer", 0, "int");
+                        let etaTimerRobot = format_time(robotTiming);
+                        const runRobotTimer = setInterval(function () {
+                            robotNotification =
+                                IdlePixelPlus.plugins["ui-tweaks"].getConfig("robotReady");
+                            robotTiming = getVar("robot_wave_timer", 0, "int");
+                            etaTimerRobot = format_time(robotTiming);
+                            const robotLabel = document.querySelector(
+                                "#notification-robot_avail-label"
+                            );
+                            if (robotTiming == 0 && robotNotification) {
+                                //console.log(robotNotification);
+                                robotLabel.innerText = ` Waves Ready`;
+                                document.querySelector(
+                                    "#notification-robot_avail"
+                                ).style.display = "inline-block";
+                            } else {
+                                document.querySelector(
+                                    "#notification-robot_avail"
+                                ).style.display = "none";
+                            }
+                        }, 1000);
+
+                        addRobotNotifications(etaTimerRobot);
+                    }
+                };
+
+                brewingTimer();
+                merchantTimer();
+                robotTimer();
+                addFurnaceNotification();
+
+                const lootPotAvail = document.querySelector(
+                    "#notification-loot_pot_avail"
+                );
+                if (loot_pot == 0) {
+                    lootPotAvail.style.display = "none";
                 } else {
-                    merchantAvail.style.display = "inline-block";
+                    lootPotAvail.style.display = "inline-block";
                 }
-            }
 
-            const robotAvail = document.querySelector("#notification-robot_avail");
-            if (robotAvail) {
-                if (robotTiming > 0 || robotUnlocked == 0) {
-                    robotAvail.style.display = "none";
-                } else {
-                    robotAvail.style.display = "inline-block";
+                const merchantAvail = document.querySelector(
+                    "#notification-merchant_avail"
+                );
+                if (merchantAvail) {
+                    if (merchantTiming > 0 || merchantUnlocked == 0) {
+                        merchantAvail.style.display = "none";
+                    } else {
+                        merchantAvail.style.display = "inline-block";
+                    }
                 }
-            }
 
-            getThis.miningMachTimer();
-            // fix chat
-            purpleKeyGo = getThis.getConfig("showPurpleKeyNotification");
+                const robotAvail = document.querySelector("#notification-robot_avail");
+                if (robotAvail) {
+                    if (robotTiming > 0 || robotUnlocked == 0) {
+                        robotAvail.style.display = "none";
+                    } else {
+                        robotAvail.style.display = "inline-block";
+                    }
+                }
 
-            getThis.onConfigsChanged();
+                getThis.miningMachTimer();
+                // fix chat
+                purpleKeyGo = getThis.getConfig("showPurpleKeyNotification");
 
-            //Left menu energy info
-            const menuBarEnergy = document.getElementById("menu-bar-energy");
-            const menuBarFightPoints = document.createElement("span");
-            menuBarFightPoints.id = "menu-bar-fight-points";
-            menuBarFightPoints.innerHTML = `
+                getThis.onConfigsChanged();
+
+                //Left menu energy info
+                const menuBarEnergy = document.getElementById("menu-bar-energy");
+                const menuBarFightPoints = document.createElement("span");
+                menuBarFightPoints.id = "menu-bar-fight-points";
+                menuBarFightPoints.innerHTML = `
               (<span class="fight-points-full-timmer" id="fight-points-full-id-menu"></span>)
             `;
 
-            const menuBarFightPoints_2 = document.createElement("span");
-            menuBarFightPoints_2.id = "menu-bar-fight-points";
-            menuBarFightPoints_2.innerHTML = `
+                const menuBarFightPoints_2 = document.createElement("span");
+                menuBarFightPoints_2.id = "menu-bar-fight-points";
+                menuBarFightPoints_2.innerHTML = `
               (<span class="fight-points-full-timmer" id="fight-points-full-id-menu_2"></span>)
             `;
 
-            document
-                .getElementById("menu-bar-fp")
-                .insertAdjacentElement("beforeend", menuBarFightPoints);
-            document
-                .getElementById("menu-bar-fp-2")
-                .insertAdjacentElement("beforeend", menuBarFightPoints_2);
+                document
+                    .getElementById("menu-bar-fp")
+                    .insertAdjacentElement("beforeend", menuBarFightPoints);
+                document
+                    .getElementById("menu-bar-fp-2")
+                    .insertAdjacentElement("beforeend", menuBarFightPoints_2);
 
-            const menuBarCrystals = document.getElementById("menu-bar-crystals");
+                const menuBarCrystals = document.getElementById("menu-bar-crystals");
 
-            // SD Watch Left Side
+                // SD Watch Left Side
 
-            const sdWatchElement = document.createElement("span");
-            sdWatchElement.innerHTML = `<br>
+                const sdWatchElement = document.createElement("span");
+                sdWatchElement.innerHTML = `<br>
   <span onClick="websocket.send(Modals.clicks_stardust_watch())" id="menu-bar-sd_watch">
     <img id="sd-watch-img" class="img-20" src="${UIT_IMAGE_URL_BASE}stardust_watch.png">
     <span class="sd-watch-text">Watch Charges</span>
     (<span class="sd-watch-charges">0</span>)
   </span>
 `;
-            const sdWatchElement2 = document.createElement("td");
-            sdWatchElement2.innerHTML = `
+                const sdWatchElement2 = document.createElement("td");
+                sdWatchElement2.innerHTML = `
             <div class="top-bar-2-item">
   <span onClick="websocket.send(Modals.clicks_stardust_watch())" id="menu-bar-sd_watch_2">
     <img id="sd-watch-img" class="img-20" src="${UIT_IMAGE_URL_BASE}stardust_watch.png">
@@ -3864,521 +3889,530 @@
   </div>
 `;
 
-            document
-                .getElementById("menu-bar-crystals")
-                .insertAdjacentElement("beforebegin", sdWatchElement);
-            document
-                .getElementById("menu-bar-crystals-2")
-                .parentNode.insertAdjacentElement("beforebegin", sdWatchElement2);
+                document
+                    .getElementById("menu-bar-crystals")
+                    .insertAdjacentElement("beforebegin", sdWatchElement);
+                document
+                    .getElementById("menu-bar-crystals-2")
+                    .parentNode.insertAdjacentElement("beforebegin", sdWatchElement2);
 
-            const energyItemDisplay = document.querySelector(
-                '#menu-bar-hero item-display[data-key="energy"]'
-            );
+                const energyItemDisplay = document.querySelector(
+                    '#menu-bar-hero item-display[data-key="energy"]'
+                );
 
-            const menuBarFightPointsCombat = document.createElement("span");
-            menuBarFightPointsCombat.id = "menu-bar-fight-fight-points";
-            menuBarFightPointsCombat.innerHTML = `<img id="menu-bar-fight-points-img" class="img-20" src="${UIT_IMAGE_URL_BASE}fight_points.png"><item-display data-format="number" data-key="fight_points"> 0</item-display>(<span class="fight-points-full-timmer" id="fight-points-full-id-combat"></span>)`;
+                const menuBarFightPointsCombat = document.createElement("span");
+                menuBarFightPointsCombat.id = "menu-bar-fight-fight-points";
+                menuBarFightPointsCombat.innerHTML = `<img id="menu-bar-fight-points-img" class="img-20" src="${UIT_IMAGE_URL_BASE}fight_points.png"><item-display data-format="number" data-key="fight_points"> 0</item-display>(<span class="fight-points-full-timmer" id="fight-points-full-id-combat"></span>)`;
 
-            energyItemDisplay.parentElement.insertBefore(
-                menuBarFightPointsCombat,
-                energyItemDisplay.nextSibling
-            );
+                energyItemDisplay.parentElement.insertBefore(
+                    menuBarFightPointsCombat,
+                    energyItemDisplay.nextSibling
+                );
 
-            uitLevel().initNextLevel();
+                uitLevel().initNextLevel();
 
-            // machine arrows
-            const machineryList = [
-                "drill",
-                "crusher",
-                "giant_drill",
-                "excavator",
-                "giant_excavator",
-                "massive_excavator",
-            ];
+                // machine arrows
+                const machineryList = [
+                    "drill",
+                    "crusher",
+                    "giant_drill",
+                    "excavator",
+                    "giant_excavator",
+                    "massive_excavator",
+                ];
 
-            machineryList.forEach((machine) => {
-                const itemBox = document.querySelector(`itembox[data-item=${machine}]`);
-                if (itemBox) {
-                    const arrowControlsDiv = document.createElement("div");
-                    arrowControlsDiv.className = "arrow-controls";
-                    arrowControlsDiv.onclick = function (event) {
-                        event.stopPropagation();
+                machineryList.forEach((machine) => {
+                    const itemBox = document.querySelector(`itembox[data-item=${machine}]`);
+                    if (itemBox) {
+                        const arrowControlsDiv = document.createElement("div");
+                        arrowControlsDiv.className = "arrow-controls";
+                        arrowControlsDiv.onclick = function (event) {
+                            event.stopPropagation();
+                        };
+
+                        const arrowUpDiv = document.createElement("div");
+                        arrowUpDiv.className = "arrow up";
+                        arrowUpDiv.onclick = function (event) {
+                            event.stopPropagation();
+                            IdlePixelPlus.sendMessage(`MACHINERY=${machine}~increase`);
+                        };
+
+                        const itemDisplay = document.createElement("item-display");
+                        itemDisplay.setAttribute("data-format", "number");
+                        itemDisplay.setAttribute("data-key", `${machine}_on`);
+                        itemDisplay.innerHTML = "1";
+
+                        const arrowDownDiv = document.createElement("div");
+                        arrowDownDiv.className = "arrow down";
+                        arrowDownDiv.onclick = function (event) {
+                            event.stopPropagation();
+                            IdlePixelPlus.sendMessage(`MACHINERY=${machine}~decrease`);
+                        };
+
+                        arrowControlsDiv.appendChild(arrowUpDiv);
+                        arrowControlsDiv.appendChild(itemDisplay);
+                        arrowControlsDiv.appendChild(arrowDownDiv);
+
+                        itemBox.appendChild(arrowControlsDiv);
+                    }
+                });
+
+                // custom notifications
+                const notificationsArea = document.getElementById("notifications-area");
+
+                if (notificationsArea) {
+                    const notificationOilFull = document.createElement("div");
+                    notificationOilFull.id = "ui-tweaks-notification-oil-full";
+                    notificationOilFull.style.display = "none";
+                    notificationOilFull.classList.add("notification", "hover");
+                    notificationOilFull.onclick = function () {
+                        switch_panels("panel-mining");
                     };
 
-                    const arrowUpDiv = document.createElement("div");
-                    arrowUpDiv.className = "arrow up";
-                    arrowUpDiv.onclick = function (event) {
-                        event.stopPropagation();
-                        IdlePixelPlus.sendMessage(`MACHINERY=${machine}~increase`);
-                    };
-
-                    const itemDisplay = document.createElement("item-display");
-                    itemDisplay.setAttribute("data-format", "number");
-                    itemDisplay.setAttribute("data-key", `${machine}_on`);
-                    itemDisplay.innerHTML = "1";
-
-                    const arrowDownDiv = document.createElement("div");
-                    arrowDownDiv.className = "arrow down";
-                    arrowDownDiv.onclick = function (event) {
-                        event.stopPropagation();
-                        IdlePixelPlus.sendMessage(`MACHINERY=${machine}~decrease`);
-                    };
-
-                    arrowControlsDiv.appendChild(arrowUpDiv);
-                    arrowControlsDiv.appendChild(itemDisplay);
-                    arrowControlsDiv.appendChild(arrowDownDiv);
-
-                    itemBox.appendChild(arrowControlsDiv);
-                }
-            });
-
-            // custom notifications
-            const notificationsArea = document.getElementById("notifications-area");
-
-            if (notificationsArea) {
-                const notificationOilFull = document.createElement("div");
-                notificationOilFull.id = "ui-tweaks-notification-oil-full";
-                notificationOilFull.style.display = "none";
-                notificationOilFull.classList.add("notification", "hover");
-                notificationOilFull.onclick = function () {
-                    switch_panels("panel-mining");
-                };
-
-                notificationOilFull.innerHTML = `
+                    notificationOilFull.innerHTML = `
         <img src="${UIT_IMAGE_URL_BASE}oil.png" class="w20">
         <span class="font-small color-yellow">Oil Full</span>
     `;
 
-                notificationsArea.appendChild(notificationOilFull);
-            }
+                    notificationsArea.appendChild(notificationOilFull);
+                }
 
-            const panelMining = document.querySelector("#panel-mining .progress-bar");
-            const panelCrafting = document.querySelector(
-                "#panel-crafting .progress-bar"
-            );
-
-            if (panelMining) {
-                const oilSummaryMining = document.createElement("div");
-                oilSummaryMining.id = "oil-summary-mining";
-                oilSummaryMining.style.marginTop = "0.5em";
-
-                const oilLabel = document.createElement("strong");
-                oilLabel.textContent = "Oil: ";
-
-                const oilDisplay = document.createElement("item-display");
-                oilDisplay.setAttribute("data-format", "number");
-                oilDisplay.setAttribute("data-key", "oil");
-
-                const maxOilDisplay = document.createElement("item-display");
-                maxOilDisplay.setAttribute("data-format", "number");
-                maxOilDisplay.setAttribute("data-key", "max_oil");
-
-                const inLabel = document.createElement("strong");
-                inLabel.textContent = "In: ";
-
-                const inDisplay = document.createElement("item-display");
-                inDisplay.setAttribute("data-format", "number");
-                inDisplay.setAttribute("data-key", "oil_in");
-
-                const outLabel = document.createElement("strong");
-                outLabel.textContent = "Out: ";
-
-                const outDisplay = document.createElement("item-display");
-                outDisplay.setAttribute("data-format", "number");
-                outDisplay.setAttribute("data-key", "oil_out");
-
-                const deltaLabel = document.createElement("strong");
-                deltaLabel.textContent = "Delta: ";
-
-                const deltaDisplay = document.createElement("item-display");
-                deltaDisplay.setAttribute("data-format", "number");
-                deltaDisplay.setAttribute("data-key", "oil_delta");
-
-                oilSummaryMining.appendChild(oilLabel);
-                oilSummaryMining.appendChild(oilDisplay);
-                oilSummaryMining.appendChild(document.createTextNode(" / "));
-                oilSummaryMining.appendChild(maxOilDisplay);
-                oilSummaryMining.appendChild(document.createElement("br"));
-                oilSummaryMining.appendChild(inLabel);
-                oilSummaryMining.appendChild(document.createTextNode("+"));
-                oilSummaryMining.appendChild(inDisplay);
-                oilSummaryMining.appendChild(
-                    document.createTextNode("\u00A0\u00A0\u00A0")
-                );
-                oilSummaryMining.appendChild(outLabel);
-                oilSummaryMining.appendChild(document.createTextNode("-"));
-                oilSummaryMining.appendChild(outDisplay);
-                oilSummaryMining.appendChild(document.createElement("br"));
-                oilSummaryMining.appendChild(deltaLabel);
-                oilSummaryMining.appendChild(deltaDisplay);
-
-                panelMining.parentNode.insertBefore(
-                    oilSummaryMining,
-                    panelMining.nextSibling
-                );
-            }
-
-            if (panelCrafting) {
-                const oilSummaryCrafting = document.createElement("div");
-                oilSummaryCrafting.id = "oil-summary-crafting";
-                oilSummaryCrafting.style.marginTop = "0.5em";
-
-                const oilLabel = document.createElement("strong");
-                oilLabel.textContent = "Oil: ";
-
-                const oilDisplay = document.createElement("item-display");
-                oilDisplay.setAttribute("data-format", "number");
-                oilDisplay.setAttribute("data-key", "oil");
-
-                const maxOilDisplay = document.createElement("item-display");
-                maxOilDisplay.setAttribute("data-format", "number");
-                maxOilDisplay.setAttribute("data-key", "max_oil");
-
-                const inLabel = document.createElement("strong");
-                inLabel.textContent = "In: ";
-
-                const inDisplay = document.createElement("item-display");
-                inDisplay.setAttribute("data-format", "number");
-                inDisplay.setAttribute("data-key", "oil_in");
-
-                const outLabel = document.createElement("strong");
-                outLabel.textContent = "Out: ";
-
-                const outDisplay = document.createElement("item-display");
-                outDisplay.setAttribute("data-format", "number");
-                outDisplay.setAttribute("data-key", "oil_out");
-
-                const deltaLabel = document.createElement("strong");
-                deltaLabel.textContent = "Delta: ";
-
-                const deltaDisplay = document.createElement("item-display");
-                deltaDisplay.setAttribute("data-format", "number");
-                deltaDisplay.setAttribute("data-key", "oil_delta");
-
-                oilSummaryCrafting.appendChild(oilLabel);
-                oilSummaryCrafting.appendChild(oilDisplay);
-                oilSummaryCrafting.appendChild(document.createTextNode(" / "));
-                oilSummaryCrafting.appendChild(maxOilDisplay);
-                oilSummaryCrafting.appendChild(document.createElement("br"));
-                oilSummaryCrafting.appendChild(inLabel);
-                oilSummaryCrafting.appendChild(document.createTextNode("+"));
-                oilSummaryCrafting.appendChild(inDisplay);
-                oilSummaryCrafting.appendChild(
-                    document.createTextNode("\u00A0\u00A0\u00A0")
-                );
-                oilSummaryCrafting.appendChild(outLabel);
-                oilSummaryCrafting.appendChild(document.createTextNode("-"));
-                oilSummaryCrafting.appendChild(outDisplay);
-                oilSummaryCrafting.appendChild(document.createElement("br"));
-                oilSummaryCrafting.appendChild(deltaLabel);
-                oilSummaryCrafting.appendChild(deltaDisplay);
-
-                panelCrafting.parentNode.insertBefore(
-                    oilSummaryCrafting,
-                    panelCrafting.nextSibling
-                );
-            }
-
-            document
-                .querySelector("#notification-furnace-label")
-                .insertAdjacentHTML(
-                    "afterend",
-                    '<span id="notification-furnace-timer" class="font-small color-white"></span>'
-                );
-            document
-                .querySelector("#notification-rocket-label")
-                .insertAdjacentHTML(
-                    "afterend",
-                    '<span id="notification-rocket-timer" class="font-small color-white"></span>'
-                );
-            document
-                .querySelector("#notification-mega_rocket-label")
-                .insertAdjacentHTML(
-                    "afterend",
-                    '<span id="notification-mega_rocket-timer" class="font-small color-white"></span>'
+                const panelMining = document.querySelector("#panel-mining .progress-bar");
+                const panelCrafting = document.querySelector(
+                    "#panel-crafting .progress-bar"
                 );
 
-            // clear chat button
-            var chatAutoScrollButton = document.getElementById(
-                "chat-auto-scroll-button"
-            );
-            var chatClearButton = document.createElement("button");
-            chatClearButton.id = "chat-clear-button";
-            chatClearButton.textContent = "CLEAR";
-            chatClearButton.style.color = "green";
-            chatClearButton.onclick = function () {
-                IdlePixelPlus.plugins["ui-tweaks"].clearChat();
-            };
+                if (panelMining) {
+                    const oilSummaryMining = document.createElement("div");
+                    oilSummaryMining.id = "oil-summary-mining";
+                    oilSummaryMining.style.marginTop = "0.5em";
 
-            chatAutoScrollButton.insertAdjacentElement("afterend", chatClearButton);
+                    const oilLabel = document.createElement("strong");
+                    oilLabel.textContent = "Oil: ";
 
-            // reorganize chat location
-            const self = this;
-            const chat = document.querySelector("#game-chat > :first-child");
-            const chatTop = document.createElement("div");
-            chatTop.id = "chat-top";
-            const chatArea = document.querySelector("#chat-area");
-            const chatBottom = document.querySelector(
-                "#game-chat > :first-child > :last-child"
-            );
+                    const oilDisplay = document.createElement("item-display");
+                    oilDisplay.setAttribute("data-format", "number");
+                    oilDisplay.setAttribute("data-key", "oil");
 
-            while (chat.firstChild) {
-                chatTop.appendChild(chat.firstChild);
-            }
+                    const maxOilDisplay = document.createElement("item-display");
+                    maxOilDisplay.setAttribute("data-format", "number");
+                    maxOilDisplay.setAttribute("data-key", "max_oil");
 
-            chat.appendChild(chatTop);
-            chat.appendChild(chatArea);
-            chat.appendChild(chatBottom);
+                    const inLabel = document.createElement("strong");
+                    inLabel.textContent = "In: ";
 
-            // override for service messages
-            const original_yell_to_chat_box = Chat.yell_to_chat_box;
-            Chat.yell_to_chat_box = function () {
-                original_yell_to_chat_box.apply(Chat, arguments);
-                self.updateColors();
-            };
+                    const inDisplay = document.createElement("item-display");
+                    inDisplay.setAttribute("data-format", "number");
+                    inDisplay.setAttribute("data-key", "oil_in");
 
-            var currentFP = getVar("fight_points", 0, "int").toLocaleString();
-            var rarePotTimer = getVar("rare_monster_potion_timer", 0, "int");
-            var rarePotPlusTimer = getVar(
-                "super_rare_monster_potion_timer",
-                0,
-                "int"
-            );
-            var rarePotInfo = "";
+                    const outLabel = document.createElement("strong");
+                    outLabel.textContent = "Out: ";
 
-            if (rarePotTimer > 0) {
-                rarePotInfo = rarePotTimer;
-            } else if (rarePotPlusTimer > 0) {
-                rarePotInfo = rarePotPlusTimer;
-            } else {
-                rarePotInfo = "Inactive";
-            }
+                    const outDisplay = document.createElement("item-display");
+                    outDisplay.setAttribute("data-format", "number");
+                    outDisplay.setAttribute("data-key", "oil_out");
 
-            var combatLootPotActive = getVar("combat_loot_potion_active", 0, "int");
-            var combatLootPotTimer = getVar("combat_loot_potion_timer", 0, "int");
-            var combatLootPotInfo = "";
+                    const deltaLabel = document.createElement("strong");
+                    deltaLabel.textContent = "Delta: ";
 
-            if (combatLootPotActive == 1) {
-                combatLootPotInfo = "Active";
-            } else {
-                combatLootPotInfo = "Inactive";
-            }
+                    const deltaDisplay = document.createElement("item-display");
+                    deltaDisplay.setAttribute("data-format", "number");
+                    deltaDisplay.setAttribute("data-key", "oil_delta");
 
-            function createCombatStatEntry(id, imgSrc, imgTitle, text, value) {
-                const entry = document.createElement("div");
-                entry.className = "td-combat-stat-entry";
-                entry.id = id;
+                    oilSummaryMining.appendChild(oilLabel);
+                    oilSummaryMining.appendChild(oilDisplay);
+                    oilSummaryMining.appendChild(document.createTextNode(" / "));
+                    oilSummaryMining.appendChild(maxOilDisplay);
+                    oilSummaryMining.appendChild(document.createElement("br"));
+                    oilSummaryMining.appendChild(inLabel);
+                    oilSummaryMining.appendChild(document.createTextNode("+"));
+                    oilSummaryMining.appendChild(inDisplay);
+                    oilSummaryMining.appendChild(
+                        document.createTextNode("\u00A0\u00A0\u00A0")
+                    );
+                    oilSummaryMining.appendChild(outLabel);
+                    oilSummaryMining.appendChild(document.createTextNode("-"));
+                    oilSummaryMining.appendChild(outDisplay);
+                    oilSummaryMining.appendChild(document.createElement("br"));
+                    oilSummaryMining.appendChild(deltaLabel);
+                    oilSummaryMining.appendChild(deltaDisplay);
 
-                let content;
+                    panelMining.parentNode.insertBefore(
+                        oilSummaryMining,
+                        panelMining.nextSibling
+                    );
+                }
 
-                if (
-                    id == "combat-info-loot_pot-right" ||
-                    id == "combat-info-loot_pot-left"
-                ) {
-                    content = `
+                if (panelCrafting) {
+                    const oilSummaryCrafting = document.createElement("div");
+                    oilSummaryCrafting.id = "oil-summary-crafting";
+                    oilSummaryCrafting.style.marginTop = "0.5em";
+
+                    const oilLabel = document.createElement("strong");
+                    oilLabel.textContent = "Oil: ";
+
+                    const oilDisplay = document.createElement("item-display");
+                    oilDisplay.setAttribute("data-format", "number");
+                    oilDisplay.setAttribute("data-key", "oil");
+
+                    const maxOilDisplay = document.createElement("item-display");
+                    maxOilDisplay.setAttribute("data-format", "number");
+                    maxOilDisplay.setAttribute("data-key", "max_oil");
+
+                    const inLabel = document.createElement("strong");
+                    inLabel.textContent = "In: ";
+
+                    const inDisplay = document.createElement("item-display");
+                    inDisplay.setAttribute("data-format", "number");
+                    inDisplay.setAttribute("data-key", "oil_in");
+
+                    const outLabel = document.createElement("strong");
+                    outLabel.textContent = "Out: ";
+
+                    const outDisplay = document.createElement("item-display");
+                    outDisplay.setAttribute("data-format", "number");
+                    outDisplay.setAttribute("data-key", "oil_out");
+
+                    const deltaLabel = document.createElement("strong");
+                    deltaLabel.textContent = "Delta: ";
+
+                    const deltaDisplay = document.createElement("item-display");
+                    deltaDisplay.setAttribute("data-format", "number");
+                    deltaDisplay.setAttribute("data-key", "oil_delta");
+
+                    oilSummaryCrafting.appendChild(oilLabel);
+                    oilSummaryCrafting.appendChild(oilDisplay);
+                    oilSummaryCrafting.appendChild(document.createTextNode(" / "));
+                    oilSummaryCrafting.appendChild(maxOilDisplay);
+                    oilSummaryCrafting.appendChild(document.createElement("br"));
+                    oilSummaryCrafting.appendChild(inLabel);
+                    oilSummaryCrafting.appendChild(document.createTextNode("+"));
+                    oilSummaryCrafting.appendChild(inDisplay);
+                    oilSummaryCrafting.appendChild(
+                        document.createTextNode("\u00A0\u00A0\u00A0")
+                    );
+                    oilSummaryCrafting.appendChild(outLabel);
+                    oilSummaryCrafting.appendChild(document.createTextNode("-"));
+                    oilSummaryCrafting.appendChild(outDisplay);
+                    oilSummaryCrafting.appendChild(document.createElement("br"));
+                    oilSummaryCrafting.appendChild(deltaLabel);
+                    oilSummaryCrafting.appendChild(deltaDisplay);
+
+                    panelCrafting.parentNode.insertBefore(
+                        oilSummaryCrafting,
+                        panelCrafting.nextSibling
+                    );
+                }
+
+                document
+                    .querySelector("#notification-furnace-label")
+                    .insertAdjacentHTML(
+                        "afterend",
+                        '<span id="notification-furnace-timer" class="font-small color-white"></span>'
+                    );
+                document
+                    .querySelector("#notification-rocket-label")
+                    .insertAdjacentHTML(
+                        "afterend",
+                        '<span id="notification-rocket-timer" class="font-small color-white"></span>'
+                    );
+                document
+                    .querySelector("#notification-mega_rocket-label")
+                    .insertAdjacentHTML(
+                        "afterend",
+                        '<span id="notification-mega_rocket-timer" class="font-small color-white"></span>'
+                    );
+
+                // clear chat button
+                var chatAutoScrollButton = document.getElementById(
+                    "chat-auto-scroll-button"
+                );
+                var chatClearButton = document.createElement("button");
+                chatClearButton.id = "chat-clear-button";
+                chatClearButton.textContent = "CLEAR";
+                chatClearButton.style.color = "green";
+                chatClearButton.onclick = function () {
+                    IdlePixelPlus.plugins["ui-tweaks"].clearChat();
+                };
+
+                chatAutoScrollButton.insertAdjacentElement("afterend", chatClearButton);
+
+                // reorganize chat location
+                const self = this;
+                const chat = document.querySelector("#game-chat > :first-child");
+                const chatTop = document.createElement("div");
+                chatTop.id = "chat-top";
+                const chatArea = document.querySelector("#chat-area");
+                const chatBottom = document.querySelector(
+                    "#game-chat > :first-child > :last-child"
+                );
+
+                while (chat.firstChild) {
+                    chatTop.appendChild(chat.firstChild);
+                }
+
+                chat.appendChild(chatTop);
+                chat.appendChild(chatArea);
+                chat.appendChild(chatBottom);
+
+                // override for service messages
+                const original_yell_to_chat_box = Chat.yell_to_chat_box;
+                Chat.yell_to_chat_box = function () {
+                    original_yell_to_chat_box.apply(Chat, arguments);
+                    self.updateColors();
+                };
+
+                var currentFP = getVar("fight_points", 0, "int").toLocaleString();
+                var rarePotTimer = getVar("rare_monster_potion_timer", 0, "int");
+                var rarePotPlusTimer = getVar(
+                    "super_rare_monster_potion_timer",
+                    0,
+                    "int"
+                );
+                var rarePotInfo = "";
+
+                if (rarePotTimer > 0) {
+                    rarePotInfo = rarePotTimer;
+                } else if (rarePotPlusTimer > 0) {
+                    rarePotInfo = rarePotPlusTimer;
+                } else {
+                    rarePotInfo = "Inactive";
+                }
+
+                var combatLootPotActive = getVar("combat_loot_potion_active", 0, "int");
+                var combatLootPotTimer = getVar("combat_loot_potion_timer", 0, "int");
+                var combatLootPotInfo = "";
+
+                if (combatLootPotActive == 1) {
+                    combatLootPotInfo = "Active";
+                } else {
+                    combatLootPotInfo = "Inactive";
+                }
+
+                function createCombatStatEntry(id, imgSrc, imgTitle, text, value) {
+                    const entry = document.createElement("div");
+                    entry.className = "td-combat-stat-entry";
+                    entry.id = id;
+
+                    let content;
+
+                    if (
+                        id == "combat-info-loot_pot-right" ||
+                        id == "combat-info-loot_pot-left"
+                    ) {
+                        content = `
                 <br>
         <img class="img-15" src="${imgSrc}" title="${imgTitle}">
         <span style="color:white">${text}:</span>
         <span id="${id}-lp">${value}</span>
     `;
-                } else if (
-                    id == "combat-info-fight_point-right" ||
-                    id == "combat-info-fight_point-left"
-                ) {
-                    content = `
+                    } else if (
+                        id == "combat-info-fight_point-right" ||
+                        id == "combat-info-fight_point-left"
+                    ) {
+                        content = `
         <img class="img-15" src="${imgSrc}" title="${imgTitle}">
         <span style="color:white">${text}:</span>
         <span id="${id}-fp">${value}</span>
     `;
-                } else {
-                    content = `
+                    } else {
+                        content = `
         <img class="img-15" src="${imgSrc}" title="${imgTitle}">
         <span style="color:white">${text}:</span>
         <span id="${id}-rp">${value}</span>
     `;
-                }
-
-                entry.innerHTML = content;
-                return entry;
-            }
-
-            function insertAfter(newNode, referenceNode) {
-                referenceNode.parentNode.insertBefore(
-                    newNode,
-                    referenceNode.nextSibling
-                );
-            }
-
-            var lastChildInPanel = document.querySelector(
-                "#panel-combat-canvas > center > table > tbody > tr:nth-child(2) > td.fight-left-border > div.td-combat-bottom-panel.shadow > div:last-child"
-            );
-            insertAfter(
-                createCombatStatEntry(
-                    "combat-info-fight_point-right",
-                    `${UIT_IMAGE_URL_BASE}fight_points.png`,
-                    "fight_points_white-right",
-                    "FP",
-                    currentFP
-                ),
-                lastChildInPanel
-            );
-            insertAfter(
-                createCombatStatEntry(
-                    "combat-info-rare_pot-right",
-                    `${UIT_IMAGE_URL_BASE}rare_monster_potion.png`,
-                    "rare_potion_white-right",
-                    "Rare Pot",
-                    rarePotInfo
-                ),
-                lastChildInPanel
-            );
-            insertAfter(
-                createCombatStatEntry(
-                    "combat-info-loot_pot-right",
-                    `${UIT_IMAGE_URL_BASE}combat_loot_potion.png`,
-                    "combat_loot_potion_white-right",
-                    "Loot Pot",
-                    combatLootPotInfo
-                ),
-                lastChildInPanel
-            );
-
-            var idleHeroArrowsArea = document.querySelector(
-                "#menu-bar-idle-hero-arrows-area-2"
-            );
-            insertAfter(
-                createCombatStatEntry(
-                    "combat-info-fight_point-left",
-                    `${UIT_IMAGE_URL_BASE}fight_points.png`,
-                    "fight_points_white-left",
-                    "FP",
-                    currentFP
-                ),
-                idleHeroArrowsArea
-            );
-            insertAfter(
-                createCombatStatEntry(
-                    "combat-info-rare_pot-left",
-                    `${UIT_IMAGE_URL_BASE}rare_monster_potion.png`,
-                    "rare_potion_white-left",
-                    "Rare Pot",
-                    rarePotInfo
-                ),
-                idleHeroArrowsArea
-            );
-            insertAfter(
-                createCombatStatEntry(
-                    "combat-info-loot_pot-left",
-                    `${UIT_IMAGE_URL_BASE}combat_loot_potion.png`,
-                    "combat_loot_potion_white-left",
-                    "Loot Pot",
-                    combatLootPotInfo
-                ),
-                idleHeroArrowsArea
-            );
-
-            getThis.oilTimerNotification();
-            setTimeout(function () {
-                uitRocket().timeout();
-                IdlePixelPlus.plugins["ui-tweaks"].onConfigsChanged();
-            }, 20);
-
-            var existingElement = document.getElementById(
-                "menu-bar-idlepixelplus-icon"
-            ).parentNode;
-
-            var newContainer = document.createElement("div");
-            newContainer.setAttribute(
-                "onclick",
-                "IdlePixelPlus.setPanel('idlepixelplus')"
-            );
-            newContainer.className = "hover hover-menu-bar-item left-menu-item";
-
-            // Create the inner table structure
-            var table = document.createElement("table");
-            table.className = "game-menu-bar-left-table-btn left-menu-item-other";
-            table.style.width = "100%";
-
-            var tbody = document.createElement("tbody");
-            var tr = document.createElement("tr");
-            var td1 = document.createElement("td");
-            td1.style.width = "30px";
-
-            // Assuming there's only one image in the existing element
-            var img = existingElement.querySelector("img");
-            img.className = "w30";
-            td1.appendChild(img);
-
-            var td2 = document.createElement("td");
-            // The text node for 'PLUGINS'
-            var textNode = document.createTextNode("PLUGINS");
-            td2.appendChild(textNode);
-
-            // Append everything together
-            tr.appendChild(td1);
-            tr.appendChild(td2);
-            tbody.appendChild(tr);
-            table.appendChild(tbody);
-            newContainer.appendChild(table);
-
-            existingElement.parentNode.replaceChild(newContainer, existingElement);
-
-            if (getThis.getConfig("condensedUI")) {
-                getThis.condensedUI();
-            } else {
-                getThis.defaultUI();
-            }
-
-            getThis.restructureTopBar();
-
-            uitCriptoe().addCriptoeValues();
-
-            // Add event listener to the element
-            document.getElementById('raids-team-panel-uuid').addEventListener('click', function (event) {
-                // This will copy the text content of the element to the clipboard
-                IdlePixelPlus.plugins['ui-tweaks'].copyTextToClipboard(event.target.innerText);
-            });
-
-            document.getElementById("raids-team-panel-uuid").addEventListener("click", function (event) {
-                // Copy text to clipboard
-                navigator.clipboard.writeText(this.innerText).then(() => {
-                    // Check if the message element already exists, create if not
-                    let message = document.getElementById("copy-message");
-                    if (!message) {
-                        message = document.createElement("div");
-                        message.id = "copy-message";
-                        message.style.position = "absolute";
-                        message.style.backgroundColor = "black";
-                        message.style.color = "white";
-                        message.style.padding = "5px";
-                        message.style.borderRadius = "5px";
-                        message.style.zIndex = "1000"; // Ensure it appears above other content
-                        message.style.fontSize = "20px";
-                        message.innerText = "Password Copied";
-                        document.getElementById("panel-combat").appendChild(message);
                     }
 
-                    // Show the "Password Copied" message
-                    message.style.display = "block";
-                    message.style.left = `${event.clientX}px`;
-                    message.style.top = `${event.clientY}px`; // 20 pixels below the cursor for visibility
+                    entry.innerHTML = content;
+                    return entry;
+                }
 
-                    // Hide the message after 2 seconds
-                    setTimeout(() => {
-                        message.style.display = "none";
-                    }, 2000);
-                }).catch(err => {
-                    console.error('Failed to copy text: ', err);
+                function insertAfter(newNode, referenceNode) {
+                    referenceNode.parentNode.insertBefore(
+                        newNode,
+                        referenceNode.nextSibling
+                    );
+                }
+
+                var lastChildInPanel = document.querySelector(
+                    "#panel-combat-canvas > center > table > tbody > tr:nth-child(2) > td.fight-left-border > div.td-combat-bottom-panel.shadow > div:last-child"
+                );
+                insertAfter(
+                    createCombatStatEntry(
+                        "combat-info-fight_point-right",
+                        `${UIT_IMAGE_URL_BASE}fight_points.png`,
+                        "fight_points_white-right",
+                        "FP",
+                        currentFP
+                    ),
+                    lastChildInPanel
+                );
+                insertAfter(
+                    createCombatStatEntry(
+                        "combat-info-rare_pot-right",
+                        `${UIT_IMAGE_URL_BASE}rare_monster_potion.png`,
+                        "rare_potion_white-right",
+                        "Rare Pot",
+                        rarePotInfo
+                    ),
+                    lastChildInPanel
+                );
+                insertAfter(
+                    createCombatStatEntry(
+                        "combat-info-loot_pot-right",
+                        `${UIT_IMAGE_URL_BASE}combat_loot_potion.png`,
+                        "combat_loot_potion_white-right",
+                        "Loot Pot",
+                        combatLootPotInfo
+                    ),
+                    lastChildInPanel
+                );
+
+                var idleHeroArrowsArea = document.querySelector(
+                    "#menu-bar-idle-hero-arrows-area-2"
+                );
+                insertAfter(
+                    createCombatStatEntry(
+                        "combat-info-fight_point-left",
+                        `${UIT_IMAGE_URL_BASE}fight_points.png`,
+                        "fight_points_white-left",
+                        "FP",
+                        currentFP
+                    ),
+                    idleHeroArrowsArea
+                );
+                insertAfter(
+                    createCombatStatEntry(
+                        "combat-info-rare_pot-left",
+                        `${UIT_IMAGE_URL_BASE}rare_monster_potion.png`,
+                        "rare_potion_white-left",
+                        "Rare Pot",
+                        rarePotInfo
+                    ),
+                    idleHeroArrowsArea
+                );
+                insertAfter(
+                    createCombatStatEntry(
+                        "combat-info-loot_pot-left",
+                        `${UIT_IMAGE_URL_BASE}combat_loot_potion.png`,
+                        "combat_loot_potion_white-left",
+                        "Loot Pot",
+                        combatLootPotInfo
+                    ),
+                    idleHeroArrowsArea
+                );
+
+                getThis.oilTimerNotification();
+                setTimeout(function () {
+                    uitRocket().timeout();
+                    IdlePixelPlus.plugins["ui-tweaks"].onConfigsChanged();
+                }, 20);
+
+                var existingElement = document.getElementById(
+                    "menu-bar-idlepixelplus-icon"
+                ).parentNode;
+
+                var newContainer = document.createElement("div");
+                newContainer.setAttribute(
+                    "onclick",
+                    "IdlePixelPlus.setPanel('idlepixelplus')"
+                );
+                newContainer.className = "hover hover-menu-bar-item left-menu-item";
+
+                // Create the inner table structure
+                var table = document.createElement("table");
+                table.className = "game-menu-bar-left-table-btn left-menu-item-other";
+                table.style.width = "100%";
+
+                var tbody = document.createElement("tbody");
+                var tr = document.createElement("tr");
+                var td1 = document.createElement("td");
+                td1.style.width = "30px";
+
+                // Assuming there's only one image in the existing element
+                var img = existingElement.querySelector("img");
+                img.className = "w30";
+                td1.appendChild(img);
+
+                var td2 = document.createElement("td");
+                // The text node for 'PLUGINS'
+                var textNode = document.createTextNode("PLUGINS");
+                td2.appendChild(textNode);
+
+                // Append everything together
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+                tbody.appendChild(tr);
+                table.appendChild(tbody);
+                newContainer.appendChild(table);
+
+                existingElement.parentNode.replaceChild(newContainer, existingElement);
+
+                if (getThis.getConfig("condensedUI")) {
+                    getThis.condensedUI();
+                } else {
+                    getThis.defaultUI();
+                }
+
+                /*getThis.restructureTopBar();*/
+
+                uitCriptoe().addCriptoeValues();
+
+                // Add event listener to the element
+                document.getElementById('raids-team-panel-uuid').addEventListener('click', function (event) {
+                    // This will copy the text content of the element to the clipboard
+                    IdlePixelPlus.plugins['ui-tweaks'].copyTextToClipboard(event.target.innerText);
                 });
-            });
-            IdlePixelPlus.plugins['ui-tweaks'].addChatDisplayWatcher();
-            uitTableLabels().disableTableRefreshBrewing();
-            uitTableLabels().Crafting_getMaterials();
-            uitTableLabels().Invention_getMaterials();
-            uitHoliday().easter2024();
-            uitDustPotions().cloneDust();
 
-            onLoginLoaded = true;
+                document.getElementById("raids-team-panel-uuid").addEventListener("click", function (event) {
+                    // Copy text to clipboard
+                    navigator.clipboard.writeText(this.innerText).then(() => {
+                        // Check if the message element already exists, create if not
+                        let message = document.getElementById("copy-message");
+                        if (!message) {
+                            message = document.createElement("div");
+                            message.id = "copy-message";
+                            message.style.position = "absolute";
+                            message.style.backgroundColor = "black";
+                            message.style.color = "white";
+                            message.style.padding = "5px";
+                            message.style.borderRadius = "5px";
+                            message.style.zIndex = "1000"; // Ensure it appears above other content
+                            message.style.fontSize = "20px";
+                            message.innerText = "Password Copied";
+                            document.getElementById("panel-combat").appendChild(message);
+                        }
+
+                        // Show the "Password Copied" message
+                        message.style.display = "block";
+                        message.style.left = `${event.clientX}px`;
+                        message.style.top = `${event.clientY}px`; // 20 pixels below the cursor for visibility
+
+                        // Hide the message after 2 seconds
+                        setTimeout(() => {
+                            message.style.display = "none";
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                    });
+                });
+                IdlePixelPlus.plugins['ui-tweaks'].addChatDisplayWatcher();
+                let archery = document.getElementById("left-panel-item_panel-archery");
+                let magic = document.getElementById("left-panel-item_panel-magic");
+                let labels = document.getElementById("left-menu-bar-labels");
+                archery.className = "";
+                magic.className = "";
+                archery.querySelector("span[data-menu-bar-skill-label]").style.paddingLeft = "8px";
+                magic.querySelector("span[data-menu-bar-skill-label]").style.paddingLeft = "8px";
+                labels.style.padding = "unset";
+                uitTableLabels().disableTableRefreshBrewing();
+                uitTableLabels().Crafting_getMaterials();
+                uitTableLabels().Invention_getMaterials();
+                uitHoliday().easter2024();
+                uitDustPotions().cloneDust();
+
+                onLoginLoaded = true;
+            }
         }
         //////////////////////////////// onLogin End ////////////////////////////////
 

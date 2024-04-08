@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Slap Chop - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      3.0.12
+// @version      3.0.13
 // @description  Ain't nobody got time for that! Adds some QoL 1-click actions.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -442,8 +442,8 @@
                         <button type="button" onclick="sCMiningCrafting().quickSmelt('${ore}')">
                             <img src="${IMAGE_URL_BASE}/${ore}.png" class="img-20" />
                             ${ore
-															.replace(/_/g, " ")
-															.replace(/(^|\s)\w/g, (s) => s.toUpperCase())}
+							.replace(/_/g, " ")
+							.replace(/(^|\s)\w/g, (s) => s.toUpperCase())}
                             (<span data-slap="max-smelt-${ore}">?</span>)
                         </button>
                     `;
@@ -453,7 +453,7 @@
                         <hr>
                     </div>
                 `;
-				const panelMining = document.querySelector("#panel-mining hr");
+				const panelMining = document.querySelector("#panel-mining .panel-logo-xp-area");
 				panelMining.insertAdjacentHTML("afterend", htmlMining);
 
 				let htmlCrafting = `
@@ -466,8 +466,8 @@
                         <button type="button" onclick="sCMiningCrafting().quickSmelt('${ore}')">
                             <img src="${IMAGE_URL_BASE}/${ore}.png" class="img-20" />
                             ${ore
-															.replace(/_/g, " ")
-															.replace(/(^|\s)\w/g, (s) => s.toUpperCase())}
+							.replace(/_/g, " ")
+							.replace(/(^|\s)\w/g, (s) => s.toUpperCase())}
                            (<span data-slap="max-smelt-${ore}">?</span>)
                         </button>
                     `;
@@ -478,7 +478,7 @@
                     </div>
                 `;
 
-				const panelCrafting = document.querySelector("#panel-crafting hr");
+				const panelCrafting = document.querySelector("#panel-crafting .panel-logo-xp-area");
 				panelCrafting.insertAdjacentHTML("afterend", htmlCrafting);
 
 				SCSMELTABLES.forEach((ore) => {
@@ -1277,9 +1277,9 @@
                             <button id="slapchop-quickfoundry-${log}" type="button" onclick="sCWoodcutting().quickFoundry('${log}')">
                                 <img src="${IMAGE_URL_BASE}/${log}.png" class="img-20" />
                                 ${log
-																	.replace("_logs", "")
-																	.replace(/_/g, " ")
-																	.replace(/(^|\s)\w/g, (s) => s.toUpperCase())}
+								.replace("_logs", "")
+								.replace(/_/g, " ")
+								.replace(/(^|\s)\w/g, (s) => s.toUpperCase())}
                                 (<span data-slap="max-foundry-${log}">?</span>)
                             </button>
                         `;
@@ -1292,7 +1292,7 @@
                 `;
 
 				const panelWoodcutting = document.querySelector(
-					"#panel-woodcutting hr"
+					"#panel-woodcutting .panel-logo-xp-area"
 				);
 				if (panelWoodcutting) {
 					panelWoodcutting.insertAdjacentHTML("afterend", html);
@@ -1791,16 +1791,13 @@
                 `;
 				Object.values(IdlePixelPlus.info.combatZones).forEach((zone) => {
 					html += `
-                        <div id="slapchop-quickfight-${
-													zone.id
-												}" class="slapchop-quickfight-zone m-1 ${
-						zone.blood ? "blood" : ""
-					}">
-                            <button type="button" onclick="sCCombat().quickFight('${
-															zone.id
-														}')">${zone.id
-						.replace(/_/g, " ")
-						.replace(/(^|\s)\w/g, (s) => s.toUpperCase())}
+                        <div id="slapchop-quickfight-${zone.id
+						}" class="slapchop-quickfight-zone m-1 ${zone.blood ? "blood" : ""
+						}">
+                            <button type="button" onclick="sCCombat().quickFight('${zone.id
+						}')">${zone.id
+							.replace(/_/g, " ")
+							.replace(/(^|\s)\w/g, (s) => s.toUpperCase())}
                             </button>
                             <div class="slapchop-quickfight-fightpoints slapchop-quickfight-progress-container" title="Fight Points: ${zone.fightPointCost.toLocaleString()}">
                                 <span class="slapchop-quickfight-progress-value">0</span>
@@ -1896,7 +1893,7 @@
                         <hr>
                     </div>
                 `;
-				const panelCombat = document.querySelector("#panel-combat hr");
+				const panelCombat = document.getElementById("combat-stats").querySelectorAll("div")[4];
 				if (panelCombat) {
 					panelCombat.insertAdjacentHTML("afterend", html);
 				}
@@ -2036,12 +2033,10 @@
 						/^0/,
 						""
 					)}%`;
-					let fpPirateLabel = `&times; ${
-						fpPiratePercent[0]
-					} + ${fpPiratePercent[1].replace(/^0/, "")}%`;
-					let energyLabel = `&times; ${
-						energyPercent[0]
-					} + ${energyPercent[1].replace(/^0/, "")}%`;
+					let fpPirateLabel = `&times; ${fpPiratePercent[0]
+						} + ${fpPiratePercent[1].replace(/^0/, "")}%`;
+					let energyLabel = `&times; ${energyPercent[0]
+						} + ${energyPercent[1].replace(/^0/, "")}%`;
 
 					if (
 						zone.id === "volcano" &&
@@ -2283,7 +2278,7 @@
 					let isRelevantPanel = [
 						"panel-combat-canvas",
 						"panel-combat",
-                        "panel-combat-canvas-raids",
+						"panel-combat-canvas-raids",
 					].includes(Globals.currentPanel);
 
 					if (chatFocused || !isRelevantPanel) {
@@ -2789,48 +2784,50 @@
 		}
 
 		onLogin() {
-			IPP = IdlePixelPlus;
-			getVar = IdlePixelPlus.getVarOrDefault;
-			getThis = IdlePixelPlus.plugins.slapchop;
-			singleOverride = getThis.getConfig("autoSingleEnabled");
-			sCMisc().initStyles();
-			sCCombat().initQuickFight();
-			sCMiningCrafting().initQuickSmelt();
-			sCCooking().initQuickCook();
-			sCCooking().initQuickEat();
-			sCFarming().initQuickPlant();
-			sCFarming().initQuickBones();
-			sCBrewing().initQuickPotions();
-			sCFishing().initQuickBoat();
-			sCFishing().initQuickBait();
-			sCCombat().initQuickNeedle();
-			sCBrewing().initQuickBrew();
-			sCGathering().initQuickGather();
-			sCWoodcutting().initQuickBurn();
-			sCCombat().initQuickFeather2Arrow();
-			sCWoodcutting().initQuickFoundry();
-			sCWoodcutting().initQuickChop();
-			sCFarming().initQuickHarvest();
-			sCInvention().initQuickGrind();
-			sCMiningCrafting().initQuickRocketFuel();
-			sCMiningCrafting().initQuickMining();
-			sCInvention().initQuickCleanse();
-			sCMiningCrafting().initQuickMineral();
-			sCMiningCrafting().initMiningPresets();
-			sCCombat().initPresets();
-			sCCombat().initPresetListener();
-			sCCombat().initQuickExplode();
-			sCCombat().initQuickLamps();
+			if (window["var_username"] != "kautos" && window["var_username"] != "stoic green") {
+				IPP = IdlePixelPlus;
+				getVar = IdlePixelPlus.getVarOrDefault;
+				getThis = IdlePixelPlus.plugins.slapchop;
+				singleOverride = getThis.getConfig("autoSingleEnabled");
+				sCMisc().initStyles();
+				sCCombat().initQuickFight();
+				sCMiningCrafting().initQuickSmelt();
+				sCCooking().initQuickCook();
+				sCCooking().initQuickEat();
+				sCFarming().initQuickPlant();
+				sCFarming().initQuickBones();
+				sCBrewing().initQuickPotions();
+				sCFishing().initQuickBoat();
+				sCFishing().initQuickBait();
+				sCCombat().initQuickNeedle();
+				sCBrewing().initQuickBrew();
+				sCGathering().initQuickGather();
+				sCWoodcutting().initQuickBurn();
+				sCCombat().initQuickFeather2Arrow();
+				sCWoodcutting().initQuickFoundry();
+				sCWoodcutting().initQuickChop();
+				sCFarming().initQuickHarvest();
+				sCInvention().initQuickGrind();
+				sCMiningCrafting().initQuickRocketFuel();
+				sCMiningCrafting().initQuickMining();
+				sCInvention().initQuickCleanse();
+				sCMiningCrafting().initQuickMineral();
+				sCMiningCrafting().initMiningPresets();
+				sCCombat().initPresets();
+				sCCombat().initPresetListener();
+				sCCombat().initQuickExplode();
+				sCCombat().initQuickLamps();
 
-			sCCombat().updateQuickFight();
-			sCMiningCrafting().updateQuickSmelt();
-			sCWoodcutting().updateQuickFoundry();
+				sCCombat().updateQuickFight();
+				sCMiningCrafting().updateQuickSmelt();
+				sCWoodcutting().updateQuickFoundry();
 
-			setTimeout(function () {
-				onLoginLoaded = true;
-				IdlePixelPlus.plugins.slapchop.onConfigsChanged();
-			}, 5000);
-			loaded = true;
+				setTimeout(function () {
+					onLoginLoaded = true;
+					IdlePixelPlus.plugins.slapchop.onConfigsChanged();
+				}, 5000);
+				loaded = true;
+			}
 		}
 
 		onVariableSet(key, valueBefore, valueAfter) {
