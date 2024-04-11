@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.24
+// @version      2.8.26
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -2894,27 +2894,6 @@
             }, 1000);
             document.getElementById("left-menu-bar-labels").style.paddingBottom =
                 "10px !important";
-            let woodcuttingContainer = document.createElement('span');
-            woodcuttingContainer.id = "uit-woodcutting-container";
-            woodcuttingContainer.style.display = "flex";
-            woodcuttingContainer.style.flexWrap = "wrap";
-            let firstWoodcuttingPlot = document.getElementById("panel-woodcutting").querySelector(".farming-plot-wrapper");
-            firstWoodcuttingPlot.insertAdjacentElement("beforeBegin", woodcuttingContainer);
-            let newWoodcuttingContainer = document.getElementById("uit-woodcutting-container");
-            document.getElementById('panel-woodcutting').querySelectorAll('.farming-plot-wrapper').forEach((plot) => {
-                newWoodcuttingContainer.insertAdjacentElement('beforeEnd', plot);
-            });
-
-            let farmingContainer = document.createElement('span');
-            farmingContainer.id = "uit-farming-container";
-            farmingContainer.style.display = "flex";
-            farmingContainer.style.flexWrap = "wrap";
-            let firstPlot = document.getElementById("panel-farming").querySelector(".farming-plot-wrapper");
-            firstPlot.insertAdjacentElement("beforeBegin", farmingContainer);
-            let newFarmingContainer = document.getElementById("uit-farming-container");
-            document.getElementById('panel-farming').querySelectorAll('.farming-plot-wrapper').forEach((plot) => {
-                newFarmingContainer.insertAdjacentElement('beforeEnd', plot);
-            })
         }
 
         defaultUI() {
@@ -4493,6 +4472,29 @@
                 uitHoliday().easter2024();
                 uitDustPotions().cloneDust();
 
+
+                let woodcuttingContainer = document.createElement('span');
+                woodcuttingContainer.id = "uit-woodcutting-container";
+                woodcuttingContainer.style.display = "flex";
+                woodcuttingContainer.style.flexWrap = "wrap";
+                let firstWoodcuttingPlot = document.getElementById("panel-woodcutting").querySelector(".farming-plot-wrapper");
+                firstWoodcuttingPlot.insertAdjacentElement("beforeBegin", woodcuttingContainer);
+                let newWoodcuttingContainer = document.getElementById("uit-woodcutting-container");
+                document.getElementById('panel-woodcutting').querySelectorAll('.farming-plot-wrapper').forEach((plot) => {
+                    newWoodcuttingContainer.insertAdjacentElement('beforeEnd', plot);
+                });
+
+                let farmingContainer = document.createElement('span');
+                farmingContainer.id = "uit-farming-container";
+                farmingContainer.style.display = "flex";
+                farmingContainer.style.flexWrap = "wrap";
+                let firstPlot = document.getElementById("panel-farming").querySelector(".farming-plot-wrapper");
+                firstPlot.insertAdjacentElement("beforeBegin", farmingContainer);
+                let newFarmingContainer = document.getElementById("uit-farming-container");
+                document.getElementById('panel-farming').querySelectorAll('.farming-plot-wrapper').forEach((plot) => {
+                    newFarmingContainer.insertAdjacentElement('beforeEnd', plot);
+                })
+
                 onLoginLoaded = true;
             }
         }
@@ -4955,16 +4957,16 @@
 
     }
 
-const elementsWithWidth = document.querySelectorAll("[width]");
-elementsWithWidth.forEach(function (el) {
-    el.setAttribute("original-width", el.getAttribute("width"));
-});
+    const elementsWithWidth = document.querySelectorAll("[width]");
+    elementsWithWidth.forEach(function (el) {
+        el.setAttribute("original-width", el.getAttribute("width"));
+    });
 
-const elementsWithHeight = document.querySelectorAll("[height]");
-elementsWithHeight.forEach(function (el) {
-    el.setAttribute("original-height", el.getAttribute("height"));
-});
+    const elementsWithHeight = document.querySelectorAll("[height]");
+    elementsWithHeight.forEach(function (el) {
+        el.setAttribute("original-height", el.getAttribute("height"));
+    });
 
-const plugin = new UITweaksPlugin();
-IdlePixelPlus.registerPlugin(plugin);
+    const plugin = new UITweaksPlugin();
+    IdlePixelPlus.registerPlugin(plugin);
 })();
