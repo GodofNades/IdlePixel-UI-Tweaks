@@ -1681,18 +1681,18 @@
 				#content.side-chat #chat-area {
 				  height: auto !important;
 				}
-				.farming-patches-area.condensed {
+				.farming-plot-wrapper.condensed {
+                  min-width: 115px;
 				  display: flex;
 				  flex-direction: row;
 				  justify-items: flex-start;
 				  width: fit-content;
 				}
-				.farming-patches-area.condensed > span {
+				.farming-plot-wrapper.condensed > span {
 				  width: 100px;
 				  max-height: 200px;
-				  border: 1px solid green;
 				}
-				.farming-patches-area.condensed img {
+				.farming-plot-wrapper.condensed img {
 				  width: 100px;
 				}
 				#panel-gathering .gathering-box.condensed {
@@ -2894,6 +2894,27 @@
             }, 1000);
             document.getElementById("left-menu-bar-labels").style.paddingBottom =
                 "10px !important";
+            let woodcuttingContainer = document.createElement('span');
+            woodcuttingContainer.id = "uit-woodcutting-container";
+            woodcuttingContainer.style.display = "flex";
+            woodcuttingContainer.style.flexWrap = "wrap";
+            let firstWoodcuttingPlot = document.getElementById("panel-woodcutting").querySelector(".farming-plot-wrapper");
+            firstWoodcuttingPlot.insertAdjacentElement("beforeBegin", woodcuttingContainer);
+            let newWoodcuttingContainer = document.getElementById("uit-woodcutting-container");
+            document.getElementById('panel-woodcutting').querySelectorAll('.farming-plot-wrapper').forEach((plot) => {
+                newWoodcuttingContainer.insertAdjacentElement('beforeEnd', plot);
+            });
+
+            let farmingContainer = document.createElement('span');
+            farmingContainer.id = "uit-farming-container";
+            farmingContainer.style.display = "flex";
+            farmingContainer.style.flexWrap = "wrap";
+            let firstPlot = document.getElementById("panel-farming").querySelector(".farming-plot-wrapper");
+            firstPlot.insertAdjacentElement("beforeBegin", farmingContainer);
+            let newFarmingContainer = document.getElementById("uit-farming-container");
+            document.getElementById('panel-farming').querySelectorAll('.farming-plot-wrapper').forEach((plot) => {
+                newFarmingContainer.insertAdjacentElement('beforeEnd', plot);
+            })
         }
 
         defaultUI() {
@@ -3210,30 +3231,34 @@
                     "condenseWoodcuttingPatches"
                 );
                 if (condenseWoodcuttingPatches) {
-                    const farmingPatchesArea = document.querySelector(
-                        "#panel-woodcutting .farming-patches-area"
+                    const farmingPatchesArea = document.querySelectorAll(
+                        "#panel-woodcutting .farming-plot-wrapper"
                     );
-                    farmingPatchesArea.classList.add("condensed");
-                    document
-                        .querySelectorAll(
-                        "#panel-woodcutting .farming-patches-area img[id^='img-tree_shiny']"
-                    )
-                        .forEach(function (el) {
-                        el.removeAttribute("width");
-                        el.removeAttribute("height");
+                    farmingPatchesArea.forEach((plot) => {
+                        plot.classList.add("condensed");
+                        document
+                            .querySelectorAll(
+                            "#panel-woodcutting .farming-plot-wrapper img[id^='img-tree_shiny']"
+                        )
+                            .forEach(function (el) {
+                            el.removeAttribute("width");
+                            el.removeAttribute("height");
+                        });
                     });
                 } else {
-                    const farmingPatchesArea = document.querySelector(
-                        "#panel-woodcutting .farming-patches-area"
+                    const farmingPatchesArea = document.querySelectorAll(
+                        "#panel-woodcutting .farming-plot-wrapper"
                     );
-                    farmingPatchesArea.classList.remove("condensed");
-                    document
-                        .querySelectorAll(
-                        "#panel-woodcutting .farming-patches-area img[id^='img-tree_shiny']"
-                    )
-                        .forEach(function (el) {
-                        el.setAttribute("width", el.getAttribute("original-width"));
-                        el.setAttribute("height", el.getAttribute("original-height"));
+                    farmingPatchesArea.forEach((plot) => {
+                        plot.classList.remove("condensed");
+                        document
+                            .querySelectorAll(
+                            "#panel-woodcutting .farming-plot-wrapper img[id^='img-tree_shiny']"
+                        )
+                            .forEach(function (el) {
+                            el.setAttribute("width", el.getAttribute("original-width"));
+                            el.setAttribute("height", el.getAttribute("original-height"));
+                        });
                     });
                 }
 
@@ -3241,30 +3266,34 @@
                     "condenseFarmingPatches"
                 );
                 if (condenseFarmingPatches) {
-                    const farmingPatchesArea = document.querySelector(
-                        "#panel-farming .farming-patches-area"
+                    const farmingPatchesArea = document.querySelectorAll(
+                        "#panel-farming .farming-plot-wrapper"
                     );
-                    farmingPatchesArea.classList.add("condensed");
-                    document
-                        .querySelectorAll(
-                        "#panel-farming .farming-patches-area img[id^='img-farm_shiny']"
-                    )
-                        .forEach(function (el) {
-                        el.removeAttribute("width");
-                        el.removeAttribute("height");
+                    farmingPatchesArea.forEach((plot) => {
+                        plot.classList.add("condensed");
+                        document
+                            .querySelectorAll(
+                            "#panel-farming .farming-plot-wrapper img[id^='img-farm_shiny']"
+                        )
+                            .forEach(function (el) {
+                            el.removeAttribute("width");
+                            el.removeAttribute("height");
+                        });
                     });
                 } else {
-                    const farmingPatchesArea = document.querySelector(
-                        "#panel-farming .farming-patches-area"
+                    const farmingPatchesArea = document.querySelectorAll(
+                        "#panel-farming .farming-plot-wrapper"
                     );
-                    farmingPatchesArea.classList.remove("condensed");
-                    document
-                        .querySelectorAll(
-                        "#panel-farming .farming-patches-area img[id^='img-farm_shiny']"
-                    )
-                        .forEach(function (el) {
-                        el.setAttribute("width", el.getAttribute("original-width"));
-                        el.setAttribute("height", el.getAttribute("original-height"));
+                    farmingPatchesArea.forEach((plot) => {
+                        plot.classList.remove("condensed");
+                        document
+                            .querySelectorAll(
+                            "#panel-farming .farming-plot-wrapper img[id^='img-farm_shiny']"
+                        )
+                            .forEach(function (el) {
+                            el.setAttribute("width", el.getAttribute("original-width"));
+                            el.setAttribute("height", el.getAttribute("original-height"));
+                        });
                     });
                 }
 
@@ -4467,475 +4496,475 @@
                 onLoginLoaded = true;
             }
         }
-            //////////////////////////////// onLogin End ////////////////////////////////
+        //////////////////////////////// onLogin End ////////////////////////////////
 
-            clearChat() {
-                const chatArea = document.getElementById("chat-area");
-                while (chatArea.firstChild) {
-                    chatArea.removeChild(chatArea.firstChild);
-                }
+        clearChat() {
+            const chatArea = document.getElementById("chat-area");
+            while (chatArea.firstChild) {
+                chatArea.removeChild(chatArea.firstChild);
             }
+        }
 
-            limitChat() {
-                const chatArea = document.getElementById("chat-area");
-                const chatLength = chatArea.innerHTML.length;
-                const limit = getThis.getConfig("chatLimit");
+        limitChat() {
+            const chatArea = document.getElementById("chat-area");
+            const chatLength = chatArea.innerHTML.length;
+            const limit = getThis.getConfig("chatLimit");
 
-                if (limit > 0 || chatLength > 190000) {
-                    const children = chatArea.children;
+            if (limit > 0 || chatLength > 190000) {
+                const children = chatArea.children;
 
-                    if (limit > 0) {
-                        if (children.length > limit) {
-                            const toDelete = children.length - limit;
+                if (limit > 0) {
+                    if (children.length > limit) {
+                        const toDelete = children.length - limit;
 
-                            for (let i = 0; i < toDelete; i++) {
-                                try {
-                                    chatArea.removeChild(children[i]);
-                                } catch (err) {
-                                    console.error("Error cleaning up chat", err);
-                                }
-                            }
-
-                            if (Chat._auto_scroll) {
-                                chatArea.scrollTop = chatArea.scrollHeight;
-                            }
-                        }
-                    }
-
-                    if (chatLength > 190000) {
-                        for (let i = 0; i < 3; i++) {
+                        for (let i = 0; i < toDelete; i++) {
                             try {
                                 chatArea.removeChild(children[i]);
                             } catch (err) {
                                 console.error("Error cleaning up chat", err);
                             }
                         }
+
+                        if (Chat._auto_scroll) {
+                            chatArea.scrollTop = chatArea.scrollHeight;
+                        }
+                    }
+                }
+
+                if (chatLength > 190000) {
+                    for (let i = 0; i < 3; i++) {
+                        try {
+                            chatArea.removeChild(children[i]);
+                        } catch (err) {
+                            console.error("Error cleaning up chat", err);
+                        }
                     }
                 }
             }
+        }
 
-            onPanelChanged(panelBefore, panelAfter) {
-                if (onLoginLoaded) {
-                    if (panelAfter = "brewing") {
-                        uitTableLabels().updateTableCraftLabels();
-                    }
-                    uitInvention().hideOrbsAndRing();
+        onPanelChanged(panelBefore, panelAfter) {
+            if (onLoginLoaded) {
+                if (panelAfter = "brewing") {
+                    uitTableLabels().updateTableCraftLabels();
+                }
+                uitInvention().hideOrbsAndRing();
 
-                    if (panelBefore !== panelAfter && panelAfter === "idlepixelplus") {
-                        const options = document.querySelectorAll(
-                            "#idlepixelplus-config-ui-tweaks-font option"
-                        );
-                        if (options) {
-                            options.forEach(function (el) {
-                                const value = el.getAttribute("value");
-                                if (value === "IdlePixel Default") {
-                                    el.style.fontFamily = FONT_FAMILY_DEFAULT;
-                                } else {
-                                    el.style.fontFamily = value;
-                                }
-                            });
-                        }
-                    }
-
-                    if (
-                        ["farming", "woodcutting", "combat"].includes(panelAfter) &&
-                        getThis.getConfig("imageTitles")
-                    ) {
-                        const images = document.querySelectorAll(`#panel-${panelAfter} img`);
-                        if (images) {
-                            images.forEach(function (el) {
-                                let src = el.getAttribute("src");
-                                if (src && src !== "x") {
-                                    src = src.replace(/.*\//, "").replace(/\.\w+$/, "");
-                                    el.setAttribute("title", src);
-                                }
-                            });
-                        }
-                    }
-
-                    if (Globals.currentPanel === "panel-fishing") {
-                        uitFishing().calcFishEnergy();
-                    }
-
-                    if (Globals.currentPanel === "panel-criptoe-market") {
-                        uitCriptoe().addCriptoeValues();
+                if (panelBefore !== panelAfter && panelAfter === "idlepixelplus") {
+                    const options = document.querySelectorAll(
+                        "#idlepixelplus-config-ui-tweaks-font option"
+                    );
+                    if (options) {
+                        options.forEach(function (el) {
+                            const value = el.getAttribute("value");
+                            if (value === "IdlePixel Default") {
+                                el.style.fontFamily = FONT_FAMILY_DEFAULT;
+                            } else {
+                                el.style.fontFamily = value;
+                            }
+                        });
                     }
                 }
+
+                if (
+                    ["farming", "woodcutting", "combat"].includes(panelAfter) &&
+                    getThis.getConfig("imageTitles")
+                ) {
+                    const images = document.querySelectorAll(`#panel-${panelAfter} img`);
+                    if (images) {
+                        images.forEach(function (el) {
+                            let src = el.getAttribute("src");
+                            if (src && src !== "x") {
+                                src = src.replace(/.*\//, "").replace(/\.\w+$/, "");
+                                el.setAttribute("title", src);
+                            }
+                        });
+                    }
+                }
+
+                if (Globals.currentPanel === "panel-fishing") {
+                    uitFishing().calcFishEnergy();
+                }
+
+                if (Globals.currentPanel === "panel-criptoe-market") {
+                    uitCriptoe().addCriptoeValues();
+                }
             }
+        }
 
 
-            //////////////////////////////// onVariableSet Start ////////////////////////////////
-            onVariableSet(key, valueBefore, valueAfter) {
-                if (onLoginLoaded) {
-                    //console.log(new Date() + " " + document.readyState);
-                    if (Globals.currentPanel != "panel-combat-canvas" && Globals.currentPanel != "panel-combat-canvas-raids") {
-                        if (key.endsWith("_on")) {
-                            setTimeout(function () {
-                                IdlePixelPlus.plugins["ui-tweaks"].miningMachTimer();
-                            }, 100);
-                        }
+        //////////////////////////////// onVariableSet Start ////////////////////////////////
+        onVariableSet(key, valueBefore, valueAfter) {
+            if (onLoginLoaded) {
+                //console.log(new Date() + " " + document.readyState);
+                if (Globals.currentPanel != "panel-combat-canvas" && Globals.currentPanel != "panel-combat-canvas-raids") {
+                    if (key.endsWith("_on")) {
+                        setTimeout(function () {
+                            IdlePixelPlus.plugins["ui-tweaks"].miningMachTimer();
+                        }, 100);
+                    }
 
-                        /*if (Globals.currentPanel == "panel-brewing") {
+                    /*if (Globals.currentPanel == "panel-brewing") {
                         uitTableLabels().updateTableCraftLabels();
                     }*/
 
-                        if (key == "oil") {
-                            getThis.oilGain();
-                        }
+                    if (key == "oil") {
+                        getThis.oilGain();
+                    }
 
-                        if (key == "criptoe" && valueBefore != valueAfter) {
-                            uitCriptoe().addCriptoeValues();
-                        }
+                    if (key == "criptoe" && valueBefore != valueAfter) {
+                        uitCriptoe().addCriptoeValues();
+                    }
 
-                        if (key.endsWith("_xp")) {
-                            const varName = `var_ipp_${key}_next`;
-                            const xp = parseInt(valueAfter || "0");
-                            const level = uitLevel().xpToLevel(xp);
-                            const xpAtNext = uitLevel().LEVELS()[level + 1];
-                            const next = xpAtNext - xp;
-                            window[varName] = `${next}`;
-                        }
+                    if (key.endsWith("_xp")) {
+                        const varName = `var_ipp_${key}_next`;
+                        const xp = parseInt(valueAfter || "0");
+                        const level = uitLevel().xpToLevel(xp);
+                        const xpAtNext = uitLevel().LEVELS()[level + 1];
+                        const next = xpAtNext - xp;
+                        window[varName] = `${next}`;
+                    }
 
-                        if (["oil", "max_oil"].includes(key)) {
-                            const oil = IdlePixelPlus.getVar("oil");
-                            const maxOil = IdlePixelPlus.getVar("max_oil");
-                            if (
-                                oil &&
-                                oil == maxOil &&
-                                getThis.getConfig("oilFullNotification")
-                            ) {
-                                document.querySelector(
-                                    "#ui-tweaks-notification-oil-full"
-                                ).style.display = "";
-                            } else {
-                                document.querySelector(
-                                    "#ui-tweaks-notification-oil-full"
-                                ).style.display = "none";
-                            }
-                        }
-
-                        if (["oil_in", "oil_out"].includes(key)) {
-                            const oilIn = getVar("oil_in", 0, "int");
-                            const oilOut = getVar("oil_out", 0, "int");
-                            window.var_oil_delta = `${oilIn - oilOut}`;
-                        }
-
-                        getThis.fightPointsFull();
-
-                        if (["rocket_km", "rocket_status", "rocket_potion_timer", "rocket_fuel", "rocket_potion"].includes(key)) {
-                            uitRocket().varChange();
-                        }
-
-                        uitRocket().onVar();
-
-                        if (key == "moon_distance" || key == "sun_distance") {
-                            uitRocket().rocketInfoUpdate(key);
-                        }
-                        uitRocket().rocketStatus();
-
+                    if (["oil", "max_oil"].includes(key)) {
+                        const oil = IdlePixelPlus.getVar("oil");
+                        const maxOil = IdlePixelPlus.getVar("max_oil");
                         if (
-                            [
-                                "furnace_ore_type",
-                                "furnace_countdown",
-                                "furnace_ore_amount_at",
-                            ].includes(key)
+                            oil &&
+                            oil == maxOil &&
+                            getThis.getConfig("oilFullNotification")
                         ) {
-                            const el = document.querySelector("#notification-furnace-timer");
-                            const ore = getVar("furnace_ore_type", "none");
-                            if (ore == "none") {
-                                el.textContent = "";
-                                return;
-                            }
-                            const timerRemaining = getVar("furnace_countdown", 0, "int");
-                            const timePerOre = SMELT_TIMES[ore] - 1;
-                            const startAmount = getVar("furnace_ore_amount_set", 0, "int");
-                            const doneAmount = getVar("furnace_ore_amount_at", 0, "int");
-                            const remaining = startAmount - doneAmount - 1;
-                            const totalTime = remaining * timePerOre + timerRemaining;
-                            el.textContent = " - " + format_time(totalTime);
+                            document.querySelector(
+                                "#ui-tweaks-notification-oil-full"
+                            ).style.display = "";
+                        } else {
+                            document.querySelector(
+                                "#ui-tweaks-notification-oil-full"
+                            ).style.display = "none";
                         }
+                    }
 
-                        if (key == "combat_loot_potion_active") {
-                            const loot_pot = getVar("combat_loot_potion_active", 0, "int");
-                            if (loot_pot == 0) {
-                                hideElement(
-                                    document.getElementById("notification-loot_pot_avail")
-                                );
+                    if (["oil_in", "oil_out"].includes(key)) {
+                        const oilIn = getVar("oil_in", 0, "int");
+                        const oilOut = getVar("oil_out", 0, "int");
+                        window.var_oil_delta = `${oilIn - oilOut}`;
+                    }
+
+                    getThis.fightPointsFull();
+
+                    if (["rocket_km", "rocket_status", "rocket_potion_timer", "rocket_fuel", "rocket_potion"].includes(key)) {
+                        uitRocket().varChange();
+                    }
+
+                    uitRocket().onVar();
+
+                    if (key == "moon_distance" || key == "sun_distance") {
+                        uitRocket().rocketInfoUpdate(key);
+                    }
+                    uitRocket().rocketStatus();
+
+                    if (
+                        [
+                            "furnace_ore_type",
+                            "furnace_countdown",
+                            "furnace_ore_amount_at",
+                        ].includes(key)
+                    ) {
+                        const el = document.querySelector("#notification-furnace-timer");
+                        const ore = getVar("furnace_ore_type", "none");
+                        if (ore == "none") {
+                            el.textContent = "";
+                            return;
+                        }
+                        const timerRemaining = getVar("furnace_countdown", 0, "int");
+                        const timePerOre = SMELT_TIMES[ore] - 1;
+                        const startAmount = getVar("furnace_ore_amount_set", 0, "int");
+                        const doneAmount = getVar("furnace_ore_amount_at", 0, "int");
+                        const remaining = startAmount - doneAmount - 1;
+                        const totalTime = remaining * timePerOre + timerRemaining;
+                        el.textContent = " - " + format_time(totalTime);
+                    }
+
+                    if (key == "combat_loot_potion_active") {
+                        const loot_pot = getVar("combat_loot_potion_active", 0, "int");
+                        if (loot_pot == 0) {
+                            hideElement(
+                                document.getElementById("notification-loot_pot_avail")
+                            );
+                        } else {
+                            showInlineBlockElement(
+                                document.getElementById("notification-loot_pot_avail")
+                            );
+                        }
+                    }
+
+                    ////////// SD Watch Notification
+                    const sdWatchCrafted = getVar("stardust_watch_crafted", 0, "int");
+                    const sdWatchCharges = getVar("stardust_watch_charges", 0, "int");
+                    if (getThis.getConfig("moveSDWatch") && sdWatchCrafted === 1) {
+                        hideElement(document.getElementById("notification-stardust_watch"));
+                        document.querySelector(
+                            "#menu-bar-sd_watch .sd-watch-charges"
+                        ).textContent = sdWatchCharges;
+                        document.querySelector(
+                            "#menu-bar-sd_watch_2 .sd-watch-charges_2"
+                        ).textContent = sdWatchCharges;
+                    } else if (!getThis.getConfig("moveSDWatch") && sdWatchCharges > 0) {
+                        showElement(document.getElementById("notification-stardust_watch"));
+                    } else {
+                        hideElement(document.getElementById("notification-stardust_watch"));
+                        hideElement(document.getElementById("menu-bar-sd_watch"));
+                    }
+
+                    if (key.startsWith("gathering_working_gathering_loot_bag_")) {
+                        var today = new Date();
+                        var time =
+                            today.getHours().toLocaleString("en-US", {
+                                minimumIntegerDigits: 2,
+                                useGrouping: false,
+                            }) +
+                            ":" +
+                            today.getMinutes().toLocaleString("en-US", {
+                                minimumIntegerDigits: 2,
+                                useGrouping: false,
+                            }) +
+                            ":" +
+                            today.getSeconds().toLocaleString("en-US", {
+                                minimumIntegerDigits: 2,
+                                useGrouping: false,
+                            });
+                        var location = key.replace(
+                            "gathering_working_gathering_loot_bag_",
+                            ""
+                        );
+                        var bagCount = getVar(key, 0, "int").toLocaleString();
+                    }
+
+                    if (key.includes("raw_") || key.includes("cooked_")) {
+                        if (Globals.currentPanel == "panel-fishing") {
+                            uitFishing().calcFishEnergy();
+                        }
+                    }
+
+                    if (key.endsWith("_xp")) {
+                        uitLevel().extendedLevelsUpdate();
+                    }
+
+                    const hideBoatNotifications = getThis.getConfig("hideBoat");
+                    const pirate_ship_timer = getVar("pirate_ship_timer", 0, "int");
+                    const row_boat_timer = getVar("row_boat_timer", 0, "int");
+                    const canoe_boat_timer = getVar("canoe_boat_timer", 0, "int");
+                    const stardust_boat_timer = getVar("stardust_boat_timer", 0, "int");
+                    const submarine_boat_timer = getVar("submarine_boat_timer", 0, "int");
+                    if (hideBoatNotifications) {
+                        hideElement(document.getElementById("notification-row_boat"));
+                        hideElement(document.getElementById("notification-canoe_boat"));
+                        hideElement(document.getElementById("notification-stardust_boat"));
+                        hideElement(document.getElementById("notification-pirate_ship"));
+                        hideElement(document.getElementById("notification-submarine_boat"));
+                    } else {
+                        if (row_boat_timer > 0) {
+                            showElement(document.getElementById("notification-row_boat"));
+                        }
+                        if (canoe_boat_timer > 0) {
+                            showElement(document.getElementById("notification-canoe_boat"));
+                        }
+                        if (stardust_boat_timer > 0) {
+                            showElement(
+                                document.getElementById("notification-stardust_boat")
+                            );
+                        }
+                        if (pirate_ship_timer > 0) {
+                            showElement(document.getElementById("notification-pirate_ship"));
+                        }
+                        if (submarine_boat_timer > 0) {
+                            showElement(
+                                document.getElementById("notification-submarine_boat")
+                            );
+                        }
+                    }
+
+                    if (key === "furnace_ore_amount_set") {
+                        setTimeout(function () {
+                            var furnaceOreTypeVar = getVar(
+                                "furnace_ore_amount_set",
+                                0,
+                                "int"
+                            );
+                            var furnaceNotifVar = IdlePixelPlus.plugins[
+                                "ui-tweaks"
+                            ].getConfig("furnaceEmptyNotification");
+
+                            if (furnaceOreTypeVar <= 0 && furnaceNotifVar) {
+                                document.getElementById(
+                                    "notification-furnace_avail"
+                                ).style.display = "inline-block";
                             } else {
-                                showInlineBlockElement(
-                                    document.getElementById("notification-loot_pot_avail")
+                                hideElement(
+                                    document.getElementById("notification-furnace_avail")
                                 );
                             }
-                        }
-
-                        ////////// SD Watch Notification
-                        const sdWatchCrafted = getVar("stardust_watch_crafted", 0, "int");
-                        const sdWatchCharges = getVar("stardust_watch_charges", 0, "int");
-                        if (getThis.getConfig("moveSDWatch") && sdWatchCrafted === 1) {
-                            hideElement(document.getElementById("notification-stardust_watch"));
-                            document.querySelector(
-                                "#menu-bar-sd_watch .sd-watch-charges"
-                            ).textContent = sdWatchCharges;
-                            document.querySelector(
-                                "#menu-bar-sd_watch_2 .sd-watch-charges_2"
-                            ).textContent = sdWatchCharges;
-                        } else if (!getThis.getConfig("moveSDWatch") && sdWatchCharges > 0) {
-                            showElement(document.getElementById("notification-stardust_watch"));
-                        } else {
-                            hideElement(document.getElementById("notification-stardust_watch"));
-                            hideElement(document.getElementById("menu-bar-sd_watch"));
-                        }
-
-                        if (key.startsWith("gathering_working_gathering_loot_bag_")) {
-                            var today = new Date();
-                            var time =
-                                today.getHours().toLocaleString("en-US", {
-                                    minimumIntegerDigits: 2,
-                                    useGrouping: false,
-                                }) +
-                                ":" +
-                                today.getMinutes().toLocaleString("en-US", {
-                                    minimumIntegerDigits: 2,
-                                    useGrouping: false,
-                                }) +
-                                ":" +
-                                today.getSeconds().toLocaleString("en-US", {
-                                    minimumIntegerDigits: 2,
-                                    useGrouping: false,
-                                });
-                            var location = key.replace(
-                                "gathering_working_gathering_loot_bag_",
-                                ""
-                            );
-                            var bagCount = getVar(key, 0, "int").toLocaleString();
-                        }
-
-                        if (key.includes("raw_") || key.includes("cooked_")) {
-                            if (Globals.currentPanel == "panel-fishing") {
-                                uitFishing().calcFishEnergy();
-                            }
-                        }
-
-                        if (key.endsWith("_xp")) {
-                            uitLevel().extendedLevelsUpdate();
-                        }
-
-                        const hideBoatNotifications = getThis.getConfig("hideBoat");
-                        const pirate_ship_timer = getVar("pirate_ship_timer", 0, "int");
-                        const row_boat_timer = getVar("row_boat_timer", 0, "int");
-                        const canoe_boat_timer = getVar("canoe_boat_timer", 0, "int");
-                        const stardust_boat_timer = getVar("stardust_boat_timer", 0, "int");
-                        const submarine_boat_timer = getVar("submarine_boat_timer", 0, "int");
-                        if (hideBoatNotifications) {
-                            hideElement(document.getElementById("notification-row_boat"));
-                            hideElement(document.getElementById("notification-canoe_boat"));
-                            hideElement(document.getElementById("notification-stardust_boat"));
-                            hideElement(document.getElementById("notification-pirate_ship"));
-                            hideElement(document.getElementById("notification-submarine_boat"));
-                        } else {
-                            if (row_boat_timer > 0) {
-                                showElement(document.getElementById("notification-row_boat"));
-                            }
-                            if (canoe_boat_timer > 0) {
-                                showElement(document.getElementById("notification-canoe_boat"));
-                            }
-                            if (stardust_boat_timer > 0) {
-                                showElement(
-                                    document.getElementById("notification-stardust_boat")
-                                );
-                            }
-                            if (pirate_ship_timer > 0) {
-                                showElement(document.getElementById("notification-pirate_ship"));
-                            }
-                            if (submarine_boat_timer > 0) {
-                                showElement(
-                                    document.getElementById("notification-submarine_boat")
-                                );
-                            }
-                        }
-
-                        if (key === "furnace_ore_amount_set") {
-                            setTimeout(function () {
-                                var furnaceOreTypeVar = getVar(
-                                    "furnace_ore_amount_set",
-                                    0,
-                                    "int"
-                                );
-                                var furnaceNotifVar = IdlePixelPlus.plugins[
-                                    "ui-tweaks"
-                                ].getConfig("furnaceEmptyNotification");
-
-                                if (furnaceOreTypeVar <= 0 && furnaceNotifVar) {
-                                    document.getElementById(
-                                        "notification-furnace_avail"
-                                    ).style.display = "inline-block";
-                                } else {
-                                    hideElement(
-                                        document.getElementById("notification-furnace_avail")
-                                    );
-                                }
-                            }, 500);
-                        }
-
-                        if (key.startsWith("nades_purple_key")) {
-                            let purpKeyMonst = getVar("nades_purple_key_monster", "", "string");
-                            let purpKeyRarity = getVar("nades_purple_key_rarity", "", "string");
-                            let purpKeyTimer = getVar("nades_purple_key_timer", 0, "int");
-
-                            uitPurpleKey().onPurpleKey(
-                                purpKeyMonst,
-                                purpKeyRarity,
-                                purpKeyTimer
-                            );
-                        }
-
-                        if (key === "playtime") {
-                            uitCriptoe().updateCrippledToeTimer();
-                        }
+                        }, 500);
                     }
-                    ////////// Allowed to Run while in combat
-                    ////////// Current FP with Timer (Left Sidecar)
-                    if (Globals.currentPanel == "panel-combat-canvas") {
-                        var currentFP = getVar("fight_points", 0, "int").toLocaleString();
-                        var rarePotTimer = getVar("rare_monster_potion_timer", 0, "int");
-                        var rarePotPlusTimer = getVar(
-                            "super_rare_monster_potion_timer",
-                            0,
-                            "int"
+
+                    if (key.startsWith("nades_purple_key")) {
+                        let purpKeyMonst = getVar("nades_purple_key_monster", "", "string");
+                        let purpKeyRarity = getVar("nades_purple_key_rarity", "", "string");
+                        let purpKeyTimer = getVar("nades_purple_key_timer", 0, "int");
+
+                        uitPurpleKey().onPurpleKey(
+                            purpKeyMonst,
+                            purpKeyRarity,
+                            purpKeyTimer
                         );
-                        var rarePotInfo = "";
-
-                        if (rarePotTimer > 0) {
-                            rarePotInfo = rarePotTimer;
-                        } else if (rarePotPlusTimer > 0) {
-                            rarePotInfo = format_time(rarePotPlusTimer);
-                        } else {
-                            rarePotInfo = "Inactive";
-                        }
-
-                        var combatLootPotActive = getVar(
-                            "combat_loot_potion_active",
-                            0,
-                            "int"
-                        );
-                        var combatLootPotInfo = combatLootPotActive ? "Active" : "Inactive";
-
-                        document.getElementById(
-                            "combat-info-fight_point-right-fp"
-                        ).textContent = " " + currentFP;
-                        document.getElementById(
-                            "combat-info-fight_point-left-fp"
-                        ).textContent = " " + currentFP;
-                        document.getElementById("combat-info-rare_pot-right-rp").textContent =
-                            " " + rarePotInfo;
-                        document.getElementById("combat-info-rare_pot-left-rp").textContent =
-                            " " + rarePotInfo;
-                        document.getElementById("combat-info-loot_pot-right-lp").textContent =
-                            " " + combatLootPotInfo;
-                        document.getElementById("combat-info-loot_pot-left-lp").textContent =
-                            " " + combatLootPotInfo;
                     }
 
-                    function setTransform(element, transformValue) {
-                        element.style.transform = transformValue;
-                    }
-
-                    function clearTransform(element) {
-                        element.style.transform = "";
-                    }
-
-                    function showInlineBlockElement(element) {
-                        element.style.display = "inline-block";
-                    }
-
-                    function showBlockElement(element) {
-                        element.style.display = "block";
-                    }
-
-                    function showElement(element) {
-                        element.style.display = "";
-                    }
-
-                    function showFlexElement(element) {
-                        element.style.display = "block";
-                    }
-
-                    function hideElement(element) {
-                        element.style.display = "none";
-                    }
-
-                    if (key == "playtime") {
-                        utcDate = new Date().getUTCDate();
-                        if (utcDate != currUTCDate) {
-                            currUTCDate = utcDate;
-                            //console.log(`UTCDate is now: ${currUTCDate}, and the criptoe update has fired off.`);
-                            uitCriptoe().addCriptoeValues();
-                        }
-                    }
-                    if (key == "in_raids" && valueAfter == 1) {
-                        document.getElementById('raids-advert-button').style.display = 'none';
-                        document.getElementById('raids-start-button').style.display = 'none';
+                    if (key === "playtime") {
+                        uitCriptoe().updateCrippledToeTimer();
                     }
                 }
-            }
-            //////////////////////////////// onVariableSet end ////////////////////////////////
+                ////////// Allowed to Run while in combat
+                ////////// Current FP with Timer (Left Sidecar)
+                if (Globals.currentPanel == "panel-combat-canvas") {
+                    var currentFP = getVar("fight_points", 0, "int").toLocaleString();
+                    var rarePotTimer = getVar("rare_monster_potion_timer", 0, "int");
+                    var rarePotPlusTimer = getVar(
+                        "super_rare_monster_potion_timer",
+                        0,
+                        "int"
+                    );
+                    var rarePotInfo = "";
 
-            onChat(data) {
-                getThis.updateColors(CHAT_UPDATE_FILTER);
-                getThis.limitChat();
-                IdlePixelPlus.plugins['ui-tweaks'].makeUUIDClickable();
-            }
+                    if (rarePotTimer > 0) {
+                        rarePotInfo = rarePotTimer;
+                    } else if (rarePotPlusTimer > 0) {
+                        rarePotInfo = format_time(rarePotPlusTimer);
+                    } else {
+                        rarePotInfo = "Inactive";
+                    }
 
-            onCombatEnd() {
-                getThis.updateColors(PANEL_UPDATE_FILTER);
-                getThis.updateColors();
-            }
+                    var combatLootPotActive = getVar(
+                        "combat_loot_potion_active",
+                        0,
+                        "int"
+                    );
+                    var combatLootPotInfo = combatLootPotActive ? "Active" : "Inactive";
 
-            makeUUIDClickable() {
-                const regex = /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi;
-                let chatArea = document.getElementById("chat-area");
-                let lastMessageElement = chatArea.lastChild;
-                let player = lastMessageElement.querySelector('.chat-username').innerText;
-                let bgColor = `background-color: ${IdlePixelPlus.plugins['ui-tweaks'].getConfig('background-color-chat-area-raid-password')}; `;
-                let fColor = `color: ${IdlePixelPlus.plugins['ui-tweaks'].getConfig('font-color-chat-area-chat-raid-password')}; `;
+                    document.getElementById(
+                        "combat-info-fight_point-right-fp"
+                    ).textContent = " " + currentFP;
+                    document.getElementById(
+                        "combat-info-fight_point-left-fp"
+                    ).textContent = " " + currentFP;
+                    document.getElementById("combat-info-rare_pot-right-rp").textContent =
+                        " " + rarePotInfo;
+                    document.getElementById("combat-info-rare_pot-left-rp").textContent =
+                        " " + rarePotInfo;
+                    document.getElementById("combat-info-loot_pot-right-lp").textContent =
+                        " " + combatLootPotInfo;
+                    document.getElementById("combat-info-loot_pot-left-lp").textContent =
+                        " " + combatLootPotInfo;
+                }
 
-                if (lastMessageElement && 'innerHTML' in lastMessageElement) {
-                    let lastMessage = lastMessageElement.innerHTML;
-                    lastMessage = lastMessage.replace(regex, function (match) {
-                        //console.log("Found UUID");
-                        return `<a href="#" style="${bgColor}${fColor}font-weight: bold; font-style:italic" onclick="IdlePixelPlus.plugins['ui-tweaks'].sendRaidJoinMessage('${match}'); switch_panels('panel-combat'); document.getElementById('game-panels-combat-items-area').style.display = 'none';document.getElementById('combat-stats').style.display = 'none';document.getElementById('game-panels-combat-raids').style.display = ''; return false;">${player} Raid</a>`;
-                    });
+                function setTransform(element, transformValue) {
+                    element.style.transform = transformValue;
+                }
 
-                    lastMessageElement.innerHTML = lastMessage;
-                } else {
-                    console.log("No valid last message element found");
+                function clearTransform(element) {
+                    element.style.transform = "";
+                }
+
+                function showInlineBlockElement(element) {
+                    element.style.display = "inline-block";
+                }
+
+                function showBlockElement(element) {
+                    element.style.display = "block";
+                }
+
+                function showElement(element) {
+                    element.style.display = "";
+                }
+
+                function showFlexElement(element) {
+                    element.style.display = "block";
+                }
+
+                function hideElement(element) {
+                    element.style.display = "none";
+                }
+
+                if (key == "playtime") {
+                    utcDate = new Date().getUTCDate();
+                    if (utcDate != currUTCDate) {
+                        currUTCDate = utcDate;
+                        //console.log(`UTCDate is now: ${currUTCDate}, and the criptoe update has fired off.`);
+                        uitCriptoe().addCriptoeValues();
+                    }
+                }
+                if (key == "in_raids" && valueAfter == 1) {
+                    document.getElementById('raids-advert-button').style.display = 'none';
+                    document.getElementById('raids-start-button').style.display = 'none';
                 }
             }
+        }
+        //////////////////////////////// onVariableSet end ////////////////////////////////
 
-            sendRaidJoinMessage(uuid) {
-                websocket.send(`JOIN_RAID_TEAM=${uuid}`);
-            }
-
-            copyTextToClipboard(text) {
-                navigator.clipboard.writeText(text).then(function () {
-                    //console.log('Copying to clipboard was successful!');
-                }, function (err) {
-                    console.error('Could not copy text: ', err);
-                });
-            }
-
+        onChat(data) {
+            getThis.updateColors(CHAT_UPDATE_FILTER);
+            getThis.limitChat();
+            IdlePixelPlus.plugins['ui-tweaks'].makeUUIDClickable();
         }
 
-        const elementsWithWidth = document.querySelectorAll("[width]");
-    elementsWithWidth.forEach(function (el) {
-        el.setAttribute("original-width", el.getAttribute("width"));
-    });
+        onCombatEnd() {
+            getThis.updateColors(PANEL_UPDATE_FILTER);
+            getThis.updateColors();
+        }
 
-    const elementsWithHeight = document.querySelectorAll("[height]");
-    elementsWithHeight.forEach(function (el) {
-        el.setAttribute("original-height", el.getAttribute("height"));
-    });
+        makeUUIDClickable() {
+            const regex = /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi;
+            let chatArea = document.getElementById("chat-area");
+            let lastMessageElement = chatArea.lastChild;
+            let player = lastMessageElement.querySelector('.chat-username').innerText;
+            let bgColor = `background-color: ${IdlePixelPlus.plugins['ui-tweaks'].getConfig('background-color-chat-area-raid-password')}; `;
+            let fColor = `color: ${IdlePixelPlus.plugins['ui-tweaks'].getConfig('font-color-chat-area-chat-raid-password')}; `;
 
-    const plugin = new UITweaksPlugin();
-    IdlePixelPlus.registerPlugin(plugin);
+            if (lastMessageElement && 'innerHTML' in lastMessageElement) {
+                let lastMessage = lastMessageElement.innerHTML;
+                lastMessage = lastMessage.replace(regex, function (match) {
+                    //console.log("Found UUID");
+                    return `<a href="#" style="${bgColor}${fColor}font-weight: bold; font-style:italic" onclick="IdlePixelPlus.plugins['ui-tweaks'].sendRaidJoinMessage('${match}'); switch_panels('panel-combat'); document.getElementById('game-panels-combat-items-area').style.display = 'none';document.getElementById('combat-stats').style.display = 'none';document.getElementById('game-panels-combat-raids').style.display = ''; return false;">${player} Raid</a>`;
+                });
+
+                lastMessageElement.innerHTML = lastMessage;
+            } else {
+                console.log("No valid last message element found");
+            }
+        }
+
+        sendRaidJoinMessage(uuid) {
+            websocket.send(`JOIN_RAID_TEAM=${uuid}`);
+        }
+
+        copyTextToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function () {
+                //console.log('Copying to clipboard was successful!');
+            }, function (err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+
+    }
+
+const elementsWithWidth = document.querySelectorAll("[width]");
+elementsWithWidth.forEach(function (el) {
+    el.setAttribute("original-width", el.getAttribute("width"));
+});
+
+const elementsWithHeight = document.querySelectorAll("[height]");
+elementsWithHeight.forEach(function (el) {
+    el.setAttribute("original-height", el.getAttribute("height"));
+});
+
+const plugin = new UITweaksPlugin();
+IdlePixelPlus.registerPlugin(plugin);
 })();
