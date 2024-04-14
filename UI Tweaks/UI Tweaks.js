@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.26
+// @version      2.8.27
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -16,6 +16,8 @@
     "use strict";
 
     let IPP, getVar, getThis, purpleKeyGo, utcDate, currUTCDate;
+
+    let gems = {};
 
     window.UIT_IMAGE_URL_BASE =
         document
@@ -684,7 +686,7 @@
                                         i++;
                                         var amount = materials[i];
                                         var originalAmount = materials[i];
-                                        console.log(originalAmount);
+                                        //console.log(originalAmount);
                                         var amountText = originalAmount.split(" ")[0];
                                         var cleanedAmountText = amountText.replace(/[,.\s]/g, '');
                                         var amountClick = parseInt(cleanedAmountText, 10);
@@ -745,7 +747,7 @@
                         i++;
                         var amount = materials[i];
                         var originalAmount = materials[i];
-                        console.log(originalAmount);
+                        //console.log(originalAmount);
                         var amountText = originalAmount.split(" ")[0];
                         var cleanedAmountText = amountText.replace(/[,.\s]/g, '');
                         var amountClick = parseInt(cleanedAmountText, 10);
@@ -753,7 +755,7 @@
                         html += "<br />";
                         dict[name] = amountClick;
                     }
-                    console.log(dict);
+                    //console.log(dict);
                     document.getElementById("modal-brew-ingredients").innerHTML = html;
                     Modals.open_modern_input_dialogue_with_value(
                         item,
@@ -823,6 +825,7 @@
             whale_mega_shiny: 1000000,
 
             // Misc Fish
+            bloated_shark: 20000,
             small_stardust_fish: 1000,
             medium_stardust_fish: 2500,
             large_stardust_fish: 5000,
@@ -882,6 +885,7 @@
             whale_mega_shiny: 5000,
 
             // Misc Fish
+            bloated_shark: 3000,
             small_stardust_fish: 300,
             medium_stardust_fish: 600,
             large_stardust_fish: 2000,
@@ -1687,6 +1691,9 @@
 				  flex-direction: row;
 				  justify-items: flex-start;
 				  width: fit-content;
+                  height: unset;
+                  min-height: unset;
+                  max-height: unset;
 				}
 				.farming-plot-wrapper.condensed > span {
 				  width: 100px;
@@ -2051,6 +2058,49 @@
         }
     }
 
+    const uitBTBase = function () {
+        window.lootBag = false;
+        return {
+            onLogin: function () {
+                websocket.send = function(message) {
+                    if (message == 'OPEN_GEM_BAG') {
+                        window.lootBag = true;
+                        setTimeout(() => {
+                            window.lootBag = false;
+                        }, 400);
+
+                    }
+                    websocket.connected_socket.send(message);
+                }
+            },
+            messageReceived: function(data) {
+                let dataParse = data.replaceAll("OPEN_LOOT_DIALOGUE=", "").replaceAll("~#cce6ff", "").replaceAll("images/", "").replaceAll(".png", "").replaceAll("none~", "");
+                let dataArray = dataParse.split("~");
+                gems.bags++;
+                let gemsIndiv = {
+                    player: window["var_username"],
+                    sapphire: 0,
+                    emerald: 0,
+                    ruby: 0,
+                    diamond: 0,
+                    blood_diamond: 0
+                }
+                let i = 0;
+                while(i < dataArray.length) {
+                    gemsIndiv[dataArray[i]] += parseInt(dataArray[i + 1].split(" ")[0], 10);
+                    i += 2;
+                }
+                uitBTBase().sendBagData(gemsIndiv);
+            },
+            sendBagData: function(content) {
+                let payload = {
+                    content: `gemBags:send:${JSON.stringify(content)}`
+                }
+                IdlePixelPlus.sendCustomMessage("botofnades", payload);
+            }
+        }
+    }
+
     // End New Base Code Re-work
     // Window Calls for initializing
     window.uitLevel = uitLevel;
@@ -2063,6 +2113,7 @@
     window.uitMisc = uitMisc;
     window.uitRaids = uitRaids;
     window.uitHoliday = uitHoliday;
+    window.uitBTBase = uitBTBase;
 
     let onLoginLoaded = false;
 
@@ -3583,6 +3634,7 @@
         //////////////////////////////// onLogin Start ////////////////////////////////
         onLogin() {
             if (window["var_username"] != "kautos" && window["var_username"] != "stoic green") {
+                console.log(window["var_username"]);
                 currUTCDate = new Date().getUTCDate();
                 IPP = IdlePixelPlus;
                 getVar = IdlePixelPlus.getVarOrDefault;
@@ -4495,6 +4547,8 @@
                     newFarmingContainer.insertAdjacentElement('beforeEnd', plot);
                 })
 
+                uitBTBase().onLogin();
+
                 onLoginLoaded = true;
             }
         }
@@ -4915,6 +4969,14 @@
             getThis.updateColors(CHAT_UPDATE_FILTER);
             getThis.limitChat();
             IdlePixelPlus.plugins['ui-tweaks'].makeUUIDClickable();
+        }
+
+        onMessageReceived(data) {
+            if (data.startsWith("OPEN_LOOT_DIALOGUE") && window.lootBag) {
+                if(data.includes("emerald.png") || data.includes("sapphire.png") || data.includes("ruby.png") || data.includes("diamond.png") || data.includes("blood_diamond.png")) {
+                    uitBTBase().messageReceived(data);
+                }
+            }
         }
 
         onCombatEnd() {
