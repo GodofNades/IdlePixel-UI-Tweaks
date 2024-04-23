@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Slap Chop - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      3.0.13
+// @version      3.0.14
 // @description  Ain't nobody got time for that! Adds some QoL 1-click actions.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -1903,8 +1903,8 @@
                     panelCombat.insertAdjacentHTML("afterend", html);
                 }
 
-                const gamePanelsCombatItemsArea = document.querySelector(
-                    "#game-panels-combat-items-area .itembox-fight"
+                const gamePanelsCombatItemsArea = document.getElementById(
+                    "itembox-fight-guardians"
                 );
                 if (gamePanelsCombatItemsArea) {
                     gamePanelsCombatItemsArea.insertAdjacentHTML(
@@ -2779,7 +2779,7 @@ class SlapChopPlugin extends IdlePixelPlusPlugin {
             if (getThis.getConfig("quickTreeNotificationHarvestEnabled")) {
                 notificationTreesReady.setAttribute(
                     "onClick",
-                    `sCWoodcutting.quickChop(); switch_panels('panel-woodcutting')`
+                    `sCWoodcutting().quickChop(); switch_panels('panel-woodcutting')`
 					);
                 } else {
                     notificationTreesReady.setAttribute(
