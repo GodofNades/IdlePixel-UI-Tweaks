@@ -1,30 +1,83 @@
 // ==UserScript==
 // @name         IdlePixel Loot Log Tweaks
 // @namespace    godofnades.idlepixel
-// @version      0.1.7
+// @version      0.1.8
 // @description  Moving the Loot Log into a container like IdlePixel Fixed had with 'Tab' as the button to open.
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
 // @grant        none
 // @license      MIT
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
+// @require		 	https://greasyfork.org/scripts/491983-idlepixel-plugin-paneller/code/IdlePixel%2B%20Plugin%20Paneller.js?anticache=20240410
+// @downloadURL https://update.greasyfork.org/scripts/482718/IdlePixel%20Loot%20Log%20Tweaks.user.js
+// @updateURL https://update.greasyfork.org/scripts/482718/IdlePixel%20Loot%20Log%20Tweaks.meta.js
 // ==/UserScript==
 
 (function () {
-	"use strict";
+    "use strict";
 
     let lootLogRefreshTimer;
 
-	class lootLogTweaks extends IdlePixelPlusPlugin {
-		constructor() {
-			super("lootlogtweaks", {
-				about: {
-					name: `IdlePixel Loot Log Tweaks (Version 0.1.7)`,
-					version: `0.1.6`,
-					author: `GodofNades`,
-					description: `Moving the Loot Log into a container like IdlePixel Fixed had with 'Tab' as the button to open.`,
-				},
-				/*config: [
+    LogManager.prototype.refresh_panel = function() {
+        var content = document.getElementById("panel-history-content");
+        var custom = document.getElementById("ll-panel-div");
+        var imgLoc = `https://d1xsc8x7nc5q8t.cloudfront.net/`;
+        var html = "";
+        for(var i = this.data.length - 1; i >= 0; i--) {
+            var entry = this.data[i];
+            var dt = entry.datetime;
+            var slug = entry.slug;
+            var monster_drops = entry.data;
+
+            // Custom time formatting code
+            var nowObj = new Date();
+            var dtObj = new Date(dt);
+            var delta = nowObj.getTime() - dtObj.getTime();
+            var deltaSeconds = Math.floor(delta / 1000);
+            var deltaMinutes = Math.floor(deltaSeconds / 60);
+            var deltaHours = Math.floor(deltaMinutes / 60);
+            var deltaDays = Math.floor(deltaHours / 24);
+
+            var timeLabel = deltaSeconds + " seconds ago";
+            if(deltaDays > 0) {
+                timeLabel = deltaDays + " days ago";
+            } else if(deltaHours > 0) {
+                timeLabel = deltaHours + " hours ago";
+            } else if(deltaMinutes > 0) {
+                timeLabel = deltaMinutes + " minutes ago";
+            }
+
+            html += "<div class='drop-log-div'>";
+            html += "<div class='drop-log-dt'>" + timeLabel + "</div>";
+            monster_drops.forEach(function(drop) {
+                var image = drop.image;
+                var label = drop.label;
+                var color = drop.color;
+                html += "<div class='loot' style='background-color:" + color + "'>";
+                html += "<img src='" + imgLoc + image + "' class='w50 me-3'>";
+                html += label;
+                html += "</div>";
+            });
+            html += "</div><br /><br />";
+        }
+
+        if(html === "") {
+            html = "<div class='center'>You have no data yet. Loot something and come back to check!</div>";
+        }
+        content.innerHTML = html;
+        custom.innerHTML = html;
+    };
+
+    class lootLogTweaks extends IdlePixelPlusPlugin {
+        constructor() {
+            super("lootlogtweaks", {
+                about: {
+                    name: `IdlePixel Loot Log Tweaks (Version 0.1.8)`,
+                    version: `0.1.8`,
+                    author: `GodofNades`,
+                    description: `Moving the Loot Log into a container like IdlePixel Fixed had with 'Tab' as the button to open.`,
+                },
+                /*config: [
                     {
                         label: "------------------------------",
                         type: "label"
@@ -45,11 +98,11 @@
                         default: FONT_DEFAULT
                     }
                 ]*/
-			});
-		}
+            });
+        }
 
-		initStyles() {
-			const css = `
+        initStyles() {
+            const css = `
               #modal-style-ll .drop-log-dt {
                 color: cyan;
               }
@@ -107,13 +160,13 @@
                 flex-direction: column;
               }
             `;
-			const styleSheet = document.createElement("style");
-			styleSheet.innerHTML = css;
-			document.head.appendChild(styleSheet);
-		}
+            const styleSheet = document.createElement("style");
+            styleSheet.innerHTML = css;
+            document.head.appendChild(styleSheet);
+        }
 
-		createPanel() {
-			let llModalHTML = `
+        createPanel() {
+            let llModalHTML = `
               <div id="modal-style-ll"">
                 <div id="modal-style-ll-container">
                   <div id="ll-modal-base_window" style="">
@@ -133,101 +186,80 @@
               </div>
             `;
 
-			const contentDiv = document.getElementById("content");
-			const modalContainer = document.createElement("div");
-			modalContainer.innerHTML = llModalHTML;
-			contentDiv.appendChild(modalContainer);
+            const contentDiv = document.getElementById("content");
+            const modalContainer = document.createElement("div");
+            modalContainer.innerHTML = llModalHTML;
+            contentDiv.appendChild(modalContainer);
 
-			const onlineCount = document.querySelector(
-				".top-bar .gold:not(#top-bar-admin-link)"
-			);
-			const linkElement = document.createElement("a");
-			linkElement.href = "#";
-			linkElement.className = "hover float-end link-no-decoration";
-			linkElement.title = "Loot Log";
-			linkElement.textContent = "Loot Log" + "\u00A0\u00A0\u00A0";
+            const onlineCount = document.querySelector(
+                ".game-top-bar .gold:not(#top-bar-admin-link)"
+            );
+            const linkElement = document.createElement("a");
+            linkElement.href = "#";
+            linkElement.className = "hover float-end link-no-decoration";
+            linkElement.title = "Loot Log";
+            linkElement.textContent = "Loot Log" + "\u00A0\u00A0\u00A0";
 
-			onlineCount.insertAdjacentElement("beforebegin", linkElement);
+            onlineCount.insertAdjacentElement("beforebegin", linkElement);
 
-			const modalStyleLL = document.getElementById("modal-style-ll");
-			const closeButton = document.getElementById("close-button-ll");
+            const modalStyleLL = document.getElementById("modal-style-ll");
+            const closeButton = document.getElementById("close-button-ll");
 
-			linkElement.addEventListener("click", function (event) {
-				event.preventDefault();
-				modalStyleLL.style.display = "block";
-			});
+            linkElement.addEventListener("click", function (event) {
+                event.preventDefault();
+                modalStyleLL.style.display = "block";
+                new LogManager().refresh_panel();
+            });
 
-			closeButton.addEventListener("click", function () {
-				modalStyleLL.style.display = "none";
-			});
+            closeButton.addEventListener("click", function () {
+                modalStyleLL.style.display = "none";
+            });
 
-			document.addEventListener("keydown", function (event) {
-				var chatInput = document.getElementById("chat-area-input");
-				var chat_focused = document.activeElement === chatInput;
-				if (!chat_focused) {
-					if (event.keyCode === 9) {
-						if (modalStyleLL.style.display === "block") {
-							modalStyleLL.style.display = "none";
-						} else {
-							modalStyleLL.style.display = "block";
-						}
-					}
-				}
-			});
+            document.addEventListener("keydown", function (event) {
+                var chatInput = document.getElementById("chat-area-input");
+                var chat_focused = document.activeElement === chatInput;
+                if (!chat_focused) {
+                    if (event.keyCode === 9) {
+                        if (modalStyleLL.style.display === "block") {
+                            modalStyleLL.style.display = "none";
+                        } else {
+                            modalStyleLL.style.display = "block";
+                            new LogManager().refresh_panel();
+                        }
+                    }
+                }
+            });
 
-			modalStyleLL.addEventListener("click", function (event) {
-				const isClickInside = document
-					.getElementById("al-modal-base_window")
-					.contains(event.target);
+            modalStyleLL.addEventListener("click", function (event) {
+                const isClickInside = document
+                .getElementById("al-modal-base_window")
+                .contains(event.target);
 
-				if (!isClickInside) {
-					modalStyleLL.style.display = "none";
-				}
-			});
+                if (!isClickInside) {
+                    modalStyleLL.style.display = "none";
+                }
+            });
 
-			document
-				.getElementById("ll-modal-base_window")
-				.addEventListener("click", function (event) {
-					event.stopPropagation();
-				});
-		}
-
-		refreshLootLog() {
-			try {
-				var logObj = new LogManager();
-				logObj.refresh_panel();
-			} catch (error) {
-				console.log(error);
-			}
-		}
-
-		copyContent() {
-			const original = document.getElementById("panel-history-content");
-			const mirror = document.getElementById("ll-panel-div");
-			mirror.innerHTML = original.innerHTML;
-		}
-
-        refreshTimer() {
-            this.lootLogRefreshTimer = setInterval(() => {
-                this.refreshLootLog();
-            }, 5000);
+            document
+                .getElementById("ll-modal-base_window")
+                .addEventListener("click", function (event) {
+                event.stopPropagation();
+            });
         }
 
-		onLogin() {
-			this.initStyles();
-			this.createPanel();
-            this.refreshTimer();
-			this.copyContent();
-			const observer = new MutationObserver(this.copyContent);
-			const config = { childList: true, subtree: true };
+        onLogin() {
+            this.initStyles();
+            this.createPanel();
+            //Paneller.registerPanel("lootLogTweaks", "Loot Log")
+        }
 
-			observer.observe(
-				document.getElementById("panel-history-content"),
-				config
-			);
-		}
-	}
+        onMessageReceived(data) {
+            if(data.startsWith('OPEN_LOOT_DIALOGUE')) {
+                new LogManager().refresh_panel();
+            }
+        }
+    }
 
-	const plugin = new lootLogTweaks();
-	IdlePixelPlus.registerPlugin(plugin);
+    const plugin = new lootLogTweaks();
+    IdlePixelPlus.registerPlugin(plugin);
 })();
