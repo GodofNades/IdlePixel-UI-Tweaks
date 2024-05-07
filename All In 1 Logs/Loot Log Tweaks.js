@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Loot Log Tweaks
 // @namespace    godofnades.idlepixel
-// @version      0.1.8
+// @version      0.1.9
 // @description  Moving the Loot Log into a container like IdlePixel Fixed had with 'Tab' as the button to open.
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
@@ -49,15 +49,23 @@
 
             html += "<div class='drop-log-div'>";
             html += "<div class='drop-log-dt'>" + timeLabel + "</div>";
-            monster_drops.forEach(function(drop) {
-                var image = drop.image;
-                var label = drop.label;
-                var color = drop.color;
-                html += "<div class='loot' style='background-color:" + color + "'>";
-                html += "<img src='" + imgLoc + image + "' class='w50 me-3'>";
-                html += label;
-                html += "</div>";
-            });
+            if(slug == 'raid_drop') {
+                var imgRaid = entry.data.split("~")[0];
+                html += "<div class='loot' style='background-color:aquamarine'>"
+                html += "<img src='" + imgLoc + imgRaid + "'class='w50 me-3'>"
+                html += entry.data.split("~")[1];
+                html += "</div>"
+            } else {
+                monster_drops.forEach(function(drop) {
+                    var image = drop.image;
+                    var label = drop.label;
+                    var color = drop.color;
+                    html += "<div class='loot' style='background-color:" + color + "'>";
+                    html += "<img src='" + imgLoc + image + "' class='w50 me-3'>";
+                    html += label;
+                    html += "</div>";
+                });
+            }
             html += "</div><br /><br />";
         }
 
@@ -72,10 +80,10 @@
         constructor() {
             super("lootlogtweaks", {
                 about: {
-                    name: `IdlePixel Loot Log Tweaks (Version 0.1.8)`,
-                    version: `0.1.8`,
-                    author: `GodofNades`,
-                    description: `Moving the Loot Log into a container like IdlePixel Fixed had with 'Tab' as the button to open.`,
+                    name: GM_info.script.name + " (ver: " + GM_info.script.version + ")",
+                    version: GM_info.script.version,
+                    author: GM_info.script.author,
+                    description: GM_info.script.description,
                 },
                 /*config: [
                     {
@@ -160,13 +168,13 @@
                 flex-direction: column;
               }
             `;
-            const styleSheet = document.createElement("style");
-            styleSheet.innerHTML = css;
-            document.head.appendChild(styleSheet);
-        }
+                const styleSheet = document.createElement("style");
+                styleSheet.innerHTML = css;
+                document.head.appendChild(styleSheet);
+            }
 
-        createPanel() {
-            let llModalHTML = `
+            createPanel() {
+                let llModalHTML = `
               <div id="modal-style-ll"">
                 <div id="modal-style-ll-container">
                   <div id="ll-modal-base_window" style="">
@@ -247,18 +255,21 @@
             });
         }
 
-        onLogin() {
-            this.initStyles();
-            this.createPanel();
-            //Paneller.registerPanel("lootLogTweaks", "Loot Log")
-        }
+            onLogin() {
+                this.initStyles();
+                this.createPanel();
+                //Paneller.registerPanel("lootLogTweaks", "Loot Log")
+            }
 
-        onMessageReceived(data) {
-            if(data.startsWith('OPEN_LOOT_DIALOGUE')) {
-                new LogManager().refresh_panel();
+            onMessageReceived(data) {
+                if(data.startsWith('OPEN_LOOT_DIALOGUE')) {
+                    new LogManager().refresh_panel();
+                }
+                if(data.startsWith('OPEN_DIALOGUE=RAIDS REWARD')) {
+                    new LogManager().add_entry('raid_drop', `${data.split('~')[1]}~${data.split('~')[2]}`);
+                }
             }
         }
-    }
 
     const plugin = new lootLogTweaks();
     IdlePixelPlus.registerPlugin(plugin);
