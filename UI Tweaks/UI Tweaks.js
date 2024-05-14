@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.27
+// @version      2.8.28
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
 // @match        *://idle-pixel.com/login/play/
 // @grant        none
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
+// @require      https://cdnjs.cloudflare.com/ajax/libs/anchorme/2.1.2/anchorme.min.js
 // @downloadURL https://update.greasyfork.org/scripts/459147/IdlePixel%20UI%20Tweaks%20-%20GodofNades%20Fork.user.js
 // @updateURL https://update.greasyfork.org/scripts/459147/IdlePixel%20UI%20Tweaks%20-%20GodofNades%20Fork.meta.js
 // ==/UserScript==
@@ -18,6 +19,7 @@
     let IPP, getVar, getThis, purpleKeyGo, utcDate, currUTCDate;
 
     let gems = {};
+
 
     window.UIT_IMAGE_URL_BASE =
         document
@@ -1333,9 +1335,9 @@
             timeout: function () {
                 const rocket_fuel = getVar("rocket_fuel", 0, "int");
                 const rocket_pot_count = getVar("rocket_potion", 0, "int");
-                document.querySelector("#rocket-fuel-count").textContent = rocket_fuel;
+                document.querySelector("#rocket-fuel-count").textContent = rocket_fuel.toLocaleString();
                 document.querySelector("#rocket-pot-count").textContent =
-                    rocket_pot_count;
+                    rocket_pot_count.toLocaleString();
             },
 
             onVar: function () {
@@ -1483,9 +1485,9 @@
                     label_side_car_dist;
                 document.querySelector("#current-rocket-travel-times").textContent =
                     label_side_car_eta;
-                document.querySelector("#rocket-fuel-count").textContent = rocket_fuel;
+                document.querySelector("#rocket-fuel-count").textContent = rocket_fuel.toLocaleString();
                 document.querySelector("#rocket-pot-count").textContent =
-                    rocket_pot_count;
+                    rocket_pot_count.toLocaleString();
                 document.querySelector("#rocket-pot-timer").textContent =
                     rocket_pot_timer;
             },
@@ -1760,6 +1762,12 @@
 				  -webkit-transform: rotate(45deg);
 				  margin-bottom: 3px;
 				}
+
+                .itembox-large {
+                  width: 204px;
+                  margin-bottom: 15px;
+                }
+
 				#menu-bar-sd_watch {
 					margin-left: 20px;
 				}
@@ -1840,6 +1848,109 @@
 				`;
 
                 document.head.appendChild(style);
+            },
+
+            fixGKeys: function () {
+                // Get the original itembox
+                const itemBox = document.getElementById('itembox-fight-guardians');
+
+                // Update the main div's style
+                itemBox.style.overflow = 'hidden';
+                itemBox.style.marginBottom = '-20px';
+
+                // Select the first and second child divs
+                const firstDiv = itemBox.querySelector('.mt-1');
+                const secondDiv = itemBox.querySelector('.mt-2');
+
+                // Clear existing content from the firstDiv and create a new structure
+                firstDiv.innerHTML = `
+    <div class="center mt-1" style="
+    height: 100px;
+">
+    <div>
+        <span style="display: inline-flex;flex-direction: column;position: relative;bottom: 20px;width: 30%;">
+            <span id="fight-guardians-itemxbox-large-green_gaurdian_key" style="background-color: rgb(0, 0, 0, 0.5); padding: 2px;">
+                <img class="w25" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/green_gaurdian_key.png" title="green_gaurdian_key">
+                <item-display data-format="number" data-key="green_gaurdian_key">290</item-display>
+            </span>
+            <span id="fight-guardians-itemxbox-large-blue_gaurdian_key" style="background-color: rgba(0, 0, 0, 0.5); padding: 2px;">
+                <img class="w25" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/blue_gaurdian_key.png" title="blue_gaurdian_key">
+                <item-display data-format="number" data-key="blue_gaurdian_key">430</item-display>
+            </span>
+        </span>
+        <img class="w50" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/faradox_100.png" title="faradox_100" style="
+    height: 100%;
+    width: 36%;
+">
+        <span style="display: inline-flex;flex-direction: column;position: relative;bottom: 20px;width: 30%;">
+            <span id="fight-guardians-itemxbox-large-purple_gaurdian_key" style="background-color: rgba(0, 0, 0, 0.5); padding: 2px;">
+                <img class="w25" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/purple_gaurdian_key.png" title="purple_gaurdian_key">
+                <item-display data-format="number" data-key="purple_gaurdian_key">33</item-display>
+            </span>
+            <span id="fight-guardians-itemxbox-large-mixed_gaurdian_key" style="background-color: rgba(0, 0, 0, 0.5); padding: 2px;">
+                <img class="w25" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/mixed_gaurdian_key.png" title="mixed_gaurdian_key">
+                <item-display data-format="number" data-key="mixed_gaurdian_key">19</item-display>
+            </span>
+        </span>
+    </div></div>
+    `;
+
+                // Modify the second div
+                secondDiv.textContent = '';
+            },
+
+            recolorTableText: function () {
+                document.querySelectorAll(".p-2.color-grey.font-small").forEach((cell) => { cell.style.color = "black"; cell.style.fontSize = "1em";})
+                document.querySelectorAll(".font-small.color-grey").forEach((cell) => { cell.style.color = "black"; cell.style.fontSize = "1em";})
+            },
+
+            fixAchiLabels: function () {
+                Achievements.refresh_achievement_area = function (skill, difficulty)  {
+                    var html = "";
+
+                    html += "<button onclick='switch_panels(\"panel-achievements\")'>Go Back</button>"
+                    html += "<h1 class='center'>" + skill.toUpperCase() + " <span class='color-grey'>("+difficulty.toUpperCase()+")</span></h1>";
+
+                    html += "<center>";
+                    for(var entry of Achievements._get_dict(skill, difficulty))
+                    {
+                        html += "<div class='achievement-entry mt-3 shadow' style='color: black !important'>";
+                        html += entry.description
+                        if(Items.getItem("ach_"+difficulty+"_"+entry.slug) == 1)
+                            html += "<span class='float-end color-green'>Complete</span>";
+                        else
+                            html += "<span class='float-end color-red'>Incomplete</span>";
+                        html += "</div>";
+                    }
+
+                    html += "<br />";
+                    html += "<br />";
+                    html += "<hr />";
+                    html += "<br />";
+                    html += "<h2 class='center'>ACHIEVEMENT PERK</h2>";
+                    html += "<h5 class='center color-grey'>Complete all the achievements in this section for the achievement perk.</h5>";
+                    html += "<div class='achievement-entry achievement-entry-reward mt-3 shadow' style='color: black !important'>";
+                    html += Achievements._get_reward_text(skill, difficulty);
+                    if(Achievements.has_completed_set(skill, difficulty))
+                        html += "<span class='float-end color-green'>ACTIVE</span>";
+                    else
+                        html += "<span class='float-end color-red'>INACTIVE</span>";
+                    html += "</div>";
+                    html += "</center>";
+
+                    document.getElementById("achievements-area").innerHTML = html;
+                    document.getElementById("achievements-buttons").style.display = "none";
+                }
+            },
+            replaceLinks: function(message) {
+                return anchorme({
+                    input: message,
+                    options: {
+                        attributes: {
+                            target: "_blank"
+                        }
+                    }
+                }).replace(/<a(.*?)href="(.+?)">(.*?)<\/a>(-*)/g, '<a$1href="$2$4">$3$4</a>');
             }
         };
     };
@@ -1855,7 +1966,7 @@
                 var raidLocationDropdown = document.createElement('select');
                 raidLocationDropdown.id = 'raid-location-dropdown';
                 raidLocationDropdown.className = 'raids-option-bar';
-                var locations = ['Toybox', 'Mansion', 'Easter'];
+                var locations = ['Toybox', 'Mansion'];
                 locations.forEach(function (location) {
                     var option = document.createElement('option');
                     option.value = location.toLowerCase();
@@ -1867,7 +1978,7 @@
                 var raidDifficultyDropdown = document.createElement('select');
                 raidDifficultyDropdown.id = 'raid-difficulty-dropdown';
                 raidDifficultyDropdown.className = 'raids-option-bar';
-                var difficulties = ['Practice', 'Medium', 'Hard'];
+                var difficulties = ['Practice', 'Normal', 'Hard'];
                 difficulties.forEach(function (difficulty) {
                     var option = document.createElement('option');
                     option.value = difficulty.toLowerCase();
@@ -1905,6 +2016,17 @@
                 startRaid.innerText = 'Start Raid';
                 startRaid.onclick = function () {
                     uitRaids().startRaid();
+                    this.disabled = true;
+                    setTimeout(() => {
+                        this.disabled = false;
+                    }, 30000);
+                }
+
+                let soloRaid = document.CreateElement('button');
+                soloRaid.id - 'raids-solo-button';
+                soloRaid.innerText = 'Solo Raid';
+                soloRaid.onclick = function () {
+                    uitRaids().soloRaid();
                     this.disabled = true;
                     setTimeout(() => {
                         this.disabled = false;
@@ -1952,12 +2074,35 @@
                     }
                 })
                 let neededCount = 4 - userCount;
-                if (locationRaids != "Easter") {
-                    websocket.send(`CHAT=${raidPW} : [${locationRaids}] || [${modeRaids}] || [${neededCount} Open Spots]`);
-                } else {
-                    websocket.send(`CHAT=${raidPW} : [${locationRaids}] || [Have Certificate] || [${neededCount} Open Spots]`);
+
+                let fp = {
+                    toybox: {
+                        practice: "0 FP",
+                        normal: "4k FP",
+                        hard: "4k FP"
+                    },
+                    mansion: {
+                        practice: "0 FP",
+                        normal: "8k FP",
+                        hard: "8k FP"
+                    },
                 }
-                //console.log(`${raidPW} : [${locationRaids}] || [${modeRaids}] || [${neededCount} Open Spots]`)
+
+                let energy = {
+                    toybox: {
+                        practice: "0 Energy",
+                        normal: "10k Energy",
+                        hard: "50k Energy"
+                    },
+                    mansion: {
+                        practice: "0 Energy",
+                        normal: "100k Energy",
+                        hard: "250k Energy"
+                    },
+                }
+
+                websocket.send(`CHAT=${raidPW} : [${locationRaids}] || [${modeRaids}] || [${fp[locationRaids.toLowerCase()][modeRaids.toLowerCase()]} & ${energy[locationRaids.toLowerCase()][modeRaids.toLowerCase()]}] || [${neededCount} Open Spots]`);
+                //console.log(`${raidPW} : [${locationRaids}] || [${modeRaids}] || [${fp[locationRaids.toLowerCase()][modeRaids.toLowerCase()]} &  ${energy[locationRaids.toLowerCase()][modeRaids.toLowerCase()]}] || [${neededCount} Open Spots]`)
             },
             startRaid: function () {
                 let locationRaids = document.getElementById('raid-location-dropdown').value;
@@ -1965,20 +2110,33 @@
                 let locationMatch = {
                     toybox: 2,
                     mansion: 1,
-                    easter: 3,
                 };
                 let modeMatch = {
                     practice: 0,
-                    medium: 1,
+                    normal: 1,
                     hard: 2
                 };
+
                 let locationValue = locationMatch[locationRaids];
                 let modeValue = modeMatch[modeRaids];
-                if (locationRaids != "easter") {
-                    websocket.send(`START_RAID_${locationValue}=${modeValue}`);
-                } else {
-                    websocket.send(`START_RAID_${locationValue}=1`);
-                }
+                websocket.send(`START_RAID_${locationValue}=${modeValue}`);
+            },
+            soloRaid: function () {
+                let locationRaids = document.getElementById('raid-location-dropdown').value;
+                let modeRaids = document.getElementById('raid-difficulty-dropdown').value;
+                let locationMatch = {
+                    toybox: 2,
+                    mansion: 1,
+                };
+                let modeMatch = {
+                    practice: 0,
+                    normal: 1,
+                    hard: 2
+                };
+
+                let locationValue = locationMatch[locationRaids];
+                let modeValue = modeMatch[modeRaids];
+                websocket.send(`START_RAID_SOLO=${locationValue}~${modeValue}`);
             },
         }
     }
@@ -2030,7 +2188,7 @@
             cloneDust: function () {
                 const brewing = document.getElementById("panel-brewing");
                 const cooking = document.getElementById("panel-cooking").querySelector("itembox[data-item=maggots]");
-                const fighting = document.getElementById("game-panels-combat-items-area").querySelectorAll('div[data-tooltip="fight"]')[1];
+                const fighting = document.getElementById("combat-badge-itembox");
                 const woodcut = document.getElementById("panel-woodcutting").querySelector("itembox[data-item=flexible_logs]");
                 const farming = document.getElementById("panel-farming").querySelector("itembox[data-item=bonemeal_bin]");
 
@@ -2041,8 +2199,8 @@
                         moveMe.insertAdjacentHTML("afterend", `\n\n`);
                     }
                     if (item.startsWith("fighting")) {
-                        fighting.insertAdjacentElement("afterend", moveMe);
-                        moveMe.insertAdjacentHTML("beforebegin", `\n\n`);
+                        fighting.insertAdjacentElement("beforebegin", moveMe);
+                        moveMe.insertAdjacentHTML("afterend", `\n\n`);
                     }
                     if (item.startsWith("tree")) {
                         woodcut.insertAdjacentElement("beforebegin", moveMe);
@@ -2387,6 +2545,12 @@
                         label: "Enable Chat to be visible while in combat.",
                         type: "boolean",
                         default: true
+                    },
+                    {
+                        id: "convertNameLink",
+                        label: "Enable alternate links when clicking player name in chat.",
+                        type: "boolean",
+                        default: true,
                     },
                     {
                         id: "imageTitles",
@@ -3634,7 +3798,7 @@
         //////////////////////////////// onLogin Start ////////////////////////////////
         onLogin() {
             if (window["var_username"] != "kautos" && window["var_username"] != "stoic green") {
-                console.log(window["var_username"]);
+                //console.log(window["var_username"]);
                 currUTCDate = new Date().getUTCDate();
                 IPP = IdlePixelPlus;
                 getVar = IdlePixelPlus.getVarOrDefault;
@@ -4523,6 +4687,7 @@
                 uitTableLabels().Modals_changeModal();
                 uitHoliday().easter2024();
                 uitDustPotions().cloneDust();
+                uitMisc().fixGKeys();
 
 
                 let woodcuttingContainer = document.createElement('span');
@@ -4548,6 +4713,7 @@
                 })
 
                 uitBTBase().onLogin();
+                uitMisc().fixAchiLabels();
 
                 onLoginLoaded = true;
             }
@@ -4636,6 +4802,10 @@
                             }
                         });
                     }
+                }
+
+                if (Globals.currentPanel === "panel-brewing" || Globals.currentPanel === "panel-crafting" || Globals.currentPanel === "panel-cooking") {
+                    uitMisc().recolorTableText();
                 }
 
                 if (Globals.currentPanel === "panel-fishing") {
@@ -4969,6 +5139,9 @@
             getThis.updateColors(CHAT_UPDATE_FILTER);
             getThis.limitChat();
             IdlePixelPlus.plugins['ui-tweaks'].makeUUIDClickable();
+            IdlePixelPlus.plugins['ui-tweaks'].convertNameLinks();
+            const el = $("#chat-area > *").last();
+            el.html(uitMisc().replaceLinks(el.html()));
         }
 
         onMessageReceived(data) {
@@ -5005,6 +5178,15 @@
             }
         }
 
+        convertNameLinks() {
+            if( IdlePixelPlus.plugins['ui-tweaks'].getConfig("convertNameLink") ) {
+                let chatArea = document.getElementById("chat-area");
+                let lastMessageElement = chatArea.lastChild;
+                let player = lastMessageElement.querySelector('.chat-username').innerText;
+                lastMessageElement.querySelector('.chat-username').href = `https://data.idle-pixel.com/compare/?player1=${window['var_username']}&player2=${player}`;
+            }
+        }
+
         sendRaidJoinMessage(uuid) {
             websocket.send(`JOIN_RAID_TEAM=${uuid}`);
         }
@@ -5019,16 +5201,16 @@
 
     }
 
-    const elementsWithWidth = document.querySelectorAll("[width]");
-    elementsWithWidth.forEach(function (el) {
-        el.setAttribute("original-width", el.getAttribute("width"));
-    });
+const elementsWithWidth = document.querySelectorAll("[width]");
+elementsWithWidth.forEach(function (el) {
+    el.setAttribute("original-width", el.getAttribute("width"));
+});
 
-    const elementsWithHeight = document.querySelectorAll("[height]");
-    elementsWithHeight.forEach(function (el) {
-        el.setAttribute("original-height", el.getAttribute("height"));
-    });
+const elementsWithHeight = document.querySelectorAll("[height]");
+elementsWithHeight.forEach(function (el) {
+    el.setAttribute("original-height", el.getAttribute("height"));
+});
 
-    const plugin = new UITweaksPlugin();
-    IdlePixelPlus.registerPlugin(plugin);
+const plugin = new UITweaksPlugin();
+IdlePixelPlus.registerPlugin(plugin);
 })();
