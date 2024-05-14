@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.28
+// @version      2.8.29
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -1956,7 +1956,7 @@
     };
 
     const uitRaids = function () {
-        // Global Constants
+        window.uitSoloRaiding = false;
         return {
             initElements: function () {
                 var optionsContainer = document.createElement('div');
@@ -2021,19 +2021,14 @@
                         this.disabled = false;
                     }, 30000);
                 }
-
-                let soloRaid = document.CreateElement('button');
-                soloRaid.id - 'raids-solo-button';
-                soloRaid.innerText = 'Solo Raid';
-                soloRaid.onclick = function () {
-                    uitRaids().soloRaid();
-                    this.disabled = true;
-                    setTimeout(() => {
-                        this.disabled = false;
-                    }, 2000);
-                }
                 startRaid.className = 'button raids-option-bar raids-buttons';
                 startRaid.style.display = 'none';
+
+                let soloRaid = document.createElement('input');
+                soloRaid.id = 'raids-solo-button';
+                soloRaid.className = 'raid-button';
+                soloRaid.value = 'Solo Raid';
+                soloRaid.type = 'button';
 
 
                 // Find the insertion point in the DOM
@@ -2045,6 +2040,7 @@
                 optionsContainer.appendChild(raidVisibilityDropdown);
                 optionsContainer.appendChild(advertRaid);
                 optionsContainer.appendChild(startRaid);
+                insertionPoint.appendChild(soloRaid);
                 insertionPoint.parentNode.insertBefore(optionsContainer, insertionPoint);
 
                 document
@@ -2052,6 +2048,10 @@
                     .innerHTML = document.getElementById('raids-create-or-join-team-btns')
                     .innerHTML.replace("Modals.raid_create_team_button()", "uitRaids().createRaid()");
 
+
+                document.getElementById('raids-solo-button').addEventListener('click', function() {
+                    uitRaids().soloRaid();
+                });
                 const panel = document.getElementById('raids-team-panel');
                 panel.innerHTML = panel.innerHTML.replace(/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/g, '<br/>');
             },
@@ -2136,7 +2136,8 @@
 
                 let locationValue = locationMatch[locationRaids];
                 let modeValue = modeMatch[modeRaids];
-                websocket.send(`START_RAID_SOLO=${locationValue}~${modeValue}`);
+                websocket.send(`START_RAID_${locationValue}=${modeValue}`);
+                uitSoloRaiding = true;
             },
         }
     }
@@ -5150,6 +5151,10 @@
                     uitBTBase().messageReceived(data);
                 }
             }
+            if (data.startsWith("OPEN_DIALOGUE_CALLBACK=NO TEAM") && uitSoloRaiding) {
+                uitSoloRaiding = false;
+                document.getElementById('modal-image-btn-primary').click();
+            }
         }
 
         onCombatEnd() {
@@ -5201,16 +5206,16 @@
 
     }
 
-const elementsWithWidth = document.querySelectorAll("[width]");
-elementsWithWidth.forEach(function (el) {
-    el.setAttribute("original-width", el.getAttribute("width"));
-});
+    const elementsWithWidth = document.querySelectorAll("[width]");
+    elementsWithWidth.forEach(function (el) {
+        el.setAttribute("original-width", el.getAttribute("width"));
+    });
 
-const elementsWithHeight = document.querySelectorAll("[height]");
-elementsWithHeight.forEach(function (el) {
-    el.setAttribute("original-height", el.getAttribute("height"));
-});
+    const elementsWithHeight = document.querySelectorAll("[height]");
+    elementsWithHeight.forEach(function (el) {
+        el.setAttribute("original-height", el.getAttribute("height"));
+    });
 
-const plugin = new UITweaksPlugin();
-IdlePixelPlus.registerPlugin(plugin);
+    const plugin = new UITweaksPlugin();
+    IdlePixelPlus.registerPlugin(plugin);
 })();
