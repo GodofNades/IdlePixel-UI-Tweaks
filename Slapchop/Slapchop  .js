@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Slap Chop - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      3.0.14
+// @version      3.0.15
 // @description  Ain't nobody got time for that! Adds some QoL 1-click actions.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -1709,84 +1709,92 @@
                     gold_bar: 5,
                 },
             },
+            ancient_feathers: {
+                craft: "ancient_arrows",
+                required: {
+                    ancient_feathers: 15,
+                    redwood_logs: 5,
+                    ancient_bars: 5,
+                },
+            },
         };
 
-        window.SCEXPLOSIVES = ["bomb", "tnt", "large_tnt", "mega_bomb"];
+    window.SCEXPLOSIVES = ["bomb", "tnt", "large_tnt", "mega_bomb"];
 
-        window.SCUSERNAME = getVar("username", "", "string");
+    window.SCUSERNAME = getVar("username", "", "string");
 
-        window.SCRINGS = [
-            "accuracy_ring",
-            "ancient_accuracy_ring",
-            "ancient_damage_ring",
-            "ancient_defence_ring",
-            "damage_ring",
-            "defence_ring",
-            "good_accuracy_ring",
-            "good_damage_ring",
-            "good_defence_ring",
-            "great_accuracy_ring",
-            "great_damage_ring",
-            "great_defence_ring",
-            "master_ring",
-            "perfect_accuracy_ring",
-            "perfect_damage_ring",
-            "perfect_defence_ring",
-            "weak_accuracy_ring",
-            "weak_damage_ring",
-            "weak_defence_ring",
-        ];
+    window.SCRINGS = [
+        "accuracy_ring",
+        "ancient_accuracy_ring",
+        "ancient_damage_ring",
+        "ancient_defence_ring",
+        "damage_ring",
+        "defence_ring",
+        "good_accuracy_ring",
+        "good_damage_ring",
+        "good_defence_ring",
+        "great_accuracy_ring",
+        "great_damage_ring",
+        "great_defence_ring",
+        "master_ring",
+        "perfect_accuracy_ring",
+        "perfect_damage_ring",
+        "perfect_defence_ring",
+        "weak_accuracy_ring",
+        "weak_damage_ring",
+        "weak_defence_ring",
+    ];
 
-        return {
-            loadPresets: function (buttonNum) {
-                // Retrieve all presets from local storage
-                let allPresets =
-                    JSON.parse(localStorage.getItem(SCUSERNAME + ".combat_presets")) ||
-                    {};
+    return {
+        loadPresets: function (buttonNum) {
+            // Retrieve all presets from local storage
+            let allPresets =
+                JSON.parse(localStorage.getItem(SCUSERNAME + ".combat_presets")) ||
+                {};
 
-                // Check if the requested preset exists
-                if (!allPresets[buttonNum]) {
-                    console.error("Preset not found for button number:", buttonNum);
-                    return;
+            // Check if the requested preset exists
+            if (!allPresets[buttonNum]) {
+                console.error("Preset not found for button number:", buttonNum);
+                return;
+            }
+
+            // Load the preset and equip each item
+            IdlePixelPlus.sendMessage("UNEQUIP_ALL");
+            allPresets[buttonNum].forEach((item) => {
+                if (item) {
+                    IdlePixelPlus.sendMessage("EQUIP=" + item);
                 }
+            });
+        },
 
-                // Load the preset and equip each item
-                IdlePixelPlus.sendMessage("UNEQUIP_ALL");
-                allPresets[buttonNum].forEach((item) => {
-                    if (item) {
-                        IdlePixelPlus.sendMessage("EQUIP=" + item);
-                    }
-                });
-            },
+        savePresets: function (buttonNum) {
+            // Retrieve all presets from local storage, or initialize a new object if none exist
+            let allPresets =
+                JSON.parse(localStorage.getItem(SCUSERNAME + ".combat_presets")) ||
+                {};
 
-            savePresets: function (buttonNum) {
-                // Retrieve all presets from local storage, or initialize a new object if none exist
-                let allPresets =
-                    JSON.parse(localStorage.getItem(SCUSERNAME + ".combat_presets")) ||
-                    {};
+            // Save current equipment settings into the relevant key of the allPresets object
+            allPresets[buttonNum] = [
+                getVar("head", null, "string"),
+                getVar("body", null, "string"),
+                getVar("legs", null, "string"),
+                getVar("boots", null, "string"),
+                getVar("gloves", null, "string"),
+                getVar("amulet", null, "string"),
+                getVar("weapon", null, "string"),
+                getVar("shield", null, "string"),
+                getVar("arrows", null, "string"),
+            ];
 
-                // Save current equipment settings into the relevant key of the allPresets object
-                allPresets[buttonNum] = [
-                    getVar("head", null, "string"),
-                    getVar("body", null, "string"),
-                    getVar("legs", null, "string"),
-                    getVar("boots", null, "string"),
-                    getVar("gloves", null, "string"),
-                    getVar("amulet", null, "string"),
-                    getVar("weapon", null, "string"),
-                    getVar("shield", null, "string"),
-                    getVar("arrows", null, "string"),
-                ];
+            // Update the single entry in local storage with the modified allPresets object
+            localStorage.setItem(
+                SCUSERNAME + ".combat_presets",
+                JSON.stringify(allPresets)
+            );
+        },
 
-                // Update the single entry in local storage with the modified allPresets object
-                localStorage.setItem(
-                    SCUSERNAME + ".combat_presets",
-                    JSON.stringify(allPresets)
-                );
-            },
-
-            initQuickFight: async function () {
-                let html = `
+        initQuickFight: async function () {
+            let html = `
                     <div id="slapchop-quickfight">
                         <h5>Quick Fight:</h5>
                     <div class="slapchop-quickfight-buttons">
@@ -1831,12 +1839,25 @@
                 html += `
                     <div id="slapchop-quickfight-castle" class="slapchop-quickfight-zone m-1 castle">
                         <button type="button" onclick="Castle.clicks_castle_entrance(); document.getElementById('combat-stats').style.display = 'none'; document.getElementById('game-panels-combat-items-area').style.display = 'none'; Combat.refresh_small_icons_combat_selection();"">Faradox Castle</button>
-                        <div class="slapchop-quickfight-fightpoints slapchop-quickfight-progress-container" title="Fight Points: Castle}">
+                        <div class="slapchop-quickfight-fightpoints slapchop-quickfight-progress-container" title="Fight Points: Castle">
                             <span class="slapchop-quickfight-progress-value">No FP to Enter</span>
                             <div class="slapchop-quickfight-progress"></div>
                         </div>
-                        <div class="slapchop-quickfight-energy slapchop-quickfight-progress-container" title="Energy: Castle}">
+                        <div class="slapchop-quickfight-energy slapchop-quickfight-progress-container" title="Energy: Castle">
                             <span class="slapchop-quickfight-progress-value">No Energy to Enter</span>
+                            <div class="slapchop-quickfight-progress"></div>
+                        </div>
+                    </div>
+                `;
+                html += `
+                    <div id="slapchop-quickfight-trios" class="slapchop-quickfight-zone m-1 trios">
+                        <button type="button" onclick="websocket.send('FIGHT_GUARDIAN=4')">Trio Fight</button>
+                        <div class="slapchop-quickfight-fightpoints slapchop-quickfight-progress-container" title="Key Sets: Trios">
+                            <span class="slapchop-quickfight-progress-value">0</span>
+                            <div class="slapchop-quickfight-progress"></div>
+                        </div>
+                        <div class="slapchop-quickfight-energy slapchop-quickfight-progress-container" title="Energy: Guardian Trios">
+                            <span class="slapchop-quickfight-progress-value">100,000 Energy</span>
                             <div class="slapchop-quickfight-progress"></div>
                         </div>
                     </div>
@@ -2026,13 +2047,19 @@
                 const fp = getVar("fight_points", 0, "int");
                 const energy = getVar("energy", 0, "int");
                 const evilPirate = getVar("evil_pirate", 0, "int");
+                const g1Key = getVar("green_gaurdian_key", 0, "int");
+                const g2Key = getVar("blue_gaurdian_key", 0, "int");
+                const g3Key = getVar("purple_gaurdian_key", 0, "int");
+                const maxTrio = Math.min(g1Key, g2Key, g3Key);
 
                 Object.values(IdlePixelPlus.info.combatZones).forEach((zone) => {
                     let disabled = fp < zone.fightPointCost || energy < zone.energyCost;
                     let disabledPirate = fp < 2000 || evilPirate == 0;
+                    let disabledTrios = energy < 100000 || maxTrio == 0;
                     let fpPercent = (fp / zone.fightPointCost).toFixed(2).split(".");
                     let fpPiratePercent = (fp / 2000).toFixed(2).split(".");
                     let energyPercent = (energy / zone.energyCost).toFixed(2).split(".");
+                    let trioEnergyPercent = (energy / 100000).toFixed(2).split(".");
 
                     let fpLabel = `&times; ${fpPercent[0]} + ${fpPercent[1].replace(
                         /^0/,
@@ -2041,6 +2068,9 @@
                     let fpPirateLabel = `&times; ${
 						fpPiratePercent[0]
                     } + ${fpPiratePercent[1].replace(/^0/, "")}%`;
+                    let energyTrioLabel = `&times; ${
+						trioEnergyPercent[0]
+                    } + ${trioEnergyPercent[1].replace(/^0/, "")}%`;
                     let energyLabel = `&times; ${
 						energyPercent[0]
                     } + ${energyPercent[1].replace(/^0/, "")}%`;
@@ -2096,19 +2126,34 @@
                     const energyPirateProgressValue = document.querySelector(
                         `#slapchop-quickfight-pirate .slapchop-quickfight-energy .slapchop-quickfight-progress-value`
 					);
+                    const energyTrioProgressValue = document.querySelector(
+                        `#slapchop-quickfight-trios .slapchop-quickfight-energy .slapchop-quickfight-progress-value`
+					);
+                    const fpTrioProgressValue = document.querySelector(
+                        `#slapchop-quickfight-trios .slapchop-quickfight-fightpoints .slapchop-quickfight-progress-value`
+					);
 
                     const buttonPirate = document.querySelector(
                         `#slapchop-quickfight-pirate button`
 					);
+                    const buttonTrios = document.querySelector(
+                        `#slapchop-quickfight-trios button`
+					);
                     buttonPirate.disabled = disabledPirate;
+
+                    buttonTrios.disabled = disabledTrios;
 
                     fpProgress.style.width = `${fpPercent}%`;
                     fpProgressPirate.style.width = `${fpPiratePercent}%`;
                     energyProgress.style.width = `${energyPercent}%`;
                     fpProgressValue.innerHTML = fpLabel;
                     fpPirateProgressValue.innerHTML = fpPirateLabel;
+                    fpTrioProgressValue.innerHTML = `${maxTrio} Remaining`;
+
                     energyProgressValue.innerHTML = energyLabel;
                     energyPirateProgressValue.innerHTML = `${evilPirate} Remaining`;
+                    energyTrioProgressValue.innerHTML = energyTrioLabel;
+
                 });
             },
 
@@ -2322,471 +2367,471 @@
         };
     };
 
-window.sCMisc = misc;
-window.sCActionType = actionType;
-window.sCMiningCrafting = mining_crafting;
-window.sCGathering = gathering;
-window.sCFarming = farming;
-window.sCBrewing = brewing;
-window.sCWoodcutting = woodcutting;
-window.sCCooking = cooking;
-window.sCFishing = fishing;
-window.sCInvention = invention;
-window.sCCombat = combat;
+    window.sCMisc = misc;
+    window.sCActionType = actionType;
+    window.sCMiningCrafting = mining_crafting;
+    window.sCGathering = gathering;
+    window.sCFarming = farming;
+    window.sCBrewing = brewing;
+    window.sCWoodcutting = woodcutting;
+    window.sCCooking = cooking;
+    window.sCFishing = fishing;
+    window.sCInvention = invention;
+    window.sCCombat = combat;
 
-// End New Code Base Const/Functions
+    // End New Code Base Const/Functions
 
-class SlapChopPlugin extends IdlePixelPlusPlugin {
-    constructor() {
-        super("slapchop", {
-            about: {
-                name: GM_info.script.name + " (ver: " + GM_info.script.version + ")",
-                version: GM_info.script.version,
-                author: GM_info.script.author,
-                description: GM_info.script.description,
-            },
-            config: [
-                {
-                    label:
-                    "------------------------------------------------<br/>Key Binds<br/>------------------------------------------------",
-                    type: "label",
+    class SlapChopPlugin extends IdlePixelPlusPlugin {
+        constructor() {
+            super("slapchop", {
+                about: {
+                    name: GM_info.script.name + " (ver: " + GM_info.script.version + ")",
+                    version: GM_info.script.version,
+                    author: GM_info.script.author,
+                    description: GM_info.script.description,
                 },
-                {
-                    id: "primaryActionKey",
-                    label: "Primary Action Key",
-                    type: "select",
-                    options: [
-                        { value: "none", label: "None" },
-                        { value: "altKey", label: "Alt" },
-                        { value: "shiftKey", label: "Shift" },
-                        { value: "ctrlKey", label: "Ctrl" },
-                    ],
-                    default: "none",
-                },
-                {
-                    id: "altActionKey",
-                    label: "Alt Action Key",
-                    type: "select",
-                    options: [
-                        { value: "altKey", label: "Alt" },
-                        { value: "shiftKey", label: "Shift" },
-                        { value: "ctrlKey", label: "Ctrl" },
-                    ],
-                    default: "altKey",
-                },
-                {
-                    id: "autoSingleEnabled",
-                    label:
-                    "Enable the ability to use items without having to hold the 'ALT' key<br/>to keep a single item for slapchop commands.",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    label:
-                    "------------------------------------------------<br/>Brewing<br/>------------------------------------------------",
-                    type: "label",
-                },
-                {
-                    id: "quickBrewButtonEnabled",
-                    label: "Quick Brew (buttons): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickPotionRightClickEnabled",
-                    label: "Quick Potion (right-click, primary=1): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    label:
-                    "------------------------------------------------<br/>Combat<br/>------------------------------------------------",
-                    type: "label",
-                },
-                {
-                    id: "quickCraftArrowRightClickEnabled",
-                    label:
-                    "Quick Craft Arrow (right-click feather, primary=max): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickExplosionEnabled",
-                    label:
-                    "Quick Detonation - Quickly use explosives in combat window (right-click): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickFightEnabled",
-                    label: "Quick Fight: Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickFightConfirm",
-                    label: "Quick Fight: Confirm",
-                    type: "boolean",
-                    default: false,
-                },
-                {
-                    id: "quickFightEnergyBar",
-                    label: "Quick Fight: Energy Bar",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickFightFPBar",
-                    label: "Quick Fight: FP Bar",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickLampShow",
-                    label: "Quick Lamp Show (When you have Lamps)",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickNeedleRightClickEnabled",
-                    label:
-                    "Quick Needle (right-click, primary=max, alt=keep-1): Enabled",
-                    type: "boolean",
-                    default: false,
-                },
-                {
-                    id: "quickPresetsEnabled",
-                    label: "Quick Presets: Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    label:
-                    "------------------------------------------------<br/>Cooking/Eating<br/>------------------------------------------------",
-                    type: "label",
-                },
-                {
-                    id: "quickCookRightClickEnabled",
-                    label: "Quick Cook (right-click, primary=max, alt=keep-1): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickEatRightClickEnabled",
-                    label: "Quick Eat (right-click, primary=max, alt=keep-1): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    label:
-                    "------------------------------------------------<br/>Farming<br/>------------------------------------------------",
-                    type: "label",
-                },
-                {
-                    id: "quickBoneRightClickEnabled",
-                    label:
-                    "Quick Bonemeal (right-click, primary=max, alt=keep-1): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickHarvestEnabled",
-                    label: "Quick Harvest (Bob): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickHarvestNotificationEnabled",
-                    label:
-                    "Harvest Farm plots when clicking on the notification: Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickPlantRightClickEnabled",
-                    label: "Quick Plant (right-click, primary=1, alt=max): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickPlantHarvestRightClickEnabled",
-                    label:
-                    "Quick Harvest And Plant (right-click, primary=1, alt=max): Enabled",
-                    type: "boolean",
-                    default: false,
-                },
-                {
-                    label:
-                    "------------------------------------------------<br/>Fishing<br/>------------------------------------------------",
-                    type: "label",
-                },
-                {
-                    id: "quickBaitRightClickEnabled",
-                    label: "Quick Bait (right-click): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickBoatRightClickEnabled",
-                    label: "Quick Boat (right-click): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    label:
-                    "------------------------------------------------<br/>Foundry/Mining/Smelting<br/>------------------------------------------------",
-                    type: "label",
-                },
-                {
-                    id: "quickFoundryEnabled",
-                    label: "Quick Foundry (buttons): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickMiningRightClickEnabled",
-                    label: "Quick Geode / Prism Use (right-click, primary=1): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickMineralRightClickEnabled",
-                    label:
-                    "Quick Mineral XP Conversion (right-click, primary=1): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickSmeltEnabled",
-                    label: "Quick Smelt (buttons): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickSmeltRightClickEnabled",
-                    label: "Quick Smelt (right-click, primary=max): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    label:
-                    "------------------------------------------------<br/>Gathering<br/>------------------------------------------------",
-                    type: "label",
-                },
-                {
-                    id: "quickGatherRightClickEnabled",
-                    label:
-                    "Quick Gather (right-click, primary=max, alt=keep-1): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    label:
-                    "------------------------------------------------<br/>Invention<br/>------------------------------------------------",
-                    type: "label",
-                },
-                {
-                    id: "quickGrindRightClickEnabled",
-                    label: "Quick Blood Grind (right-click, primary=1): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickCleanseRightClickEnabled",
-                    label:
-                    "Quick Cleanse Blood in Invention (right-click, primary=1): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    label:
-                    "------------------------------------------------<br/>Woodcutting<br/>------------------------------------------------",
-                    type: "label",
-                },
-                {
-                    id: "quickBurnRightClickEnabled",
-                    label:
-                    "Quick Burn Logs (right-click, primary=max, alt=keep-1): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickChopEnabled",
-                    label: "Quick Chop (Lumberjack): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickChopRegTreesEnabled",
-                    label: "Quick Chop (Normal Trees Lumberjack): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickChopSDTreesEnabled",
-                    label: "Quick Chop (SD Trees Lumberjack): Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-                {
-                    id: "quickTreeNotificationHarvestEnabled",
-                    label: "Harvest Trees when clicking on the notification: Enabled",
-                    type: "boolean",
-                    default: true,
-                },
-            ],
-        });
-    }
+                config: [
+                    {
+                        label:
+                        "------------------------------------------------<br/>Key Binds<br/>------------------------------------------------",
+                        type: "label",
+                    },
+                    {
+                        id: "primaryActionKey",
+                        label: "Primary Action Key",
+                        type: "select",
+                        options: [
+                            { value: "none", label: "None" },
+                            { value: "altKey", label: "Alt" },
+                            { value: "shiftKey", label: "Shift" },
+                            { value: "ctrlKey", label: "Ctrl" },
+                        ],
+                        default: "none",
+                    },
+                    {
+                        id: "altActionKey",
+                        label: "Alt Action Key",
+                        type: "select",
+                        options: [
+                            { value: "altKey", label: "Alt" },
+                            { value: "shiftKey", label: "Shift" },
+                            { value: "ctrlKey", label: "Ctrl" },
+                        ],
+                        default: "altKey",
+                    },
+                    {
+                        id: "autoSingleEnabled",
+                        label:
+                        "Enable the ability to use items without having to hold the 'ALT' key<br/>to keep a single item for slapchop commands.",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        label:
+                        "------------------------------------------------<br/>Brewing<br/>------------------------------------------------",
+                        type: "label",
+                    },
+                    {
+                        id: "quickBrewButtonEnabled",
+                        label: "Quick Brew (buttons): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickPotionRightClickEnabled",
+                        label: "Quick Potion (right-click, primary=1): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        label:
+                        "------------------------------------------------<br/>Combat<br/>------------------------------------------------",
+                        type: "label",
+                    },
+                    {
+                        id: "quickCraftArrowRightClickEnabled",
+                        label:
+                        "Quick Craft Arrow (right-click feather, primary=max): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickExplosionEnabled",
+                        label:
+                        "Quick Detonation - Quickly use explosives in combat window (right-click): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickFightEnabled",
+                        label: "Quick Fight: Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickFightConfirm",
+                        label: "Quick Fight: Confirm",
+                        type: "boolean",
+                        default: false,
+                    },
+                    {
+                        id: "quickFightEnergyBar",
+                        label: "Quick Fight: Energy Bar",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickFightFPBar",
+                        label: "Quick Fight: FP Bar",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickLampShow",
+                        label: "Quick Lamp Show (When you have Lamps)",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickNeedleRightClickEnabled",
+                        label:
+                        "Quick Needle (right-click, primary=max, alt=keep-1): Enabled",
+                        type: "boolean",
+                        default: false,
+                    },
+                    {
+                        id: "quickPresetsEnabled",
+                        label: "Quick Presets: Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        label:
+                        "------------------------------------------------<br/>Cooking/Eating<br/>------------------------------------------------",
+                        type: "label",
+                    },
+                    {
+                        id: "quickCookRightClickEnabled",
+                        label: "Quick Cook (right-click, primary=max, alt=keep-1): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickEatRightClickEnabled",
+                        label: "Quick Eat (right-click, primary=max, alt=keep-1): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        label:
+                        "------------------------------------------------<br/>Farming<br/>------------------------------------------------",
+                        type: "label",
+                    },
+                    {
+                        id: "quickBoneRightClickEnabled",
+                        label:
+                        "Quick Bonemeal (right-click, primary=max, alt=keep-1): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickHarvestEnabled",
+                        label: "Quick Harvest (Bob): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickHarvestNotificationEnabled",
+                        label:
+                        "Harvest Farm plots when clicking on the notification: Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickPlantRightClickEnabled",
+                        label: "Quick Plant (right-click, primary=1, alt=max): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickPlantHarvestRightClickEnabled",
+                        label:
+                        "Quick Harvest And Plant (right-click, primary=1, alt=max): Enabled",
+                        type: "boolean",
+                        default: false,
+                    },
+                    {
+                        label:
+                        "------------------------------------------------<br/>Fishing<br/>------------------------------------------------",
+                        type: "label",
+                    },
+                    {
+                        id: "quickBaitRightClickEnabled",
+                        label: "Quick Bait (right-click): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickBoatRightClickEnabled",
+                        label: "Quick Boat (right-click): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        label:
+                        "------------------------------------------------<br/>Foundry/Mining/Smelting<br/>------------------------------------------------",
+                        type: "label",
+                    },
+                    {
+                        id: "quickFoundryEnabled",
+                        label: "Quick Foundry (buttons): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickMiningRightClickEnabled",
+                        label: "Quick Geode / Prism Use (right-click, primary=1): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickMineralRightClickEnabled",
+                        label:
+                        "Quick Mineral XP Conversion (right-click, primary=1): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickSmeltEnabled",
+                        label: "Quick Smelt (buttons): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickSmeltRightClickEnabled",
+                        label: "Quick Smelt (right-click, primary=max): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        label:
+                        "------------------------------------------------<br/>Gathering<br/>------------------------------------------------",
+                        type: "label",
+                    },
+                    {
+                        id: "quickGatherRightClickEnabled",
+                        label:
+                        "Quick Gather (right-click, primary=max, alt=keep-1): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        label:
+                        "------------------------------------------------<br/>Invention<br/>------------------------------------------------",
+                        type: "label",
+                    },
+                    {
+                        id: "quickGrindRightClickEnabled",
+                        label: "Quick Blood Grind (right-click, primary=1): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickCleanseRightClickEnabled",
+                        label:
+                        "Quick Cleanse Blood in Invention (right-click, primary=1): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        label:
+                        "------------------------------------------------<br/>Woodcutting<br/>------------------------------------------------",
+                        type: "label",
+                    },
+                    {
+                        id: "quickBurnRightClickEnabled",
+                        label:
+                        "Quick Burn Logs (right-click, primary=max, alt=keep-1): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickChopEnabled",
+                        label: "Quick Chop (Lumberjack): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickChopRegTreesEnabled",
+                        label: "Quick Chop (Normal Trees Lumberjack): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickChopSDTreesEnabled",
+                        label: "Quick Chop (SD Trees Lumberjack): Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                    {
+                        id: "quickTreeNotificationHarvestEnabled",
+                        label: "Harvest Trees when clicking on the notification: Enabled",
+                        type: "boolean",
+                        default: true,
+                    },
+                ],
+            });
+        }
 
-    onPanelChanged(panelBefore, panelAfter) {
-        if (Globals.currentPanel == "panel-woodcutting") {
-            let woodCuttingElite = Achievements.has_completed_set(
-                "woodcutting",
-                "elite"
-            );
-            if (woodCuttingElite) {
-                document.getElementById("rain_pot-woodcutting").style.display = "";
-            } else {
-                document.getElementById("rain_pot-woodcutting").style.display =
-                    "none";
-            }
-            if (Globals.currentPanel == "panel-combat") {
-                var lamps = getVar("combat_xp_lamp", 0, "int");
-                if (lamps == 0) {
-                    document.getElementById("quick-lamp-container").style.display =
-                        "none";
+        onPanelChanged(panelBefore, panelAfter) {
+            if (Globals.currentPanel == "panel-woodcutting") {
+                let woodCuttingElite = Achievements.has_completed_set(
+                    "woodcutting",
+                    "elite"
+                );
+                if (woodCuttingElite) {
+                    document.getElementById("rain_pot-woodcutting").style.display = "";
                 } else {
-                    document.getElementById("quick-lamp-container").style.display = "";
+                    document.getElementById("rain_pot-woodcutting").style.display =
+                        "none";
                 }
-                sCMisc().updateQuickFight();
+                if (Globals.currentPanel == "panel-combat") {
+                    var lamps = getVar("combat_xp_lamp", 0, "int");
+                    if (lamps == 0) {
+                        document.getElementById("quick-lamp-container").style.display =
+                            "none";
+                    } else {
+                        document.getElementById("quick-lamp-container").style.display = "";
+                    }
+                    sCMisc().updateQuickFight();
+                }
             }
         }
-    }
 
-    onConfigsChanged() {
-        if (onLoginLoaded) {
-            sCMisc().updateButtons();
+        onConfigsChanged() {
+            if (onLoginLoaded) {
+                sCMisc().updateButtons();
 
-            const slapchopQuickFight = document.querySelector(
-                "#slapchop-quickfight"
-            );
-            const slapchopQuickFoundry = document.querySelector(
-                "#slapchop-quickfoundry"
-            );
-            const slapchopQuickPreset = document.querySelector(
-                "#slapchop-quickpreset"
-            );
-            const slapchopQuickFightFPBar = document.querySelectorAll(
-                ".slapchop-quickfight-fightpoints"
-            );
-            const slapchopQuickFightEnergyBar = document.querySelectorAll(
-                ".slapchop-quickfight-energy"
-            );
-            const slapchopQuickSmeltMining = document.getElementById(
-                "slapchop-quicksmelt-mining"
-            );
-            const slapchopQuickSmeltCrafting = document.getElementById(
-                "slapchop-quicksmelt-crafting"
-            );
-            const slapchopQuickBrewButton = document.querySelectorAll(
-                ".slapchop-quickbrew-button"
-            );
+                const slapchopQuickFight = document.querySelector(
+                    "#slapchop-quickfight"
+                );
+                const slapchopQuickFoundry = document.querySelector(
+                    "#slapchop-quickfoundry"
+                );
+                const slapchopQuickPreset = document.querySelector(
+                    "#slapchop-quickpreset"
+                );
+                const slapchopQuickFightFPBar = document.querySelectorAll(
+                    ".slapchop-quickfight-fightpoints"
+                );
+                const slapchopQuickFightEnergyBar = document.querySelectorAll(
+                    ".slapchop-quickfight-energy"
+                );
+                const slapchopQuickSmeltMining = document.getElementById(
+                    "slapchop-quicksmelt-mining"
+                );
+                const slapchopQuickSmeltCrafting = document.getElementById(
+                    "slapchop-quicksmelt-crafting"
+                );
+                const slapchopQuickBrewButton = document.querySelectorAll(
+                    ".slapchop-quickbrew-button"
+                );
 
-            singleOverride = getThis.getConfig("autoSingleEnabled");
+                singleOverride = getThis.getConfig("autoSingleEnabled");
 
-            if (getThis.getConfig("quickFightEnabled")) {
-                slapchopQuickFight.style.display = "block";
-            } else {
-                slapchopQuickFight.style.display = "none";
-            }
+                if (getThis.getConfig("quickFightEnabled")) {
+                    slapchopQuickFight.style.display = "block";
+                } else {
+                    slapchopQuickFight.style.display = "none";
+                }
 
-            if (getThis.getConfig("quickFoundryEnabled")) {
-                slapchopQuickFoundry.style.display = "block";
-            } else {
-                slapchopQuickFoundry.style.display = "none";
-            }
+                if (getThis.getConfig("quickFoundryEnabled")) {
+                    slapchopQuickFoundry.style.display = "block";
+                } else {
+                    slapchopQuickFoundry.style.display = "none";
+                }
 
-            const presetsUnlocked = IdlePixelPlus.getVar("combat_presets") == "1";
-            if (presetsUnlocked && getThis.getConfig("quickPresetsEnabled")) {
-                slapchopQuickPreset.style.display = "block";
-            } else {
-                slapchopQuickPreset.style.display = "none";
-            }
+                const presetsUnlocked = IdlePixelPlus.getVar("combat_presets") == "1";
+                if (presetsUnlocked && getThis.getConfig("quickPresetsEnabled")) {
+                    slapchopQuickPreset.style.display = "block";
+                } else {
+                    slapchopQuickPreset.style.display = "none";
+                }
 
-            if (getThis.getConfig("quickFightFPBar")) {
-                slapchopQuickFightFPBar.forEach((bar) => {
-                    bar.style.display = "block";
-                });
-            } else {
-                slapchopQuickFightFPBar.forEach((bar) => {
-                    bar.style.display = "none";
-                });
-            }
+                if (getThis.getConfig("quickFightFPBar")) {
+                    slapchopQuickFightFPBar.forEach((bar) => {
+                        bar.style.display = "block";
+                    });
+                } else {
+                    slapchopQuickFightFPBar.forEach((bar) => {
+                        bar.style.display = "none";
+                    });
+                }
 
-            if (getThis.getConfig("quickFightEnergyBar")) {
-                slapchopQuickFightEnergyBar.forEach((bar) => {
-                    bar.style.display = "block";
-                });
-            } else {
-                slapchopQuickFightEnergyBar.forEach((bar) => {
-                    bar.style.display = "none";
-                });
-            }
+                if (getThis.getConfig("quickFightEnergyBar")) {
+                    slapchopQuickFightEnergyBar.forEach((bar) => {
+                        bar.style.display = "block";
+                    });
+                } else {
+                    slapchopQuickFightEnergyBar.forEach((bar) => {
+                        bar.style.display = "none";
+                    });
+                }
 
-            if (getThis.getConfig("quickSmeltEnabled")) {
-                slapchopQuickSmeltMining.style.display = "block";
-                slapchopQuickSmeltCrafting.style.display = "block";
-            } else {
-                slapchopQuickSmeltMining.style.display = "none";
-                slapchopQuickSmeltCrafting.style.display = "none";
-            }
+                if (getThis.getConfig("quickSmeltEnabled")) {
+                    slapchopQuickSmeltMining.style.display = "block";
+                    slapchopQuickSmeltCrafting.style.display = "block";
+                } else {
+                    slapchopQuickSmeltMining.style.display = "none";
+                    slapchopQuickSmeltCrafting.style.display = "none";
+                }
 
-            if (getThis.getConfig("quickBrewButtonEnabled")) {
-                slapchopQuickBrewButton.forEach((button) => {
-                    button.style.display = "block";
-                });
-            } else {
-                slapchopQuickBrewButton.forEach((button) => {
-                    button.style.display = "none";
-                });
-            }
+                if (getThis.getConfig("quickBrewButtonEnabled")) {
+                    slapchopQuickBrewButton.forEach((button) => {
+                        button.style.display = "block";
+                    });
+                } else {
+                    slapchopQuickBrewButton.forEach((button) => {
+                        button.style.display = "none";
+                    });
+                }
 
-            if (
-                getThis.getConfig("quickLampShow") &&
-                getVar("combat_xp_lamp", 0, "int") > 0
-            ) {
-                document.getElementById("quick-lamp-container").style.display = "";
-            } else {
-                document.getElementById("quick-lamp-container").style.display =
-                    "none";
-            }
+                if (
+                    getThis.getConfig("quickLampShow") &&
+                    getVar("combat_xp_lamp", 0, "int") > 0
+                ) {
+                    document.getElementById("quick-lamp-container").style.display = "";
+                } else {
+                    document.getElementById("quick-lamp-container").style.display =
+                        "none";
+                }
 
-            if (getThis.getConfig("quickHarvestEnabled")) {
-                window.var_slapchop_bob = "1";
-            } else {
-                window.var_slapchop_bob = "0";
-            }
+                if (getThis.getConfig("quickHarvestEnabled")) {
+                    window.var_slapchop_bob = "1";
+                } else {
+                    window.var_slapchop_bob = "0";
+                }
 
-            if (getThis.getConfig("quickChopEnabled")) {
-                window.var_slapchop_lumberjack = "1";
-            } else {
-                window.var_slapchop_lumberjack = "0";
-            }
+                if (getThis.getConfig("quickChopEnabled")) {
+                    window.var_slapchop_lumberjack = "1";
+                } else {
+                    window.var_slapchop_lumberjack = "0";
+                }
 
-            const notificationTreesReady = document.getElementById(
-                "notification-trees-ready"
-            );
-            if (getThis.getConfig("quickTreeNotificationHarvestEnabled")) {
-                notificationTreesReady.setAttribute(
-                    "onClick",
-                    `sCWoodcutting().quickChop(); switch_panels('panel-woodcutting')`
+                const notificationTreesReady = document.getElementById(
+                    "notification-trees"
+                );
+                if (getThis.getConfig("quickTreeNotificationHarvestEnabled")) {
+                    notificationTreesReady.setAttribute(
+                        "onClick",
+                        `sCWoodcutting().quickChop(); switch_panels('panel-woodcutting')`
 					);
                 } else {
                     notificationTreesReady.setAttribute(
                         "onClick",
                         `switch_panels('panel-woodcutting')`
 					);
-                }
+            }
             }
         }
 
@@ -2935,6 +2980,6 @@ class SlapChopPlugin extends IdlePixelPlusPlugin {
         }
     }
 
-const plugin = new SlapChopPlugin();
-IdlePixelPlus.registerPlugin(plugin);
+    const plugin = new SlapChopPlugin();
+    IdlePixelPlus.registerPlugin(plugin);
 })();
