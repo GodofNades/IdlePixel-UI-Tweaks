@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel TCG Dex
 // @namespace    godofnades.idlepixel
-// @version      0.1.10
+// @version      0.1.11
 // @description  Organizational script for the Criptoe Trading Card Game
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
@@ -586,10 +586,10 @@
 
             let html = `<div id='${var_name}_${idHolo}' onclick='Modals.open_tcg_give_card(null, \"${id}\")' style='${data['border_css']}${data['background_css']}; font-family: calibri;' class='tcg-card hover'>`
                 html += `<div class='row' style="display: flex; width: 100%;">`
-                html += `<div class='col' style="flex: 0 0 90%;padding-right: 0px; display: flex;">`
-                html += `<div class='tcg-card-title'>${data.label.replaceAll('MOONSTONE', 'M. STONE').replaceAll('PROMETHIUM', 'PROM.')}</div>`
+                html += `<div class='col' style="flex: 0 0 85%;padding-right: 0px; display: flex;">`
+                html += `<div class='tcg-card-title'>${data.label.replaceAll('MOONSTONE', 'M. STONE').replaceAll('PROMETHIUM', 'PROM.').replaceAll('WOODEN ARROWS', 'WOOD ARROWS').replaceAll('STINGER ', 'STING ')}</div>`
                 html += `</div>`
-                html += `<div class='col' style="flex: 0 0 10%;padding: 0px;display: flex;justify-content: center; margin-top:4px;">`
+                html += `<div class='col' style="flex: 0 0 15%;padding: 0px;display: flex;justify-content: center; margin-top:4px;">`
                 html += `<span id='dupe-count' style="font-weight: bolder;"></span>`
                 html += `</div>`
                 html += `</div>`
