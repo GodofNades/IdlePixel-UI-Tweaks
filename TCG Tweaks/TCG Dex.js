@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel TCG Dex
 // @namespace    godofnades.idlepixel
-// @version      0.1.11
+// @version      0.1.12
 // @description  Organizational script for the Criptoe Trading Card Game
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
@@ -602,12 +602,12 @@
                 html += `<br />`
                 html += `<span class='color-red'>${cardText}</span>`
                 html += `</div>`
-                html += `<div class="row">`
-                html += `<div class="col">`
+                html += `<div class="row" style="display: flex; flex-wrap:nowrap">`
+                html += `<div class="col" style="flex: 0 0 50%; padding-right:0px;">`
                 html += `<span class="tcg-card-type">${isHoloText}`
                 html += `</span>`
                 html += `</div>`
-                html += `<div class="col" style="text-align: end">`
+                html += `<div class="col" style="flex: 0 0 50%; text-align: end; padding-left: 0px;flex-wrap:nowrap;">`
                 html += `<span class="tcg-card-rarity">(${rarityChange[data['rarity']]})</span>`
                 html += `</div>`
                 html += `</div>`
