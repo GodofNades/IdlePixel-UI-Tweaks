@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel TCG Dex
 // @namespace    godofnades.idlepixel
-// @version      0.1.12
+// @version      0.1.13
 // @description  Organizational script for the Criptoe Trading Card Game
 // @author       GodofNades
 // @match        *://idle-pixel.com/login/play*
@@ -417,7 +417,7 @@
                 const cards = await this.fetchAllCardsFromDB(this.db, 'current_cards');
                 const cardOccurrences = new Map();
 
-                if(!dupeSending) {
+                if(!dupeSending && sendTo != playername) {
                     dupeSending = true;
                     cards.forEach((card) => {
                         const key = `${card.id}-${card.holo}`;
