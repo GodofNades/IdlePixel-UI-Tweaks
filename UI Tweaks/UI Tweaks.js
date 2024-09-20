@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel UI Tweaks - GodofNades Fork
 // @namespace    com.anwinity.idlepixel
-// @version      2.8.29
+// @version      2.8.30
 // @description  Adds some options to change details about the IdlePixel user interface.
 // @author       Original Author: Anwinity || Modded By: GodofNades
 // @license      MIT
@@ -607,9 +607,9 @@
                         if (row.id != "id-raids_hp_potion" || row.id != "id-raids_mana_potion" || row.id != "id-raids_bomb_potion") {
                             const brewingXP = row.querySelector("td:nth-child(6)");
                             if (brewingXP) {
-                                const potionName = brewingXP.id.replace("_xp", "");
+                                const potionName = brewingXP.getAttribute("data-xp").replace("_xp", "");
                                 const potionXP =
-                                      UIT_POTION_XP_MAP[potionName].toLocaleString() + " xp";
+                                      UIT_POTION_XP_MAP[potionName]?.toLocaleString() + " xp";
                                 const potionOrig = document.createElement("span");
                                 potionOrig.classList.add("font-small", "color-grey");
                                 potionOrig.textContent = potionXP;
@@ -620,7 +620,7 @@
                     });
                 }
             },
-
+/*
             disableTableRefreshBrewing: function () {
                 Brewing.refresh_table = function () {
                     Brewing._refresh_click_events();
@@ -630,10 +630,24 @@
                     //Brewing._refresh_xp_labels();
                 }
             },
+*/
+            disableTableRefreshBrewing: function() {
+                Brewing.refresh_table = function(brewing_table) {
+                    Brewing._refresh_click_events(brewing_table)
+                    Brewing._refresh_materials(brewing_table)
+                    Brewing._refresh_timers(brewing_table)
+                    Brewing._refresh_backgrounds(brewing_table)
+                    //Brewing._refresh_xp_labels(brewing_table)
+                }
+            },
 
             Crafting_getMaterials: function () {
-                Crafting._refresh_materials_and_level = function () {
-                    var crafting_table = document.getElementById("crafting-table");
+                Crafting._refresh_materials_and_level = function (crafting_table) {
+                    // var crafting_table = document.getElementById("crafting-table");
+                    if(!crafting_table) {
+                        crafting_table = document.getElementById("crafting-table");
+                    }
+
                     var materials_req_array = crafting_table.getElementsByTagName("item-crafting-table");
                     var levels_req_array = crafting_table.getElementsByTagName("item-crafting-table-level");
 
@@ -660,10 +674,12 @@
                             levels_req.style.color = "red";
                     }
                 }
-                Crafting._refresh_click_events()
+                Crafting._refresh_click_events = function(crafting_table)
                 {
+                    if(!crafting_table) {
+                        crafting_table = document.getElementById("crafting-table");
+                    }
                     if (!Crafting._click_events_loaded) {
-                        var crafting_table = document.getElementById("crafting-table");
                         var crafting_row_array = crafting_table.getElementsByTagName("tr");
 
                         for (var i = 0; i < crafting_row_array.length; i++) {
